@@ -1,0 +1,88 @@
+// The ui-variables file is provided by base themes provided by Atom.
+//
+// See https://github.com/atom/atom-dark-ui/blob/master/styles/ui-variables.less
+// for a full listing of what's available.
+@import "ui-variables";
+
+.terminal-plus-view {
+
+  .left {
+    float: left;
+  }
+
+  .right {
+    float: right;
+  }
+
+  .panel-heading {
+    padding: 2px;
+    text-align: right;
+
+    .btn {
+      top: 0px;
+      height: 3em;
+    }
+  }
+
+  .panel-divider {
+    background-color: inherit;
+  }
+
+  .xterm {
+    max-height: 300px;
+    bottom: @component-padding;
+  }
+
+  .terminal {
+    padding: 0 5px;
+    margin: 0 5px;
+    height: auto;
+
+    > div {
+      white-space: pre;
+      > span {
+        display: inline-block;
+        line-height: inherit;
+        height: inherit;
+        font-weight: normal !important;
+      }
+    }
+
+    .terminal-cursor {
+      background-color: #fff;
+    }
+
+    span {
+      white-space: pre;
+    }
+  }
+
+}
+
+.terminal-plus-panel {
+
+  .status-ignored {
+    opacity: 0.5;
+  }
+  .icon-terminal {
+    opacity: 0.4;
+    &.active {
+      opacity: 1;
+    }
+  }
+  .status-running {
+    color: hsl(180, 1, 0.5);
+  }
+  .status-info {
+    color: hsl(220, 1, 0.5);
+  }
+  .status-success {
+    color: hsl(100, 1, 0.5);
+  }
+  .status-error {
+    color: hsl(0, 1, 0.5);
+  }
+  .icon-terminal, .icon-plus {
+    cursor: pointer;
+  }
+}
