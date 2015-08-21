@@ -62,11 +62,10 @@ class TerminalPlusView extends View
     args = shellArguments.split(/\s+/g).filter (arg)-> arg
     @ptyProcess = @forkPtyProcess shellOverride, args
 
-    colorsArray = colors.map (color) -> color.toHexString()
     @term = term = new Terminal {
       useStyle: false
-      screenKeys: true
-      colors: colorsArray
+      screenKeys: false
+      termName: 'xterm-256color'
       cursorBlink, scrollback, cols, rows
     }
 
@@ -258,11 +257,11 @@ class TerminalPlusView extends View
 
   attachResizeEvents: ->
     @on 'focus', @focus
-    $('.xterm').on 'resize', @resizeToPanel
+    $(window).on 'resize', @resizeToPanel
 
   detachResizeEvents: ->
     @off 'focus', @focus
-    $('.xterm').off 'resize'
+    $(window).off 'resize'
 
   focus: ->
     @resizeToPanel
@@ -286,7 +285,7 @@ class TerminalPlusView extends View
     if @term
       @find('.terminal').append fakeRow
       fakeCol = fakeRow.children().first()
-      cols = Math.floor (@xterm.width() / fakeCol.width()) or 9
+      cols = (Math.floor(@xterm.width() / fakeCol.width()) - 2) or 9
       rows = Math.floor (@xterm.height() / fakeCol.height()) or 16
       @minHeight = fakeCol.height() + 10
       fakeRow.remove()
