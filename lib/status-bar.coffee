@@ -2,7 +2,7 @@
 TerminalPlusView = require './view'
 
 module.exports =
-class TerminalPlusPanel extends View
+class StatusBar extends View
   @content: ->
     @div class: 'terminal-plus-panel inline-block', =>
       @span outlet: 'termStatusContainer', =>

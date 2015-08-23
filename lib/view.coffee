@@ -53,10 +53,6 @@ class TerminalPlusView extends View
         # @div class: 'btn-group', outlet:'consoleToolbar', =>
         @button outlet: 'closeBtn', click: 'close', class: 'btn icon icon-chevron-down inline-block-tight right', =>
           @span 'close'
-        @button outlet: 'openConfigBtn', class: 'btn icon icon-gear inline-block-tight right', click: 'showSettings', =>
-          @span 'Open config'
-        @button outlet: 'reloadConfigBtn', class: 'btn icon icon-sync inline-block-tight right', click: 'reloadSettings', =>
-          @span 'Reload config'
         @button outlet: 'exitBtn', class: 'btn icon icon-x inline-block-tight right', click: 'destroy', =>
           @span 'exit'
       @div class: 'xterm', outlet: 'xterm'

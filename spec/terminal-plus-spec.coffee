@@ -31,10 +31,10 @@ describe "TerminalPlus", ->
         terminalPlusElement = workspaceElement.querySelector('.terminal-plus')
         expect(terminalPlusElement).toExist()
 
-        terminalPlusPanel = atom.workspace.panelForItem(terminalPlusElement)
-        expect(terminalPlusPanel.isVisible()).toBe true
+        statusBar = atom.workspace.panelForItem(terminalPlusElement)
+        expect(statusBar.isVisible()).toBe true
         atom.commands.dispatch workspaceElement, 'terminal-plus:toggle'
-        expect(terminalPlusPanel.isVisible()).toBe false
+        expect(statusBar.isVisible()).toBe false
 
     it "hides and shows the view", ->
       # This test shows you an integration test testing at the view level.

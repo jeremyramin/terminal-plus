@@ -1,15 +1,15 @@
 TerminalPlusView = require './view'
-TerminalPlusPanel = require './panel'
+StatusBar = require './status-bar'
 
 path = require 'path'
 {CompositeDisposable} = require 'atom'
 
 module.exports = TerminalPlus =
-  terminalPlusPanel: null
+  statusBar: null
   subscriptions: null
 
   activate: (state) ->
-    @terminalPlusPanel = new TerminalPlusPanel(state.terminalPlusPanelState)
+    @statusBar = new StatusBar(state.statusBarState)
     @subscriptions = new CompositeDisposable
 
     # # Register command that toggles this view
@@ -17,10 +17,10 @@ module.exports = TerminalPlus =
 
   deactivate: ->
     @subscriptions.dispose()
-    @terminalPlusPanel.destroy()
+    @statusBar.destroy()
 
   serialize: ->
-    terminalPlusPanelState: @terminalPlusPanel.serialize()
+    statusBarState: @statusBar.serialize()
 
   config:
     style:
