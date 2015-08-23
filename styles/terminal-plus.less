@@ -34,9 +34,10 @@
   }
 
   .terminal {
-    padding: 0 5px;
-    margin: 0 5px;
     height: auto;
+    position: relative;
+    padding: 0 3px;
+    margin: auto;
 
     > div {
       white-space: pre;
@@ -48,15 +49,12 @@
       }
     }
 
-    .terminal-cursor {
-      background-color: #fff;
-    }
-
     span {
       white-space: pre;
     }
-  }
 
+    @import 'themes';
+  }
 }
 
 .terminal-plus-panel {

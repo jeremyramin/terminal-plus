@@ -37,34 +37,14 @@ class TerminalPlusPanel extends View
     @createCommandView()
     @attach()
 
-  getColors: ->
-    {
-      normalBlack, normalRed, normalGreen, normalYellow
-      normalBlue, normalPurple, normalCyan, normalWhite
-      brightBlack, brightRed, brightGreen, brightYellow
-      brightBlue, brightPurple, brightCyan, brightWhite
-      background, foreground
-    } = (atom.config.getAll 'terminal-plus.colors')[0].value
-    [
-      normalBlack, normalRed, normalGreen, normalYellow
-      normalBlue, normalPurple, normalCyan, normalWhite
-      brightBlack, brightRed, brightGreen, brightYellow
-      brightBlue, brightPurple, brightCyan, brightWhite
-      background, foreground
-    ]
-
   createCommandView: ->
     termStatus = $('<span class="icon icon-terminal"></span>')
 
     options =
-      runCommand    : atom.config.get 'terminal-plus.autoRunCommand'
-      shellOverride : atom.config.get 'terminal-plus.shellOverride'
-      shellArguments: atom.config.get 'terminal-plus.shellArguments'
-      titleTemplate : atom.config.get 'terminal-plus.titleTemplate'
-      cursorBlink   : atom.config.get 'terminal-plus.cursorBlink'
-      fontFamily    : atom.config.get 'terminal-plus.fontFamily'
-      fontSize      : atom.config.get 'terminal-plus.fontSize'
-      colors        : @getColors()
+      runCommand    : atom.config.get 'terminal-plus.core.autoRunCommand'
+      shellOverride : atom.config.get 'terminal-plus.core.shellOverride'
+      shellArguments: atom.config.get 'terminal-plus.core.shellArguments'
+      cursorBlink   : atom.config.get 'terminal-plus.style.toggles.cursorBlink'
 
     terminalPlusView = new TerminalPlusView(options)
     terminalPlusView.statusIcon = termStatus
