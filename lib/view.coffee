@@ -26,7 +26,26 @@ renderTemplate = (template, data)->
 module.exports =
 class TerminalPlusView extends View
   opened: false
-  env: {}
+  xtermColors:[
+    # dark:
+    '#000000', # black
+    '#cd0000', # red3
+    '#00cd00', # green3
+    '#cdcd00', # yellow3
+    '#0000ee', # blue2
+    '#cd00cd', # magenta3
+    '#00cdcd', # cyan3
+    '#e5e5e5', # gray90
+    # bright:
+    '#7f7f7f', # gray50
+    '#ff0000', # red
+    '#00ff00', # green
+    '#ffff00', # yellow
+    '#5c5cff', # rgb:5c/5c/ff
+    '#ff00ff', # magenta
+    '#00ffff', # cyan
+    '#ffffff'  # white
+  ]
   @content: () ->
     @div tabIndex: -1, class: 'terminal-plus terminal-plus-view', outlet: 'terminalPlusView', =>
       @div class: 'panel-divider', style: 'cursor:n-resize; width:100%; height: 5px;', outlet: 'panelDivider'
@@ -58,7 +77,7 @@ class TerminalPlusView extends View
 
   displayTerminal: () ->
     {cols, rows} = @getDimensions()
-    {cwd, shell, shellArguments, shellOverride, runCommand, colors, cursorBlink, scrollback} = @opts
+    {cwd, shell, shellArguments, shellOverride, runCommand, cursorBlink, scrollback} = @opts
     args = shellArguments.split(/\s+/g).filter (arg)-> arg
     @ptyProcess = @forkPtyProcess shellOverride, args
 
@@ -66,6 +85,7 @@ class TerminalPlusView extends View
       useStyle: false
       screenKeys: false
       termName: 'xterm-256color'
+      colors: @xtermColors
       cursorBlink, scrollback, cols, rows
     }
 
@@ -112,7 +132,7 @@ class TerminalPlusView extends View
     @statusIcon.addClass('icon icon-terminal')
 
   setWindowSizeBoundary: ->
-    @maxHeight = atom.config.get('terminal-plus.WindowHeight')
+    @maxHeight = atom.config.get('terminal-plus.style.maxPanelHeight')
     @xterm.css("max-height", "#{@maxHeight}px")
     @xterm.css("min-height", "#{@minHeight}px")
 
@@ -142,12 +162,6 @@ class TerminalPlusView extends View
     @xterm.height (@xterm.height()+9999)
 
   open: ->
-    # if (atom.config.get('terminal-plus.moveToCurrentDirOnOpen')) and (not @specsMode)
-    #   @moveToCurrentDirectory()
-    #   # Fix me!
-    # if (atom.config.get('terminal-plus.moveToCurrentDirOnOpenLS')) and (not @specsMode)
-    #   # Fix me!
-
     atom.workspace.addBottomPanel(item: this) unless @hasParent()
     if lastOpenedView and lastOpenedView != this
       lastOpenedView.close()
@@ -165,7 +179,7 @@ class TerminalPlusView extends View
     atom.tooltips.add @reloadConfigBtn,
      title: 'Reload the terminal configuration.'
 
-    if atom.config.get 'terminal-plus.enableWindowAnimations'
+    if atom.config.get('terminal-plus.style.toggles.windowAnimations')
       @WindowMinHeight = @xterm.height() + 50
       @height 0
       @animate {
@@ -179,7 +193,7 @@ class TerminalPlusView extends View
         @attr 'style', ''
 
   close: ->
-    if atom.config.get 'terminal-plus.enableWindowAnimations'
+    if atom.config.get('terminal-plus.style.toggles.windowAnimations')
       @WindowMinHeight = @xterm.height() + 50
       @height @WindowMinHeight
       @animate {
@@ -219,18 +233,32 @@ class TerminalPlusView extends View
     renderTemplate titleTemplate, @vars
 
   applyStyle: ->
-    @term.element.style.fontFamily = (
-      @opts.fontFamily or
-      atom.config.get('editor.fontFamily') or
-      # (Atom doesn't return a default value if there is none)
-      # so we use a poor fallback
-      "monospace"
-    )
-    # Atom returns a default for fontSize
+    if @style?
+      @xterm.removeClass @style.theme
+    @style = atom.config.get 'terminal-plus.style'
+
+    @xterm.addClass @style.theme
+    @term.element.style.backgroundColor = 'inherit'
+    @term.element.style.color = 'inherit'
+
+    fontFamily = ["monospace"]
+    fontFamily.unshift atom.config.get('editor.fontFamily') unless not atom.config.get('editor.fontFamily')
+    fontFamily.unshift @style.fontFamily unless not @style.fontFamily
+
+    @term.element.style.fontFamily = fontFamily.join ', '
     @term.element.style.fontSize = (
-      @opts.fontSize or
-      atom.config.get('editor.fontSize')
-    ) + "px"
+      (@style.fontSize == 0) and
+      (atom.config.get('editor.fontSize') + "px") or
+      (@style.fontSize + 'px')
+    )
+
+  attachResizeEvents: ->
+    @on 'focus', @focus
+    $(window).on 'resize', @resizeToPanel
+
+  detachResizeEvents: ->
+    @off 'focus', @focus
+    $(window).off 'resize'
 
   attachEvents: ->
     @resizeToPanel = @resizeToPanel.bind this
@@ -255,14 +283,6 @@ class TerminalPlusView extends View
   paste: ->
     @input atom.clipboard.read()
 
-  attachResizeEvents: ->
-    @on 'focus', @focus
-    $(window).on 'resize', @resizeToPanel
-
-  detachResizeEvents: ->
-    @off 'focus', @focus
-    $(window).off 'resize'
-
   focus: ->
     @resizeToPanel
     @focusTerm
@@ -285,7 +305,7 @@ class TerminalPlusView extends View
     if @term
       @find('.terminal').append fakeRow
       fakeCol = fakeRow.children().first()
-      cols = (Math.floor(@xterm.width() / fakeCol.width()) - 2) or 9
+      cols = Math.floor(@xterm.width() / fakeCol.width()) or 9
       rows = Math.floor (@xterm.height() / fakeCol.height()) or 16
       @minHeight = fakeCol.height() + 10
       fakeRow.remove()
