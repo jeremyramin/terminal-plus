@@ -15,8 +15,14 @@ module.exports = (ptyCwd, sh, args) ->
   cols = 80
   rows = 30
 
-  cmd = 'test -e /etc/profile && source /etc/profile;test -e ~/.profile && source ~/.profile; node -pe "JSON.stringify(process.env)"'
-  env = JSON.parse execSync cmd
+  try
+    cmd = 'test -e /etc/profile && source /etc/profile;test -e ~/.profile && source ~/.profile; node -pe "JSON.stringify(process.env)"'
+    env = JSON.parse execSync cmd
+  catch e
+    env = process.env
+
+  if shell is 'bash' or 'sh'
+    env.PS1 = "\\h:\\W \\u\\$ "
 
   ptyProcess = pty.fork shell, args,
     name: 'xterm-256color'
