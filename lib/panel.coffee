@@ -110,8 +110,9 @@ class TerminalPlusPanel extends View
 
   # Tear down any state and detach
   destroy: ->
-    for index in [@commandViews.length .. 0]
-      @removeCommandView @commandViews[index]
+    for view in @commandViews
+      view.ptyProcess.terminate()
+      view.terminal.destroy()
     @detach()
 
   toggle: ->
