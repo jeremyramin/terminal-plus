@@ -2,8 +2,8 @@
   "name": "terminal-plus",
   "main": "./lib/terminal-plus",
   "version": "0.0.0",
-  "description": "A merge of atom-terminal-panel and term for the ultimate terminal.",
-  "keywords": [],
+  "description": "A merge of atom-terminal-panel and term2 for the ultimate terminal in Atom.",
+  "keywords": ["terminal-plus", "terminal", "plus", "panel", "tty"],
   "repository": "https://github.com/atom/terminal-plus",
   "license": "MIT",
   "engines": {
