@@ -48,7 +48,7 @@ class TerminalPlusView extends View
   ]
   @content: () ->
     @div tabIndex: -1, class: 'terminal-plus terminal-plus-view', outlet: 'terminalPlusView', =>
-      @div class: 'panel-divider', style: 'cursor:n-resize; width:100%; height: 5px;', outlet: 'panelDivider'
+      @div class: 'panel-divider', style: 'cursor:row-resize; width:100%; height: 5px;', outlet: 'panelDivider'
       @div class: 'panel-heading btn-toolbar', outlet:'consoleToolbarHeading', =>
         # @div class: 'btn-group', outlet:'consoleToolbar', =>
         @button outlet: 'closeBtn', click: 'close', class: 'btn icon icon-chevron-down inline-block-tight right', =>
@@ -81,7 +81,7 @@ class TerminalPlusView extends View
     args = shellArguments.split(/\s+/g).filter (arg)-> arg
     @ptyProcess = @forkPtyProcess shellOverride, args
 
-    @term = term = new Terminal {
+    @terminal = term = new Terminal {
       useStyle: false
       screenKeys: false
       termName: 'xterm-256color'
@@ -90,7 +90,7 @@ class TerminalPlusView extends View
     }
 
     @ptyProcess.on 'terminal-plus:data', (data) =>
-      @term.write data
+      @terminal.write data
     @ptyProcess.on 'terminal-plus:exit', (data) =>
       @destroy()
 
@@ -100,32 +100,13 @@ class TerminalPlusView extends View
       @input data
       atom.tooltips.add @statusIcon, title: @getTitle()
 
-    @term.open @find('.xterm').get(0)
+    @terminal.open @find('.xterm').get(0)
     @input "#{runCommand}#{os.EOL}" if runCommand
     term.focus()
 
     @applyStyle()
     @attachEvents()
     @resizeToPanel()
-
-    lastY = -1
-    mouseDown = false
-    panelDraggingActive = false
-    @panelDivider
-    .mousedown () => panelDraggingActive = true
-    .mouseup () => panelDraggingActive = false
-    $(document)
-    .mousedown () => mouseDown = true
-    .mouseup () => mouseDown = false
-    .mousemove (e) =>
-      if mouseDown and panelDraggingActive
-        if lastY != -1
-          delta = e.pageY - lastY
-          @xterm.height @xterm.height() - delta
-          @xterm.trigger('resize')
-        lastY = e.pageY
-      else
-        lastY = -1
 
   clearStatusIcon: () ->
     @statusIcon.removeClass()
@@ -146,20 +127,18 @@ class TerminalPlusView extends View
   destroy: ->
     @statusIcon.remove()
     @detachResizeEvents()
+
+    if @hasParent()
+      @close()
+    if @statusIcon and @statusIcon.parentNode
+      @statusIcon.parentNode.removeChild(@statusIcon)
+    @statusView.removeCommandView this
+
     @ptyProcess.terminate()
-    @term.destroy()
-
-    _destroy = =>
-      if @hasParent()
-        @close()
-      if @statusIcon and @statusIcon.parentNode
-        @statusIcon.parentNode.removeChild(@statusIcon)
-      @statusView.removeCommandView this
-
-      _destroy()
+    @terminal.destroy()
 
   maximize: ->
-    @xterm.height (@xterm.height()+9999)
+    @xterm.height (@maxHeight)
 
   open: ->
     atom.workspace.addBottomPanel(item: this) unless @hasParent()
@@ -200,7 +179,7 @@ class TerminalPlusView extends View
         height: 0
       }, 250, =>
         @attr 'style', ''
-        @term.blur()
+        @terminal.blur()
         @detach()
     else
       @detach()
@@ -238,15 +217,15 @@ class TerminalPlusView extends View
     @style = atom.config.get 'terminal-plus.style'
 
     @xterm.addClass @style.theme
-    @term.element.style.backgroundColor = 'inherit'
-    @term.element.style.color = 'inherit'
+    @terminal.element.style.backgroundColor = 'inherit'
+    @terminal.element.style.color = 'inherit'
 
     fontFamily = ["monospace"]
     fontFamily.unshift atom.config.get('editor.fontFamily') unless not atom.config.get('editor.fontFamily')
     fontFamily.unshift @style.fontFamily unless not @style.fontFamily
 
-    @term.element.style.fontFamily = fontFamily.join ', '
-    @term.element.style.fontSize = (
+    @terminal.element.style.fontFamily = fontFamily.join ', '
+    @terminal.element.style.fontSize = (
       (@style.fontSize == 0) and
       (atom.config.get('editor.fontSize') + "px") or
       (@style.fontSize + 'px')
@@ -255,6 +234,7 @@ class TerminalPlusView extends View
   attachResizeEvents: ->
     @on 'focus', @focus
     $(window).on 'resize', @resizeToPanel
+    @panelDivider.on 'mousedown', @resizeStarted.bind(this)
 
   detachResizeEvents: ->
     @off 'focus', @focus
@@ -262,18 +242,40 @@ class TerminalPlusView extends View
 
   attachEvents: ->
     @resizeToPanel = @resizeToPanel.bind this
+    @resizePane = @resizePanel.bind(this)
+    @resizeStopped = @resizeStopped.bind(this)
     @attachResizeEvents()
+
     atom.commands.add "atom-workspace", "terminal-plus:paste", => @paste()
     atom.commands.add "atom-workspace", "terminal-plus:copy", => @copy()
 
+  resizeStarted: (e) ->
+    $(document).on('mousemove', @resizePanel)
+    $(document).on('mouseup', @resizeStopped)
+    console.log e
+
+  resizeStopped: ->
+    $(document).off('mousemove', @resizePanel)
+    $(document).off('mouseup', @resizeStopped)
+
+  clampResize: (height) =>
+    return Math.max(Math.min(@maxHeight, height), @minHeight)
+
+  resizePanel: (event) =>
+    return @resizeStopped() unless event.which is 1
+
+    mouseY = $(window).height() - event.pageY
+    delta = mouseY - $('atom-panel-container.bottom').height()
+    @xterm.height @clampResize (@xterm.height() + delta)
+
   copy: ->
-    if  @term._selected  # term.js visual mode selections
-      textarea = @term.getCopyTextarea()
-      text = @term.grabText(
-        @term._selected.x1, @term._selected.x2,
-        @term._selected.y1, @term._selected.y2)
+    if  @terminal._selected  # term.js visual mode selections
+      textarea = @terminal.getCopyTextarea()
+      text = @terminal.grabText(
+        @terminal._selected.x1, @terminal._selected.x2,
+        @terminal._selected.y1, @terminal._selected.y2)
     else # fallback to DOM-based selections
-      rawText = @term.context.getSelection().toString()
+      rawText = @terminal.context.getSelection().toString()
       rawLines = rawText.split(/\r?\n/g)
       lines = rawLines.map (line) ->
         line.replace(/\s/g, " ").trimRight()
@@ -288,26 +290,26 @@ class TerminalPlusView extends View
     @focusTerm
 
   focusTerm: ->
-    @term.element.focus()
-    @term.focus()
+    @terminal.element.focus()
+    @terminal.focus()
 
   resizeToPanel: ->
     {cols, rows} = @getDimensions()
     return unless cols > 0 and rows > 0
-    return unless @term
-    return if @term.rows is rows and @term.cols is cols
+    return unless @terminal
+    return if @terminal.rows is rows and @terminal.cols is cols
 
     @resize cols, rows
-    @term.resize cols, rows
+    @terminal.resize cols, rows
 
   getDimensions: ->
     fakeRow = $("<div><span>&nbsp;</span></div>").css visibility: 'hidden'
-    if @term
+    if @terminal
       @find('.terminal').append fakeRow
       fakeCol = fakeRow.children().first()
       cols = Math.floor(@xterm.width() / fakeCol.width()) or 9
       rows = Math.floor (@xterm.height() / fakeCol.height()) or 16
-      @minHeight = fakeCol.height() + 10
+      @minHeight = fakeCol.height()
       fakeRow.remove()
     else
       cols = Math.floor @width() / 7
