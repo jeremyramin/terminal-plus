@@ -1,6 +1,7 @@
 {$, View} = require 'atom-space-pen-views'
 TerminalPlusView = require './view'
 {CompositeDisposable} = require 'atom'
+window.jQuery = window.$ = $
 
 module.exports =
 class StatusBar extends View
@@ -10,7 +11,7 @@ class StatusBar extends View
   @content: ->
     @div class: 'terminal-plus status-bar inline-block', =>
       @span class: "icon icon-plus inline-block-tight left", click: 'newTerminalView', outlet: 'plusBtn'
-      @ul class: 'list-inline status-container left', outlet: 'termStatusContainer'
+      @ul class: 'list-inline status-container left', outlet: 'statusContainer'
       @span class: "icon icon-x inline-block-tight right", click: 'exitAll', outlet: 'exitBtn'
 
   initialize: (state={}) ->
@@ -36,6 +37,25 @@ class StatusBar extends View
     @createTerminalView()
     @attach()
 
+    @initializeSorting() if atom.config.get('terminal-plus.core.sortableStatus')
+
+  initializeSorting: ->
+    require './jquery-sortable'
+    @statusContainer.sortable(
+      cursor: "move"
+      distance: 3
+      hoverClass: "term-hover"
+      helper: "clone"
+      scroll: false
+      tolerance: "intersect"
+    )
+    @statusContainer.disableSelection()
+    @statusContainer.on 'sortstart', (event, ui) =>
+      ui.item.oldIndex = ui.item.index()
+      ui.item.activeTerminal = @terminalViews[@activeIndex]
+    @statusContainer.on 'sortupdate', (event, ui) =>
+      @moveTerminalView ui.item.oldIndex, ui.item.index(), ui.item.activeTerminal
+
   createTerminalView: ->
     termStatus = $('<li class="term-status"><span class="icon icon-terminal"></span></li>')
 
@@ -47,12 +67,12 @@ class StatusBar extends View
 
     terminalPlusView = new TerminalPlusView(options)
     terminalPlusView.statusIcon = termStatus
-    termStatus.terminalView = terminalPlusView
     terminalPlusView.statusBar = this
+
     @terminalViews.push terminalPlusView
-    termStatus.click () =>
+    termStatus.children().click () =>
       terminalPlusView.toggle()
-    @termStatusContainer.append termStatus
+    @statusContainer.append termStatus
     return terminalPlusView
 
   activeNextTerminalView: ->
@@ -66,7 +86,7 @@ class StatusBar extends View
       index = 0
     if index < 0
       index = @terminalViews.length - 1
-    @terminalViews[index] and @terminalViews[index].open()
+    @terminalViews[index].open() if @terminalViews[index]?
 
   getActiveTerminalView: () ->
     return @terminalViews[@activeIndex]
@@ -78,7 +98,7 @@ class StatusBar extends View
     return null
 
   getForcedActiveTerminalView: () ->
-    if @getActiveTerminalView() != null && @getActiveTerminalView() != undefined
+    if @getActiveTerminalView()?
       return @getActiveTerminalView()
     ret = @activeTerminalView(0)
     @toggle()
@@ -91,6 +111,12 @@ class StatusBar extends View
     index = @terminalViews.indexOf terminalView
     index >=0 and @terminalViews.splice index, 1
 
+  moveTerminalView: (oldIndex, newIndex, activeTerminal) =>
+    view = @terminalViews.splice(oldIndex, 1)[0]
+    @terminalViews.splice newIndex, 0, view
+    @setActiveTerminalView activeTerminal
+    console.log @activeIndex
+
   newTerminalView: ->
     @createTerminalView().toggle()
 
@@ -98,7 +124,7 @@ class StatusBar extends View
     atom.workspace.addBottomPanel(item: this, priority: 100)
 
   destroyActiveTerm: ->
-     @terminalViews[@activeIndex]?.destroy()
+    @terminalViews[@activeIndex]?.destroy()
 
   exitAll: ->
     for index in [@terminalViews.length .. 0]

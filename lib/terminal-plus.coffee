@@ -85,6 +85,11 @@ module.exports = TerminalPlus =
           description: 'Command to run on terminal initialization.'
           type: 'string'
           default: ''
+        sortableStatus:
+          title: 'Make Terminal Status Sortable'
+          description: 'Add to startup time and load the sortable interface?'
+          type: 'boolean'
+          default: false
         scrollback:
           title: 'Scroll Back'
           description: 'How many lines of history should be kept?'
