@@ -1,6 +1,6 @@
-path       = require 'path'
-os         = require 'os'
-fs         = require 'fs-plus'
+path = require 'path'
+os = require 'os'
+fs = require 'fs-plus'
 keypather = do require 'keypather'
 
 {Task} = require 'atom'
@@ -66,7 +66,8 @@ class TerminalPlusView extends View
 
   forkPtyProcess: (sh, args=[]) ->
     path = atom.project.getPaths()[0] ? '~'
-    Task.once Pty, fs.absolute(path), sh, args
+    forceTitle = atom.config.get('terminal-plus.toggles.forceTitle')
+    Task.once Pty, fs.absolute(path), sh, args, forceTitle: forceTitle
 
   displayTerminal: () ->
     {cols, rows} = @getDimensions()
@@ -81,19 +82,7 @@ class TerminalPlusView extends View
       cursorBlink, scrollback, cols, rows
     }
 
-    @ptyProcess.on 'terminal-plus:data', (data) =>
-      @terminal.write data
-    @ptyProcess.on 'terminal-plus:exit', (data) =>
-      @destroy()
-
-    term.end = => @destroy()
-
-    term.on "data", (data) =>
-      @input data
-
-    term.on "title", (title) =>
-      @statusIcon.tooltip.dispose() if @statusIcon.tooltip?
-      @statusIcon.tooltip = atom.tooltips.add @statusIcon, title: title
+    @setupListeners()
 
     @terminal.open @find('.xterm').get(0)
     @input "#{runCommand}#{os.EOL}" if runCommand
@@ -102,6 +91,26 @@ class TerminalPlusView extends View
     @applyStyle()
     @attachEvents()
     @resizeToPanel()
+
+  setupListeners: () ->
+    @ptyProcess.once 'terminal-plus:data', (data) =>
+      @ptyProcess.on 'terminal-plus:data', (data) =>
+        @terminal.write data
+
+    @ptyProcess.on 'terminal-plus:exit', (data) =>
+      @destroy()
+
+    @ptyProcess.send event: 'input', text: ' clear\r'
+
+    @terminal.end = => @destroy()
+
+    @terminal.on "data", (data) =>
+      @input data
+
+    @terminal.once "title", (title) =>
+      @terminal.on 'title', (title) =>
+        @statusIcon.tooltip.dispose() if @statusIcon.tooltip?
+        @statusIcon.tooltip = atom.tooltips.add @statusIcon, title: title
 
   clearStatusIcon: () ->
     @statusIcon.removeClass()
@@ -154,7 +163,7 @@ class TerminalPlusView extends View
     atom.tooltips.add @reloadConfigBtn,
      title: 'Reload the terminal configuration.'
 
-    if atom.config.get('terminal-plus.style.toggles.windowAnimations')
+    if atom.config.get('terminal-plus.toggles.windowAnimations')
       @WindowMinHeight = @xterm.height() + 50
       @height 0
       @animate {
@@ -168,7 +177,7 @@ class TerminalPlusView extends View
         @attr 'style', ''
 
   close: ->
-    if atom.config.get('terminal-plus.style.toggles.windowAnimations')
+    if atom.config.get('terminal-plus.toggles.windowAnimations')
       @WindowMinHeight = @xterm.height() + 50
       @height @WindowMinHeight
       @animate {
