@@ -4,8 +4,7 @@
 // for a full listing of what's available.
 @import "ui-variables";
 
-.terminal-plus-view {
-
+.terminal-plus {
   .left {
     float: left;
   }
@@ -13,6 +12,18 @@
   .right {
     float: right;
   }
+
+  ul {
+    padding: 0;
+    margin: 0;
+  }
+
+  .icon::before {
+    margin-right: 0;
+  }
+}
+
+.terminal-plus-view {
 
   .panel-heading {
     padding: 2px;
@@ -49,20 +60,24 @@
       }
     }
 
-    span {
-      white-space: pre;
-    }
-
     @import 'themes';
   }
 }
 
-.terminal-plus-panel {
+.terminal-plus.status-bar {
+
+  .icon-plus {
+    padding-left: 8px;
+  }
+
+  .icon-x {
+    color: red;
+  }
 
   .status-ignored {
     opacity: 0.5;
   }
-  .icon-terminal {
+  .term-status {
     opacity: 0.4;
     &.active {
       opacity: 1;
@@ -80,7 +95,10 @@
   .status-error {
     color: hsl(0, 1, 0.5);
   }
-  .icon-terminal, .icon-plus {
+
+  span {
     cursor: pointer;
+    text-align: right;
   }
+
 }

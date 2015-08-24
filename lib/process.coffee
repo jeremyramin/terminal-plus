@@ -25,7 +25,6 @@ module.exports = (ptyCwd, sh, args) ->
     env.PS1 = "\\h:\\W \\u\\$ "
 
   ptyProcess = pty.fork shell, args,
-    name: 'xterm-256color'
     cols: cols
     rows: rows
     cwd: ptyCwd
