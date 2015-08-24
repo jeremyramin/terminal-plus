@@ -1,17 +1,14 @@
-util       = require 'util'
 path       = require 'path'
 os         = require 'os'
 fs         = require 'fs-plus'
 keypather = do require 'keypather'
 
 {Task} = require 'atom'
-{$, TextEditorView, View} = require 'atom-space-pen-views'
+{$, View} = require 'atom-space-pen-views'
 
-Core = require './core'
 Pty = require.resolve './process'
 Terminal = require 'term.js'
 
-window.$ = window.jQuery = $
 lastOpenedView = null
 
 last = (str)-> str[str.length-1]
@@ -80,7 +77,6 @@ class TerminalPlusView extends View
     @terminal = term = new Terminal {
       useStyle: false
       screenKeys: false
-      termName: 'xterm-256color'
       colors: @xtermColors
       cursorBlink, scrollback, cols, rows
     }
@@ -94,7 +90,10 @@ class TerminalPlusView extends View
 
     term.on "data", (data) =>
       @input data
-      atom.tooltips.add @statusIcon, title: @getTitle()
+
+    term.on "title", (title) =>
+      @statusIcon.tooltip.dispose() if @statusIcon.tooltip?
+      @statusIcon.tooltip = atom.tooltips.add @statusIcon, title: title
 
     @terminal.open @find('.xterm').get(0)
     @input "#{runCommand}#{os.EOL}" if runCommand
@@ -122,6 +121,7 @@ class TerminalPlusView extends View
 
   destroy: ->
     @statusIcon.remove()
+    @statusBar.removeTerminalView this
     @detachResizeEvents()
 
     if @hasParent()
@@ -195,17 +195,6 @@ class TerminalPlusView extends View
 
   resize: (cols, rows) ->
     @ptyProcess.send {event: 'resize', rows, cols}
-
-  titleVars: ->
-    bashName: last @opts.shell.split '/'
-    hostName: os.hostname()
-    platform: process.platform
-    home    : process.env.HOME
-
-  getTitle: ->
-    @vars = @titleVars()
-    titleTemplate = @opts.titleTemplate or "({{ bashName }})"
-    renderTemplate titleTemplate, @vars
 
   applyStyle: ->
     if @style?
