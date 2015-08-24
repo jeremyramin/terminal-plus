@@ -1,30 +1,26 @@
 {$, View} = require 'atom-space-pen-views'
 TerminalPlusView = require './view'
+{CompositeDisposable} = require 'atom'
 
 module.exports =
 class StatusBar extends View
-  @content: ->
-    @div class: 'terminal-plus-panel inline-block', =>
-      @span outlet: 'termStatusContainer', =>
-        @span click: 'newTermClick', class: "icon icon-plus"
-
-  commandViews: []
+  terminalViews: []
   activeIndex: 0
-  initialize: (serializeState) ->
 
-    getSelectedText = () ->
-      text = ''
-      if window.getSelection
-        text = window.getSelection().toString()
-      else if document.selection and document.selection.type != "Control"
-        text = document.selection.createRange().text
-      return text
+  @content: ->
+    @div class: 'terminal-plus status-bar inline-block', =>
+      @span class: "icon icon-plus inline-block-tight left", click: 'newTerminalView', outlet: 'plusBtn'
+      @ul class: 'list-inline status-container left', outlet: 'termStatusContainer'
+      @span class: "icon icon-x inline-block-tight right", click: 'exitAll', outlet: 'exitBtn'
 
-    atom.commands.add 'atom-workspace',
-      'terminal-plus:new': => @newTermClick()
+  initialize: (state={}) ->
+    @subscriptions = new CompositeDisposable
+
+    @subscriptions.add atom.commands.add 'atom-workspace',
+      'terminal-plus:new': => @newTerminalView()
       'terminal-plus:toggle': => @toggle()
-      'terminal-plus:next': => @activeNextCommandView()
-      'terminal-plus:prev': => @activePrevCommandView()
+      'terminal-plus:next': => @activeNextTerminalView()
+      'terminal-plus:prev': => @activePrevTerminalView()
       'terminal-plus:hide': => @runInCurrentView (i) -> i.close()
       'terminal-plus:destroy': =>  @runInCurrentView (i) -> i.destroy()
       'terminal-plus:reload-config': => @runInCurrentView (i) ->
@@ -34,11 +30,14 @@ class StatusBar extends View
       'terminal-plus:open-config': => @runInCurrentView (i) ->
         i.showSettings()
 
-    @createCommandView()
+    @subscriptions.add atom.tooltips.add @plusBtn, title: 'New Terminal'
+    @subscriptions.add atom.tooltips.add @exitBtn, title: 'Exit All'
+
+    @createTerminalView()
     @attach()
 
-  createCommandView: ->
-    termStatus = $('<span class="icon icon-terminal"></span>')
+  createTerminalView: ->
+    termStatus = $('<li class="term-status"><span class="icon icon-terminal"></span></li>')
 
     options =
       runCommand    : atom.config.get 'terminal-plus.core.autoRunCommand'
@@ -48,73 +47,73 @@ class StatusBar extends View
 
     terminalPlusView = new TerminalPlusView(options)
     terminalPlusView.statusIcon = termStatus
-    terminalPlusView.statusView = this
-    @commandViews.push terminalPlusView
+    termStatus.terminalView = terminalPlusView
+    terminalPlusView.statusBar = this
+    @terminalViews.push terminalPlusView
     termStatus.click () =>
       terminalPlusView.toggle()
     @termStatusContainer.append termStatus
     return terminalPlusView
 
-  activeNextCommandView: ->
-    @activeCommandView @activeIndex + 1
+  activeNextTerminalView: ->
+    @activeTerminalView @activeIndex + 1
 
-  activePrevCommandView: ->
-    @activeCommandView @activeIndex - 1
+  activePrevTerminalView: ->
+    @activeTerminalView @activeIndex - 1
 
-  activeCommandView: (index) ->
-    if index >= @commandViews.length
+  activeTerminalView: (index) ->
+    if index >= @terminalViews.length
       index = 0
     if index < 0
-      index = @commandViews.length - 1
-    @updateStatusBar @commandViews[index]
-    @commandViews[index] and @commandViews[index].open()
+      index = @terminalViews.length - 1
+    @terminalViews[index] and @terminalViews[index].open()
 
-  getActiveCommandView: () ->
-    return @commandViews[@activeIndex]
+  getActiveTerminalView: () ->
+    return @terminalViews[@activeIndex]
 
   runInCurrentView: (call) ->
-    v = @getForcedActiveCommandView()
+    v = @getForcedActiveTerminalView()
     if v?
       return call(v)
     return null
 
-  getForcedActiveCommandView: () ->
-    if @getActiveCommandView() != null && @getActiveCommandView() != undefined
-      return @getActiveCommandView()
-    ret = @activeCommandView(0)
+  getForcedActiveTerminalView: () ->
+    if @getActiveTerminalView() != null && @getActiveTerminalView() != undefined
+      return @getActiveTerminalView()
+    ret = @activeTerminalView(0)
     @toggle()
     return ret
 
-  setActiveCommandView: (commandView) ->
-    @activeIndex = @commandViews.indexOf commandView
+  setActiveTerminalView: (terminalView) ->
+    @activeIndex = @terminalViews.indexOf terminalView
 
-  removeCommandView: (commandView) ->
-    index = @commandViews.indexOf commandView
-    index >=0 and @commandViews.splice index, 1
+  removeTerminalView: (terminalView) ->
+    index = @terminalViews.indexOf terminalView
+    index >=0 and @terminalViews.splice index, 1
 
-  newTermClick: ->
-    @createCommandView().toggle()
+  newTerminalView: ->
+    @createTerminalView().toggle()
 
   attach: () ->
-    # console.log 'panel attached!'
     atom.workspace.addBottomPanel(item: this, priority: 100)
 
   destroyActiveTerm: ->
-     @commandViews[@activeIndex]?.destroy()
+     @terminalViews[@activeIndex]?.destroy()
 
-  closeAll: ->
-    for index in [@commandViews.length .. 0]
-      o = @commandViews[index]
+  exitAll: ->
+    for index in [@terminalViews.length .. 0]
+      o = @terminalViews[index]
       if o?
-        o.close()
+        o.destroy()
+    @activeIndex = 0
 
-  # Tear down any state and detach
   destroy: ->
-    for view in @commandViews
+    @subscriptions.dispose()
+    for view in @terminalViews
       view.ptyProcess.terminate()
       view.terminal.destroy()
     @detach()
 
   toggle: ->
-    @createCommandView() unless @commandViews[@activeIndex]?
-    @commandViews[@activeIndex].toggle()
+    @createTerminalView() unless @terminalViews[@activeIndex]?
+    @terminalViews[@activeIndex].toggle()

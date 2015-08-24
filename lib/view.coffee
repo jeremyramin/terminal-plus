@@ -128,10 +128,10 @@ class TerminalPlusView extends View
       @close()
     if @statusIcon and @statusIcon.parentNode
       @statusIcon.parentNode.removeChild(@statusIcon)
-    @statusView.removeCommandView this
+    @statusBar.removeTerminalView this
 
-    @ptyProcess.terminate()
-    @terminal.destroy()
+    @ptyProcess?.terminate()
+    @terminal?.destroy()
 
   maximize: ->
     @xterm.height (@maxHeight)
@@ -143,7 +143,7 @@ class TerminalPlusView extends View
     lastOpenedView = this
     @statusIcon.addClass 'active'
     @setWindowSizeBoundary()
-    @statusView.setActiveCommandView this
+    @statusBar.setActiveTerminalView this
 
     atom.tooltips.add @exitBtn,
      title: 'Destroy the terminal session.'
@@ -235,6 +235,7 @@ class TerminalPlusView extends View
   detachResizeEvents: ->
     @off 'focus', @focus
     $(window).off 'resize'
+    @panelDivider.off 'mousedown'
 
   attachEvents: ->
     @resizeToPanel = @resizeToPanel.bind this
