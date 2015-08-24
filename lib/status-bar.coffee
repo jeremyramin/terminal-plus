@@ -37,7 +37,7 @@ class StatusBar extends View
     @createTerminalView()
     @attach()
 
-    @initializeSorting() if atom.config.get('terminal-plus.core.sortableStatus')
+    @initializeSorting() if atom.config.get('terminal-plus.toggles.sortableStatus')
 
   initializeSorting: ->
     require './jquery-sortable'
@@ -63,7 +63,7 @@ class StatusBar extends View
       runCommand    : atom.config.get 'terminal-plus.core.autoRunCommand'
       shellOverride : atom.config.get 'terminal-plus.core.shellOverride'
       shellArguments: atom.config.get 'terminal-plus.core.shellArguments'
-      cursorBlink   : atom.config.get 'terminal-plus.style.toggles.cursorBlink'
+      cursorBlink   : atom.config.get 'terminal-plus.toggles.cursorBlink'
 
     terminalPlusView = new TerminalPlusView(options)
     terminalPlusView.statusIcon = termStatus

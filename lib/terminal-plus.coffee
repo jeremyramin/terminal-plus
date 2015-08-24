@@ -12,9 +12,6 @@ module.exports = TerminalPlus =
     @statusBar = new StatusBar(state.statusBarState)
     @subscriptions = new CompositeDisposable
 
-    # # Register command that toggles this view
-    # @subscriptions.add atom.commands.add 'atom-workspace', 'terminal-plus:toggle': => @toggle()
-
   deactivate: ->
     @subscriptions.dispose()
     @statusBar.destroy()
@@ -63,19 +60,6 @@ module.exports = TerminalPlus =
           type: 'integer'
           default: 300
           minimum: 50
-        toggles:
-          type: 'object'
-          properties:
-            cursorBlink:
-              title: 'Cursor Blink'
-              description: 'Should the cursor blink when the terminal is active?'
-              type: 'boolean'
-              default: true
-            windowAnimations:
-              title: 'Window Animations'
-              description: 'Do you want the panel to transition open and closed?'
-              type: 'boolean'
-              default: true
     core:
       title: 'Style'
       type: 'object'
@@ -85,11 +69,6 @@ module.exports = TerminalPlus =
           description: 'Command to run on terminal initialization.'
           type: 'string'
           default: ''
-        sortableStatus:
-          title: 'Make Terminal Status Sortable'
-          description: 'Add to startup time and load the sortable interface?'
-          type: 'boolean'
-          default: false
         scrollback:
           title: 'Scroll Back'
           description: 'How many lines of history should be kept?'
@@ -109,3 +88,26 @@ module.exports = TerminalPlus =
               when 'bash' then "--init-file #{path.join HOME, '.bash_profile'}"
               when 'zsh'  then ''
               else ''
+    toggles:
+      type: 'object'
+      properties:
+        cursorBlink:
+          title: 'Cursor Blink'
+          description: 'Should the cursor blink when the terminal is active?'
+          type: 'boolean'
+          default: true
+        sortableStatus:
+          title: 'Make Status Bar Sortable'
+          description: 'Load the sortable interface? [WARNING: This adds to startup time.]'
+          type: 'boolean'
+          default: false
+        forceTitle:
+          title: 'Force Terminal Title'
+          description: 'Force shell to give the terminal a title.'
+          type: 'boolean'
+          default: false
+        windowAnimations:
+          title: 'Window Animations'
+          description: 'Do you want the panel to transition open and closed?'
+          type: 'boolean'
+          default: true
