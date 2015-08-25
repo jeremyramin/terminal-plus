@@ -1,20 +1,82 @@
 # See https://atom.io/docs/latest/hacking-atom-package-word-count#menus for more details
 'context-menu':
-  'atom-text-editor': [
+  '.term-status span': [
     {
-      'label': 'Toggle terminal-plus'
-      'command': 'terminal-plus:toggle'
+      label: 'Red'
+      command: 'terminal-plus:status-red'
+    },
+    {
+      label: 'Orange'
+      command: 'terminal-plus:status-orange'
+    },
+    {
+      label: 'Yellow'
+      command: 'terminal-plus:status-yellow'
+    },
+    {
+      label: 'Green'
+      command: 'terminal-plus:status-green'
+    },
+    {
+      label: 'Blue'
+      command: 'terminal-plus:status-blue'
+    },
+    {
+      label: 'Purple'
+      command: 'terminal-plus:status-purple'
+    },
+    {
+      label: 'Pink'
+      command: 'terminal-plus:status-pink'
+    },
+    {
+      label: 'Cyan'
+      command: 'terminal-plus:status-cyan'
+    },
+    {
+      label: 'Magenta'
+      command: 'terminal-plus:status-magenta'
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label: 'Default'
+      command: 'terminal-plus:status-default'
+    },
+    {
+      label: 'Exit'
+      command: 'terminal-plus:context-destroy'
     }
+    {
+      type: 'separator'
+    },
   ]
 'menu': [
   {
     'label': 'Packages'
     'submenu': [
-      'label': 'terminal-plus'
+      'label': 'Terminal-Plus'
       'submenu': [
         {
           'label': 'Toggle'
           'command': 'terminal-plus:toggle'
+        },
+        {
+          'label': 'New Terminal'
+          'command': 'terminal-plus:new'
+        },
+        {
+          'label': 'Previous Terminal'
+          'command': 'terminal-plus:prev'
+        },
+        {
+          'label': 'Next Terminal'
+          'command': 'terminal-plus:next'
+        },
+        {
+          'label': 'Destroy Terminal'
+          'command': 'terminal-plus:destroy'
         }
       ]
     ]
