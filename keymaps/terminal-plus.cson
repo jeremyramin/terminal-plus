@@ -13,7 +13,7 @@
   'alt-shift-x': 'terminal-plus:destroy'
   'ctrl-`': 'terminal-plus:toggle'
 
-'.terminal-plus-view .terminal':
+'.terminal-plus .terminal':
   'escape': 'terminal-plus:toggle'
   'cmd-c': 'terminal-plus:copy'
   'ctrl-c': 'terminal-plus:copy'

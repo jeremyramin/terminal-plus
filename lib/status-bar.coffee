@@ -24,8 +24,12 @@ class StatusBar extends View
       'terminal-plus:toggle': => @toggle()
       'terminal-plus:next': => @activeNextTerminalView()
       'terminal-plus:prev': => @activePrevTerminalView()
-      'terminal-plus:hide': => @runInCurrentView (i) -> i.close()
-      'terminal-plus:destroy': => @runInCurrentView (i) -> i.destroy()
+      'terminal-plus:hide': => @runInActiveView (i) -> i.close()
+      'terminal-plus:destroy': => @runInActiveView (i) -> i.destroy()
+
+    @subscriptions.add atom.commands.add '.terminal-plus',
+      'terminal-plus:paste', => @runInOpenView (i) -> i.paste()
+      'terminal-plus:copy', => @runInOpenView (i) -> i.copy()
 
     @registerContextMenu()
 
@@ -107,10 +111,16 @@ class StatusBar extends View
   getActiveTerminalView: () ->
     return @terminalViews[@activeIndex]
 
-  runInCurrentView: (call) ->
-    v = @getActiveTerminalView()
-    if v?
-      return call(v)
+  runInActiveView: (callback) ->
+    view = @getActiveTerminalView()
+    if view?
+      return callback(view)
+    return null
+
+  runInOpenView: (callback) ->
+    view = @getActiveTerminalView()
+    if view? and view.hasParent()
+      return callback(view)
     return null
 
   setActiveTerminalView: (terminalView) ->
@@ -126,7 +136,6 @@ class StatusBar extends View
     view = @terminalViews.splice(oldIndex, 1)[0]
     @terminalViews.splice newIndex, 0, view
     @setActiveTerminalView activeTerminal
-    console.log @activeIndex
 
   newTerminalView: ->
     @createTerminalView().toggle()
