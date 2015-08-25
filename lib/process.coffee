@@ -31,7 +31,7 @@ module.exports = (ptyCwd, sh, args, options={}) ->
     env: env
 
   if options.forceTitle
-    switch shell.match /\w+(\.exe)?$/
+    switch shell.match(/\w+(\.exe)?$/)[0]
       when 'bash', 'sh'
         ptyProcess.write " trap 'echo -ne \"\\033]2;$BASH_COMMAND\\007\"' DEBUG\r"
       when 'powershell.exe'
@@ -46,7 +46,7 @@ module.exports = (ptyCwd, sh, args, options={}) ->
           }\r
         """
       else
-        console.log 'Terminal-Plus: No suitable method found to force shell title.'
+        console.log 'Terminal-Plus: No suitable method found to force shell title.', shell.match(/\w+(\.exe)?$/)[0]
 
   ptyProcess.on 'data', (data) -> emit('terminal-plus:data', data)
   ptyProcess.on 'exit', ->
