@@ -137,10 +137,10 @@ class TerminalPlusView extends View
       @close()
     if @statusIcon and @statusIcon.parentNode
       @statusIcon.parentNode.removeChild(@statusIcon)
-    @statusBar.removeTerminalView this
 
     @ptyProcess?.terminate()
     @terminal?.destroy()
+    return
 
   maximize: ->
     @xterm.height (@maxHeight)
