@@ -3,22 +3,13 @@ os = require 'os'
 fs = require 'fs-plus'
 keypather = do require 'keypather'
 
-{Task} = require 'atom'
+{Task, CompositeDisposable} = require 'atom'
 {$, View} = require 'atom-space-pen-views'
 
 Pty = require.resolve './process'
 Terminal = require 'term.js'
 
 lastOpenedView = null
-
-last = (str)-> str[str.length-1]
-
-renderTemplate = (template, data)->
-  vars = Object.keys data
-  vars.reduce (_template, key)->
-    _template.split(///\{\{\s*#{key}\s*\}\}///)
-      .join data[key]
-  , template.toString()
 
 module.exports =
 class TerminalPlusView extends View
@@ -46,12 +37,12 @@ class TerminalPlusView extends View
   @content: () ->
     @div tabIndex: -1, class: 'terminal-plus terminal-plus-view', outlet: 'terminalPlusView', =>
       @div class: 'panel-divider', style: 'cursor:row-resize; width:100%; height: 5px;', outlet: 'panelDivider'
-      @div class: 'panel-heading btn-toolbar', outlet:'consoleToolbarHeading', =>
+      @div class: 'panel-heading btn-toolbar', outlet:'viewToolbar', =>
         # @div class: 'btn-group', outlet:'consoleToolbar', =>
-        @button outlet: 'closeBtn', click: 'close', class: 'btn icon icon-chevron-down inline-block-tight right', =>
-          @span 'close'
-        @button outlet: 'exitBtn', class: 'btn icon icon-x inline-block-tight right', click: 'destroy', =>
-          @span 'exit'
+        @button outlet: 'closeBtn', class: 'btn icon icon-chevron-down inline-block-tight', click: 'close', =>
+          @span 'Close'
+        @button outlet: 'exitBtn', class: 'btn icon icon-x inline-block-tight', click: 'destroy', =>
+          @span 'Exit'
       @div class: 'xterm', outlet: 'xterm'
 
   constructor: (@opts={})->
@@ -62,6 +53,7 @@ class TerminalPlusView extends View
     opts.shellArguments or= ''
     editorPath = keypather.get atom, 'workspace.getEditorViews[0].getEditor().getPath()'
     opts.cwd = opts.cwd or atom.project.getPaths()[0] or editorPath or process.env.HOME
+    @subscriptions = new CompositeDisposable
     super
 
   forkPtyProcess: (sh, args=[]) ->
@@ -76,8 +68,7 @@ class TerminalPlusView extends View
     @ptyProcess = @forkPtyProcess shellOverride, args
 
     @terminal = term = new Terminal {
-      useStyle: false
-      screenKeys: false
+      useFocus: true
       colors: @xtermColors
       cursorBlink, scrollback, cols, rows
     }
@@ -86,11 +77,14 @@ class TerminalPlusView extends View
 
     @terminal.open @find('.xterm').get(0)
     @input "#{runCommand}#{os.EOL}" if runCommand
-    term.focus()
 
     @applyStyle()
     @attachEvents()
-    @resizeToPanel()
+    @resizeTerminalToView()
+
+    onDisplay = =>
+      @focusTerminal()
+    setTimeout onDisplay, 300
 
   setupListeners: () ->
     @ptyProcess.once 'terminal-plus:data', (data) =>
@@ -140,6 +134,7 @@ class TerminalPlusView extends View
 
     @ptyProcess?.terminate()
     @terminal?.destroy()
+    @subscriptions.dispose()
     return
 
   maximize: ->
@@ -154,13 +149,13 @@ class TerminalPlusView extends View
     @setWindowSizeBoundary()
     @statusBar.setActiveTerminalView this
 
-    atom.tooltips.add @exitBtn,
+    @subscriptions.add atom.tooltips.add @exitBtn,
      title: 'Destroy the terminal session.'
-    atom.tooltips.add @closeBtn,
+    @subscriptions.add atom.tooltips.add @closeBtn,
      title: 'Hide the terminal window.'
-    atom.tooltips.add @openConfigBtn,
+    @subscriptions.add atom.tooltips.add @openConfigBtn,
      title: 'Open the terminal config file.'
-    atom.tooltips.add @reloadConfigBtn,
+    @subscriptions.add atom.tooltips.add @reloadConfigBtn,
      title: 'Reload the terminal configuration.'
 
     if atom.config.get('terminal-plus.toggles.windowAnimations')
@@ -173,7 +168,7 @@ class TerminalPlusView extends View
           @opened = true
           @displayTerminal()
         else
-          @focusTerm()
+          @focusTerminal()
         @attr 'style', ''
 
   close: ->
@@ -184,10 +179,10 @@ class TerminalPlusView extends View
         height: 0
       }, 250, =>
         @attr 'style', ''
-        @terminal.blur()
         @detach()
     else
       @detach()
+    @terminal.blur()
     lastOpenedView = null
     @statusIcon.removeClass 'active'
 
@@ -199,8 +194,8 @@ class TerminalPlusView extends View
 
   input: (data) ->
     @ptyProcess.send event: 'input', text: data
-    @resizeToPanel()
-    @focusTerm()
+    @resizeTerminalToView()
+    @focusTerminal()
 
   resize: (cols, rows) ->
     @ptyProcess.send {event: 'resize', rows, cols}
@@ -227,7 +222,7 @@ class TerminalPlusView extends View
 
   attachResizeEvents: ->
     @on 'focus', @focus
-    $(window).on 'resize', @resizeToPanel
+    $(window).on 'resize', => @resizeTerminalToView() if @hasParent()
     @panelDivider.on 'mousedown', @resizeStarted.bind(this)
 
   detachResizeEvents: ->
@@ -236,18 +231,14 @@ class TerminalPlusView extends View
     @panelDivider.off 'mousedown'
 
   attachEvents: ->
-    @resizeToPanel = @resizeToPanel.bind this
-    @resizePane = @resizePanel.bind(this)
+    @resizeTerminalToView = @resizeTerminalToView.bind this
+    @resizePanel = @resizePanel.bind(this)
     @resizeStopped = @resizeStopped.bind(this)
     @attachResizeEvents()
-
-    atom.commands.add "atom-workspace", "terminal-plus:paste", => @paste()
-    atom.commands.add "atom-workspace", "terminal-plus:copy", => @copy()
 
   resizeStarted: (e) ->
     $(document).on('mousemove', @resizePanel)
     $(document).on('mouseup', @resizeStopped)
-    console.log e
 
   resizeStopped: ->
     $(document).off('mousemove', @resizePanel)
@@ -286,14 +277,14 @@ class TerminalPlusView extends View
     @input atom.clipboard.read()
 
   focus: ->
-    @resizeToPanel
-    @focusTerm
+    @resizeTerminalToView
+    @focusTerminal
 
-  focusTerm: ->
-    @terminal.element.focus()
+  focusTerminal: ->
     @terminal.focus()
+    @terminal.element.focus()
 
-  resizeToPanel: ->
+  resizeTerminalToView: ->
     {cols, rows} = @getDimensions()
     return unless cols > 0 and rows > 0
     return unless @terminal
