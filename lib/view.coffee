@@ -261,7 +261,12 @@ class TerminalPlusView extends View
 
     mouseY = $(window).height() - event.pageY
     delta = mouseY - $('atom-panel-container.bottom').height()
-    @xterm.height @clampResize (@xterm.height() + delta)
+    clamped = @clampResize (@xterm.height() + delta)
+    
+    @xterm.height clamped
+    $(@terminal.element).height clamped
+
+    @resizeTerminalToView()
 
   copy: ->
     if  @terminal._selected  # term.js visual mode selections
