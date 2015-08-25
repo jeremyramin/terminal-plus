@@ -27,9 +27,9 @@ class StatusBar extends View
       'terminal-plus:hide': => @runInActiveView (i) -> i.close()
       'terminal-plus:destroy': => @runInActiveView (i) -> i.destroy()
 
-    @subscriptions.add atom.commands.add '.terminal-plus',
-      'terminal-plus:paste', => @runInOpenView (i) -> i.paste()
-      'terminal-plus:copy', => @runInOpenView (i) -> i.copy()
+    @subscriptions.add atom.commands.add '.terminal',
+      'terminal-plus:paste': => @runInOpenView (i) -> i.paste()
+      'terminal-plus:copy': => @runInOpenView (i) -> i.copy()
 
     @registerContextMenu()
 

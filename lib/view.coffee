@@ -68,6 +68,7 @@ class TerminalPlusView extends View
     @ptyProcess = @forkPtyProcess shellOverride, args
 
     @terminal = term = new Terminal {
+      name: 'xterm'
       useFocus: true
       colors: @xtermColors
       cursorBlink, scrollback, cols, rows
