@@ -55,10 +55,12 @@ class StatusBar extends View
       'terminal-plus:status-cyan': (event) => @setStatusColor(event)
       'terminal-plus:status-magenta': (event) => @setStatusColor(event)
       'terminal-plus:status-default': (event) => @setStatusColor(event)
-      'terminal-plus:context-destroy': (event) -> $(event.target).view.destroy()
+      'terminal-plus:context-destroy': (event) ->
+        $(event.target).closest('.term-status').data("terminalView").destroy()
 
   initializeSorting: ->
-    require './jquery-sortable'
+    require '../resources/jquery-sortable'
+
     @statusContainer.sortable(
       cursor: "move"
       distance: 3
@@ -85,7 +87,7 @@ class StatusBar extends View
       cursorBlink   : atom.config.get 'terminal-plus.toggles.cursorBlink'
 
     terminalPlusView = new TerminalPlusView(options)
-    termStatus.view = terminalPlusView
+    termStatus.data("terminalView", terminalPlusView)
     terminalPlusView.statusIcon = termStatus
     terminalPlusView.statusBar = this
     @terminalViews.push terminalPlusView
@@ -131,7 +133,7 @@ class StatusBar extends View
     index = @terminalViews.indexOf terminalView
     return if index < 0
     @terminalViews.splice index, 1
-    @activeIndex-- if index <= @activeIndex and index > 0
+    @activeIndex-- if index <= @activeIndex and @activeIndex > 0
 
   moveTerminalView: (oldIndex, newIndex, activeTerminal) =>
     view = @terminalViews.splice(oldIndex, 1)[0]
