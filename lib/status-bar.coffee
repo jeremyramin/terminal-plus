@@ -90,8 +90,9 @@ class StatusBar extends View
     terminalPlusView.statusBar = this
     @terminalViews.push terminalPlusView
 
-    termStatus.children().click () =>
-      terminalPlusView.toggle()
+    termStatus.children().click (event) =>
+      terminalPlusView.toggle() if event.which is 1
+      terminalPlusView.destroy() if event.which is 2
     @statusContainer.append termStatus
     return terminalPlusView
 
