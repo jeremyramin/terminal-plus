@@ -195,24 +195,16 @@ class TerminalPlusView extends View
     @ptyProcess.send {event: 'resize', rows, cols}
 
   applyStyle: ->
-    if @style?
-      @xterm.removeClass @style.theme
-    @style = atom.config.get 'terminal-plus.style'
+    style = atom.config.get 'terminal-plus.style'
 
-    @xterm.addClass @style.theme
+    @xterm.addClass style.theme
     @terminal.element.style.backgroundColor = 'inherit'
     @terminal.element.style.color = 'inherit'
 
     fontFamily = ["monospace"]
-    fontFamily.unshift atom.config.get('editor.fontFamily') unless not atom.config.get('editor.fontFamily')
-    fontFamily.unshift @style.fontFamily unless not @style.fontFamily
-
+    fontFamily.unshift style.fontFamily unless style.fontFamily is ''
     @terminal.element.style.fontFamily = fontFamily.join ', '
-    @terminal.element.style.fontSize = (
-      (@style.fontSize == 0) and
-      (atom.config.get('editor.fontSize') + "px") or
-      (@style.fontSize + 'px')
-    )
+    @terminal.element.style.fontSize = style.fontSize + 'px'
 
   attachResizeEvents: ->
     @on 'focus', @focus

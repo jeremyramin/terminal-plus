@@ -98,13 +98,14 @@ module.exports = TerminalPlus =
           title: 'Font Family'
           description: 'Override the editor\'s default font family.'
           type: 'string'
-          default: ''
+          default: do -> atom.config.get('editor.fontFamily')
         fontSize:
           title: 'Font Size'
           description: 'Override the editor\'s default font size.'
           type: 'integer'
-          default: 0
-          minimum: 0
+          default: do -> atom.config.get('editor.fontSize')
+          minimum: 1
+          maximum: 100
         maxPanelHeight:
           title: 'Maximum Panel Height'
           description: 'Maximum height of a terminal panel.'
