@@ -67,16 +67,14 @@ class TerminalPlusView extends View
     args = shellArguments.split(/\s+/g).filter (arg)-> arg
     @ptyProcess = @forkPtyProcess shellOverride, args
 
-    @terminal = term = new Terminal {
-      name: 'xterm'
-      useFocus: true
+    @terminal = new Terminal {
       colors: @xtermColors
       cursorBlink, scrollback, cols, rows
     }
 
     @setupListeners()
 
-    @terminal.open @find('.xterm').get(0)
+    @terminal.open @xterm.get(0)
     @input "#{runCommand}#{os.EOL}" if runCommand
 
     @applyStyle()
@@ -88,14 +86,14 @@ class TerminalPlusView extends View
     setTimeout onDisplay, 300
 
   setupListeners: () ->
-    @ptyProcess.once 'terminal-plus:data', (data) =>
+    @ptyProcess.send event: 'input', text: ' clear\r'
+
+    @ptyProcess.once 'terminal-plus:data', (chunk) =>
       @ptyProcess.on 'terminal-plus:data', (data) =>
         @terminal.write data
 
     @ptyProcess.on 'terminal-plus:exit', (data) =>
       @destroy()
-
-    @ptyProcess.send event: 'input', text: ' clear\r'
 
     @terminal.end = => @destroy()
 

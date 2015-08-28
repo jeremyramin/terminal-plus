@@ -40,7 +40,7 @@ module.exports = TerminalPlus =
           default: false
         windowAnimations:
           title: 'Window Animations'
-          description: 'Do you want the panel to transition open and closed?'
+          description: 'Do you want the panel to transition on open and on hide?'
           type: 'boolean'
           default: true
     core:
