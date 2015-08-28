@@ -24,24 +24,22 @@ class StatusBar extends View
       'terminal-plus:toggle': => @toggle()
       'terminal-plus:next': => @activeNextTerminalView()
       'terminal-plus:prev': => @activePrevTerminalView()
-      'terminal-plus:hide': => @runInActiveView (i) -> i.close()
+      'terminal-plus:hide': => @runInActiveView (i) -> i.hide()
       'terminal-plus:destroy': => @runInActiveView (i) -> i.destroy()
 
-    @subscriptions.add atom.commands.add '.terminal',
+    @subscriptions.add atom.commands.add '.xterm',
       'terminal-plus:paste': => @runInOpenView (i) -> i.paste()
       'terminal-plus:copy': => @runInOpenView (i) -> i.copy()
 
     @registerContextMenu()
 
     @subscriptions.add atom.tooltips.add @plusBtn, title: 'New Terminal'
-    @subscriptions.add atom.tooltips.add @exitBtn, title: 'Exit All'
+    @subscriptions.add atom.tooltips.add @closeBtn, title: 'Close All'
 
     @createTerminalView()
     @attach()
 
     @initializeSorting() if atom.config.get('terminal-plus.toggles.sortableStatus')
-    atom.config.onDidChange 'terminal-plus.colors.default', (event) ->
-      $('.term-status span').css 'color', event.newValue.toRGBAString()
 
   registerContextMenu: ->
     @subscriptions.add atom.commands.add '.terminal-plus',
@@ -54,9 +52,11 @@ class StatusBar extends View
       'terminal-plus:status-pink': (event) => @setStatusColor(event)
       'terminal-plus:status-cyan': (event) => @setStatusColor(event)
       'terminal-plus:status-magenta': (event) => @setStatusColor(event)
-      'terminal-plus:status-default': (event) => @setStatusColor(event)
+      'terminal-plus:status-default': (event) => @clearStatusColor(event)
       'terminal-plus:context-destroy': (event) ->
         $(event.target).closest('.term-status').data("terminalView").destroy()
+      'terminal-plus:context-hide': (event) ->
+        $(event.target).closest('.term-status').data("terminalView").close()
 
   initializeSorting: ->
     require '../resources/jquery-sortable'
@@ -78,7 +78,6 @@ class StatusBar extends View
 
   createTerminalView: ->
     termStatus = $('<li class="term-status"><span class="icon icon-terminal"></span></li>')
-    termStatus.children().css 'color', atom.config.get('terminal-plus.colors.default').toRGBAString()
 
     options =
       runCommand    : atom.config.get 'terminal-plus.core.autoRunCommand'
@@ -170,4 +169,7 @@ class StatusBar extends View
   setStatusColor: (event) ->
     color = event.type.match(/\w+$/)[0]
     color = atom.config.get("terminal-plus.colors.#{color}").toRGBAString()
-    $(event.target).css 'color', color
+    $(event.target).closest('.term-status').css 'color', color
+
+  clearStatusColor: (event) ->
+    $(event.target).closest('.term-status').css 'color', ''

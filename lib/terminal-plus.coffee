@@ -115,12 +115,6 @@ module.exports = TerminalPlus =
       type: 'object'
       order: 4
       properties:
-        default:
-          title: 'Default'
-          description: 'Default color for status icon.'
-          type: 'color'
-          order: 1
-          default: 'rgba(205, 211, 222, 0.8)'
         red:
           title: 'Red'
           description: 'Red color used for status icon.'

@@ -107,10 +107,6 @@ class TerminalPlusView extends View
         @statusIcon.tooltip.dispose() if @statusIcon.tooltip?
         @statusIcon.tooltip = atom.tooltips.add @statusIcon, title: title
 
-  clearStatusIcon: () ->
-    @statusIcon.removeClass()
-    @statusIcon.addClass('icon icon-terminal')
-
   setWindowSizeBoundary: ->
     @maxHeight = atom.config.get('terminal-plus.style.maxPanelHeight')
     @xterm.css("max-height", "#{@maxHeight}px")
@@ -254,7 +250,7 @@ class TerminalPlusView extends View
     mouseY = $(window).height() - event.pageY
     delta = mouseY - $('atom-panel-container.bottom').height()
     clamped = @clampResize (@xterm.height() + delta)
-    
+
     @xterm.height clamped
     $(@terminal.element).height clamped
 
