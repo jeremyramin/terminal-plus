@@ -36,22 +36,20 @@
 
   .xterm {
     max-height: 300px;
-    bottom: @component-padding;
-  }
+    text-align: center;
 
-  .terminal {
-    height: auto;
-    position: relative;
-    padding: 0 3px;
-    margin: auto;
+    > .terminal {
+      height: auto;
+      position: relative;
 
-    > div {
-      white-space: pre;
-      > span {
-        display: inline-block;
-        line-height: inherit;
-        height: inherit;
-        font-weight: normal !important;
+      > div {
+        white-space: pre;
+        > span {
+          display: inline-block;
+          line-height: inherit;
+          height: inherit;
+          font-weight: normal !important;
+        }
       }
     }
   }
