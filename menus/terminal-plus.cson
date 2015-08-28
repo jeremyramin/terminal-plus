@@ -1,56 +1,29 @@
-# See https://atom.io/docs/latest/hacking-atom-package-word-count#menus for more details
 'context-menu':
   '.term-status span': [
-    {
-      label: 'Red'
-      command: 'terminal-plus:status-red'
-    },
-    {
-      label: 'Orange'
-      command: 'terminal-plus:status-orange'
-    },
-    {
-      label: 'Yellow'
-      command: 'terminal-plus:status-yellow'
-    },
-    {
-      label: 'Green'
-      command: 'terminal-plus:status-green'
-    },
-    {
-      label: 'Blue'
-      command: 'terminal-plus:status-blue'
-    },
-    {
-      label: 'Purple'
-      command: 'terminal-plus:status-purple'
-    },
-    {
-      label: 'Pink'
-      command: 'terminal-plus:status-pink'
-    },
-    {
-      label: 'Cyan'
-      command: 'terminal-plus:status-cyan'
-    },
-    {
-      label: 'Magenta'
-      command: 'terminal-plus:status-magenta'
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label: 'Default'
-      command: 'terminal-plus:status-default'
-    },
-    {
-      label: 'Exit'
-      command: 'terminal-plus:context-destroy'
-    }
-    {
-      type: 'separator'
-    },
+    {type: 'separator'},
+    {label: 'Red', command: 'terminal-plus:status-red'},
+    {label: 'Orange', command: 'terminal-plus:status-orange'},
+    {label: 'Yellow', command: 'terminal-plus:status-yellow'},
+    {label: 'Green', command: 'terminal-plus:status-green'},
+    {label: 'Blue', command: 'terminal-plus:status-blue'},
+    {label: 'Purple', command: 'terminal-plus:status-purple'},
+    {label: 'Pink', command: 'terminal-plus:status-pink'},
+    {label: 'Cyan', command: 'terminal-plus:status-cyan'},
+    {label: 'Magenta', command: 'terminal-plus:status-magenta'},
+    {label: 'Default', command: 'terminal-plus:status-default'},
+    {type: 'separator'},
+    {label: 'Hide', command: 'terminal-plus:context-hide'}
+    {label: 'Close', command: 'terminal-plus:context-destroy'},
+    {type: 'separator'}
+  ]
+  '.terminal-plus .terminal': [
+    {type: 'separator'},
+    {label: 'Copy', command: 'terminal-plus:copy'},
+    {label: 'Paste', command: 'terminal-plus:paste'},
+    {type: 'separator'},
+    {label: 'Hide', command: 'terminal-plus:hide'}
+    {label: 'Close', command: 'terminal-plus:destroy'}
+    {type: 'separator'}
   ]
 'menu': [
   {
