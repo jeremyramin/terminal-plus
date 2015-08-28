@@ -14,7 +14,7 @@ class StatusBar extends View
     @div class: 'terminal-plus status-bar inline-block', =>
       @span class: "icon icon-plus inline-block-tight left", click: 'newTerminalView', outlet: 'plusBtn'
       @ul class: 'list-inline status-container left', outlet: 'statusContainer'
-      @span class: "icon icon-x inline-block-tight right red", click: 'exitAll', outlet: 'exitBtn'
+      @span class: "icon icon-x inline-block-tight right red", click: 'closeAll', outlet: 'closeBtn'
 
   initialize: (state={}) ->
     @subscriptions = new CompositeDisposable
@@ -148,7 +148,7 @@ class StatusBar extends View
   destroyActiveTerm: ->
     @terminalViews[@activeIndex].destroy() if @terminalViews[@activeIndex]?
 
-  exitAll: ->
+  closeAll: ->
     for index in [@terminalViews.length .. 0]
       o = @terminalViews[index]
       if o?

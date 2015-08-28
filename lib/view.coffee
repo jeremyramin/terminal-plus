@@ -39,10 +39,10 @@ class TerminalPlusView extends View
       @div class: 'panel-divider', style: 'cursor:row-resize; width:100%; height: 5px;', outlet: 'panelDivider'
       @div class: 'panel-heading btn-toolbar', outlet:'viewToolbar', =>
         # @div class: 'btn-group', outlet:'consoleToolbar', =>
-        @button outlet: 'closeBtn', class: 'btn icon icon-chevron-down inline-block-tight', click: 'close', =>
+        @button outlet: 'hideBtn', class: 'btn icon icon-chevron-down inline-block-tight', click: 'hide', =>
+          @span 'Hide'
+        @button outlet: 'closeBtn', class: 'btn icon icon-x inline-block-tight', click: 'destroy', =>
           @span 'Close'
-        @button outlet: 'exitBtn', class: 'btn icon icon-x inline-block-tight', click: 'destroy', =>
-          @span 'Exit'
       @div class: 'xterm', outlet: 'xterm'
 
   constructor: (@opts={})->
@@ -120,40 +120,38 @@ class TerminalPlusView extends View
     @timer = setTimeout onStatusOut, time
 
   destroy: ->
+    @subscriptions.dispose()
     @statusIcon.remove()
     @statusBar.removeTerminalView this
     @detachResizeEvents()
 
-    if @hasParent()
-      @close()
+    if @panel.isVisible()
+      @hide()
     if @statusIcon and @statusIcon.parentNode
       @statusIcon.parentNode.removeChild(@statusIcon)
 
+    @panel.destroy()
     @ptyProcess?.terminate()
     @terminal?.destroy()
-    @subscriptions.dispose()
     return
 
   maximize: ->
     @xterm.height (@maxHeight)
 
   open: ->
-    atom.workspace.addBottomPanel(item: this) unless @hasParent()
+    @panel.show()
+
     if lastOpenedView and lastOpenedView != this
-      lastOpenedView.close()
+      lastOpenedView.hide()
     lastOpenedView = this
     @statusIcon.addClass 'active'
     @setWindowSizeBoundary()
     @statusBar.setActiveTerminalView this
 
-    @subscriptions.add atom.tooltips.add @exitBtn,
-     title: 'Destroy the terminal session.'
     @subscriptions.add atom.tooltips.add @closeBtn,
+     title: 'Destroy the terminal session.'
+    @subscriptions.add atom.tooltips.add @hideBtn,
      title: 'Hide the terminal window.'
-    @subscriptions.add atom.tooltips.add @openConfigBtn,
-     title: 'Open the terminal config file.'
-    @subscriptions.add atom.tooltips.add @reloadConfigBtn,
-     title: 'Reload the terminal configuration.'
 
     if atom.config.get('terminal-plus.toggles.windowAnimations')
       @WindowMinHeight = @xterm.height() + 50
@@ -168,7 +166,7 @@ class TerminalPlusView extends View
           @focusTerminal()
         @attr 'style', ''
 
-  close: ->
+  hide: ->
     if atom.config.get('terminal-plus.toggles.windowAnimations')
       @WindowMinHeight = @xterm.height() + 50
       @height @WindowMinHeight
@@ -176,16 +174,17 @@ class TerminalPlusView extends View
         height: 0
       }, 250, =>
         @attr 'style', ''
-        @detach()
+        @panel.hide()
     else
-      @detach()
+      @panel.hide()
     @terminal.blur()
     lastOpenedView = null
     @statusIcon.removeClass 'active'
 
   toggle: ->
-    if @hasParent()
-      @close()
+    @panel ?= atom.workspace.addBottomPanel(item: this, visible: false)
+    if @panel.isVisible()
+      @hide()
     else
       @open()
 
