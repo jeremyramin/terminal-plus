@@ -2,6 +2,7 @@
 {$, View} = require 'atom-space-pen-views'
 
 TerminalPlusView = require './view'
+StatusIcon = require './status-icon'
 
 window.jQuery = window.$ = $
 
@@ -11,10 +12,10 @@ class StatusBar extends View
   activeIndex: 0
 
   @content: ->
-    @div class: 'terminal-plus status-bar inline-block', =>
-      @span class: "icon icon-plus inline-block-tight left", click: 'newTerminalView', outlet: 'plusBtn'
-      @ul class: 'list-inline status-container left', outlet: 'statusContainer'
-      @span class: "icon icon-x inline-block-tight right red", click: 'closeAll', outlet: 'closeBtn'
+    @div class: 'terminal-plus status-bar', tabindex: -1, =>
+      @i class: "icon icon-plus", click: 'newTerminalView', outlet: 'plusBtn'
+      @ul class: "list-inline status-container", tabindex: '-1', outlet: 'statusContainer', is: 'space-pen-ul'
+      @i class: "icon icon-x", click: 'closeAll', outlet: 'closeBtn'
 
   initialize: (state={}) ->
     @subscriptions = new CompositeDisposable
@@ -25,7 +26,7 @@ class StatusBar extends View
       'terminal-plus:next': => @activeNextTerminalView()
       'terminal-plus:prev': => @activePrevTerminalView()
       'terminal-plus:hide': => @runInActiveView (i) -> i.hide()
-      'terminal-plus:destroy': => @runInActiveView (i) -> i.destroy()
+      'terminal-plus:close': => @runInActiveView (i) -> i.destroy()
 
     @subscriptions.add atom.commands.add '.xterm',
       'terminal-plus:paste': => @runInOpenView (i) -> i.paste()
@@ -36,10 +37,31 @@ class StatusBar extends View
     @subscriptions.add atom.tooltips.add @plusBtn, title: 'New Terminal'
     @subscriptions.add atom.tooltips.add @closeBtn, title: 'Close All'
 
-    @createTerminalView()
-    @attach()
+    @statusContainer.on 'mousedown', '.sortable', ({target, which, ctrlKey}) =>
+      statusIcon = $(target).closest('.status-icon')[0]
+      if which is 3 or (which is 1 and ctrlKey is true)
+        @find('.right-clicked').removeClass('right-clicked')
+        statusIcon.classList.add('right-clicked')
+        false
+      else if which is 1
+        statusIcon.terminal.toggle()
+        true
+      else if which is 2
+        statusIcon.terminal.destroy()
+        false
 
-    @initializeSorting() if atom.config.get('terminal-plus.toggles.sortableStatus')
+    cancel = (event) ->
+      event.preventDefault()
+      return false
+
+    @statusContainer.on 'dragstart', '.sortable', @onDragStart
+    @statusContainer.on 'dragend', '.sortable', @onDragEnd
+    @statusContainer.on 'dragleave', @onDragLeave
+    @statusContainer.on 'dragover', @onDragOver
+    @statusContainer.on 'drop', @onDrop
+
+    @attach()
+    @createTerminalView()
 
   registerContextMenu: ->
     @subscriptions.add atom.commands.add '.terminal-plus',
@@ -53,31 +75,13 @@ class StatusBar extends View
       'terminal-plus:status-cyan': (event) => @setStatusColor(event)
       'terminal-plus:status-magenta': (event) => @setStatusColor(event)
       'terminal-plus:status-default': (event) => @clearStatusColor(event)
-      'terminal-plus:context-destroy': (event) ->
-        $(event.target).closest('.term-status').data("terminalView").destroy()
+      'terminal-plus:context-destroy': (event) =>
+        $(event.target).closest('.status-icon')[0].terminal.destroy()
       'terminal-plus:context-hide': (event) ->
-        $(event.target).closest('.term-status').data("terminalView").close()
-
-  initializeSorting: ->
-    require '../resources/jquery-sortable'
-
-    @statusContainer.sortable(
-      cursor: "move"
-      distance: 3
-      hoverClass: "term-hover"
-      helper: "clone"
-      scroll: false
-      tolerance: "intersect"
-    )
-    @statusContainer.disableSelection()
-    @statusContainer.on 'sortstart', (event, ui) =>
-      ui.item.oldIndex = ui.item.index()
-      ui.item.activeTerminal = @terminalViews[@activeIndex]
-    @statusContainer.on 'sortupdate', (event, ui) =>
-      @moveTerminalView ui.item.oldIndex, ui.item.index(), ui.item.activeTerminal
+        $(event.target).closest('.status-icon')[0].terminal.hide()
 
   createTerminalView: ->
-    termStatus = $('<li class="term-status"><span class="icon icon-terminal"></span></li>')
+    statusIcon = new StatusIcon()
 
     options =
       runCommand    : atom.config.get 'terminal-plus.core.autoRunCommand'
@@ -86,15 +90,14 @@ class StatusBar extends View
       cursorBlink   : atom.config.get 'terminal-plus.toggles.cursorBlink'
 
     terminalPlusView = new TerminalPlusView(options)
-    termStatus.data("terminalView", terminalPlusView)
-    terminalPlusView.statusIcon = termStatus
-    terminalPlusView.statusBar = this
-    @terminalViews.push terminalPlusView
+    statusIcon.initialize(terminalPlusView)
 
-    termStatus.children().click (event) =>
-      terminalPlusView.toggle() if event.which is 1
-      terminalPlusView.destroy() if event.which is 2
-    @statusContainer.append termStatus
+    terminalPlusView.statusBar = this
+    terminalPlusView.statusIcon = statusIcon
+    terminalPlusView.panel = atom.workspace.addBottomPanel(item: terminalPlusView, visible: false)
+
+    @terminalViews.push terminalPlusView
+    @statusContainer.append statusIcon
     return terminalPlusView
 
   activeNextTerminalView: ->
@@ -121,7 +124,7 @@ class StatusBar extends View
 
   runInOpenView: (callback) ->
     view = @getActiveTerminalView()
-    if view? and view.hasParent()
+    if view? and view.panel.isVisible()
       return callback(view)
     return null
 
@@ -133,11 +136,6 @@ class StatusBar extends View
     return if index < 0
     @terminalViews.splice index, 1
     @activeIndex-- if index <= @activeIndex and @activeIndex > 0
-
-  moveTerminalView: (oldIndex, newIndex, activeTerminal) =>
-    view = @terminalViews.splice(oldIndex, 1)[0]
-    @terminalViews.splice newIndex, 0, view
-    @setActiveTerminalView activeTerminal
 
   newTerminalView: ->
     @createTerminalView().toggle()
@@ -169,7 +167,116 @@ class StatusBar extends View
   setStatusColor: (event) ->
     color = event.type.match(/\w+$/)[0]
     color = atom.config.get("terminal-plus.colors.#{color}").toRGBAString()
-    $(event.target).closest('.term-status').css 'color', color
+    $(event.target).closest('.status-icon').css 'color', color
 
   clearStatusColor: (event) ->
-    $(event.target).closest('.term-status').css 'color', ''
+    $(event.target).closest('.status-icon').css 'color', ''
+
+  onDragStart: (event) =>
+    event.originalEvent.dataTransfer.setData 'terminal-plus', 'true'
+
+    element = $(event.target).closest('.sortable')
+    element.addClass 'is-dragging'
+    event.originalEvent.dataTransfer.setData 'sortable-index', element.index()
+
+  onDragLeave: (event) =>
+    @removePlaceholder()
+
+  onDragEnd: (event) =>
+    @clearDropTarget()
+
+  onDragOver: (event) =>
+    event.preventDefault()
+    event.stopPropagation()
+    unless event.originalEvent.dataTransfer.getData('terminal-plus') is 'true'
+      return
+
+    newDropTargetIndex = @getDropTargetIndex(event)
+    return unless newDropTargetIndex?
+    @removeDropTargetClasses()
+    sortableObjects = @statusContainer.children(".sortable")
+
+    if newDropTargetIndex < sortableObjects.length
+      element = sortableObjects.eq(newDropTargetIndex).addClass 'is-drop-target'
+      @getPlaceholder().insertBefore(element)
+    else
+      element = sortableObjects.eq(newDropTargetIndex - 1).addClass 'drop-target-is-after'
+      @getPlaceholder().insertAfter(element)
+
+  onDrop: (event) =>
+    {dataTransfer} = event.originalEvent
+    return unless dataTransfer.getData('terminal-plus') is 'true'
+
+    fromIndex = parseInt(dataTransfer.getData('sortable-index'))
+    toIndex = @getDropTargetIndex(event)
+    @clearDropTarget()
+
+    @updateOrder(fromIndex, toIndex)
+
+  clearDropTarget: ->
+    element = @find(".is-dragging")
+    element.removeClass 'is-dragging'
+    @removeDropTargetClasses()
+    @removePlaceholder()
+
+  removeDropTargetClasses: ->
+    @statusContainer.find('.is-drop-target').removeClass 'is-drop-target'
+    @statusContainer.find('.drop-target-is-after').removeClass 'drop-target-is-after'
+
+  getDropTargetIndex: (event) ->
+    target = $(event.target)
+    return if @isPlaceholder(target)
+
+    sortables = @statusContainer.children('.sortable')
+    element = target.closest('.sortable')
+    element = sortables.last() if element.length is 0
+
+    return 0 unless element.length
+
+    elementCenter = element.offset().left + element.width() / 2
+
+    if event.originalEvent.pageX < elementCenter
+      sortables.index(element)
+    else if element.next('.sortable').length > 0
+      sortables.index(element.next('.sortable'))
+    else
+      sortables.index(element) + 1
+
+  getPlaceholder: ->
+    @placeholderEl ?= $('<li class="placeholder"></li>')
+
+  removePlaceholder: ->
+    @placeholderEl?.remove()
+    @placeholderEl = null
+
+  isPlaceholder: (element) ->
+    element.is('.placeholder')
+
+  iconAtIndex: (index) ->
+    @getStatusIcons().eq(index)
+
+  getStatusIcons: ->
+    @statusContainer.children('.status-icon')
+
+  moveIconToIndex: (icon, toIndex) ->
+    followingIcon = @getStatusIcons()[toIndex]
+    container = @statusContainer[0]
+    if followingIcon?
+      container.insertBefore(icon, followingIcon)
+    else
+      container.appendChild(icon)
+
+  moveTerminalView: (fromIndex, toIndex) =>
+    activeTerminal = @getActiveTerminalView()
+    view = @terminalViews.splice(fromIndex, 1)[0]
+    @terminalViews.splice toIndex, 0, view
+    @setActiveTerminalView activeTerminal
+
+  updateOrder: (fromIndex, toIndex) ->
+    return if fromIndex is toIndex
+    toIndex-- if fromIndex < toIndex
+
+    icon = @getStatusIcons()[fromIndex]
+    icon.remove()
+    @moveIconToIndex icon, toIndex
+    @moveTerminalView fromIndex, toIndex

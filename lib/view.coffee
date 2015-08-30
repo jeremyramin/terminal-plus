@@ -89,6 +89,7 @@ class TerminalPlusView extends View
     @ptyProcess.send event: 'input', text: ' clear\r'
 
     @ptyProcess.once 'terminal-plus:data', (chunk) =>
+
       @ptyProcess.on 'terminal-plus:data', (data) =>
         @terminal.write data
 
@@ -103,7 +104,12 @@ class TerminalPlusView extends View
     @terminal.once "title", (title) =>
       @terminal.on 'title', (title) =>
         @statusIcon.tooltip.dispose() if @statusIcon.tooltip?
-        @statusIcon.tooltip = atom.tooltips.add @statusIcon, title: title
+        @statusIcon.tooltip = atom.tooltips.add @statusIcon,
+          title: title
+          html: false
+          delay:
+            show: 500
+            hide: 250
 
   setWindowSizeBoundary: ->
     @maxHeight = atom.config.get('terminal-plus.style.maxPanelHeight')
@@ -111,10 +117,10 @@ class TerminalPlusView extends View
     @xterm.css("min-height", "#{@minHeight}px")
 
   flashIconClass: (className, time=100)=>
-    @statusIcon.addClass className
+    @statusIcon.classList.add className
     @timer and clearTimeout(@timer)
     onStatusOut = =>
-      @statusIcon.removeClass className
+      @statusIcon.classList.remove className
     @timer = setTimeout onStatusOut, time
 
   destroy: ->
@@ -142,7 +148,7 @@ class TerminalPlusView extends View
     if lastOpenedView and lastOpenedView != this
       lastOpenedView.hide()
     lastOpenedView = this
-    @statusIcon.addClass 'active'
+    @statusIcon.classList.add 'active'
     @setWindowSizeBoundary()
     @statusBar.setActiveTerminalView this
 
@@ -175,12 +181,11 @@ class TerminalPlusView extends View
         @panel.hide()
     else
       @panel.hide()
-    @terminal.blur()
+    @terminal?.blur()
     lastOpenedView = null
-    @statusIcon.removeClass 'active'
+    @statusIcon.classList.remove 'active'
 
   toggle: ->
-    @panel ?= atom.workspace.addBottomPanel(item: this, visible: false)
     if @panel.isVisible()
       @hide()
     else
@@ -208,7 +213,7 @@ class TerminalPlusView extends View
 
   attachResizeEvents: ->
     @on 'focus', @focus
-    $(window).on 'resize', => @resizeTerminalToView() if @hasParent()
+    $(window).on 'resize', => @resizeTerminalToView() if @panel.isVisible()
     @panelDivider.on 'mousedown', @resizeStarted.bind(this)
 
   detachResizeEvents: ->

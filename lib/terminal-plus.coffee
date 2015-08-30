@@ -28,11 +28,6 @@ module.exports = TerminalPlus =
           description: 'Should the cursor blink when the terminal is active?'
           type: 'boolean'
           default: true
-        sortableStatus:
-          title: 'Make Status Bar Sortable'
-          description: 'Load the sortable interface? [WARNING: This adds to startup time.]'
-          type: 'boolean'
-          default: false
         forceTitle:
           title: 'Force Terminal Title'
           description: 'Force shell to give the terminal a title.'

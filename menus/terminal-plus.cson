@@ -1,5 +1,5 @@
 'context-menu':
-  '.term-status span': [
+  '.terminal-plus .status-icon': [
     {type: 'separator'},
     {label: 'Red', command: 'terminal-plus:status-red'},
     {label: 'Orange', command: 'terminal-plus:status-orange'},

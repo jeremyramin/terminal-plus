@@ -3,21 +3,23 @@
   'cmd-shift-t': 'terminal-plus:new'
   'cmd-shift-j': 'terminal-plus:prev'
   'cmd-shift-k': 'terminal-plus:next'
-  'cmd-shift-x': 'terminal-plus:destroy'
+  'cmd-shift-x': 'terminal-plus:close'
   'ctrl-`': 'terminal-plus:toggle'
 
 '.platform-linux atom-workspace, .platform-win32 atom-workspace':
   'alt-shift-t': 'terminal-plus:new'
   'alt-shift-j': 'terminal-plus:prev'
   'alt-shift-k': 'terminal-plus:next'
-  'alt-shift-x': 'terminal-plus:destroy'
+  'alt-shift-x': 'terminal-plus:close'
   'ctrl-`': 'terminal-plus:toggle'
 
 '.terminal-plus .terminal':
   'escape': 'terminal-plus:toggle'
+
+'.platform-darwin .terminal-plus .terminal':
   'cmd-c': 'terminal-plus:copy'
-  'ctrl-c': 'terminal-plus:copy'
-  'ctrl-insert': 'terminal-plus:copy'
   'cmd-v': 'terminal-plus:paste'
-  'ctrl-v': 'terminal-plus:paste'
-  'shift-insert': 'terminal-plus:paste'
+
+'.platform-linux .terminal-plus .terminal, .platform-win32 .terminal-plus .terminal':
+  'alt-v': 'terminal-plus:paste'
+  'alt-c': 'terminal-plus:copy'
