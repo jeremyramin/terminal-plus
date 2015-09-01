@@ -1,6 +1,5 @@
 path = require 'path'
 os = require 'os'
-fs = require 'fs-plus'
 keypather = do require 'keypather'
 
 {Task, CompositeDisposable} = require 'atom'
@@ -285,16 +284,16 @@ class TerminalPlusView extends View
     @terminal.resize cols, rows
 
   getDimensions: ->
-    fakeRow = $("<div><span>&nbsp;</span></div>").css visibility: 'hidden'
+    fakeRow = $("<div><span>&nbsp;</span></div>")
     if @terminal
       @find('.terminal').append fakeRow
-      fakeCol = fakeRow.children().first()
-      cols = Math.floor(@xterm.width() / fakeCol.width()) or 9
-      rows = Math.floor (@xterm.height() / fakeCol.height()) or 16
-      @minHeight = fakeCol.height()
+      fakeCol = fakeRow.children().first()[0].getBoundingClientRect()
+      cols = Math.floor(@xterm.width() / (fakeCol.width or 9))
+      rows = Math.floor (@xterm.height() / (fakeCol.height or 20))
+      @minHeight = fakeCol.height
       fakeRow.remove()
     else
-      cols = Math.floor @width() / 7
-      rows = Math.floor @height() / 14
+      cols = Math.floor @xterm.width() / 9
+      rows = Math.floor @xterm.height() / 20
 
     {cols, rows}
