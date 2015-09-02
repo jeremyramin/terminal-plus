@@ -48,7 +48,7 @@ class TerminalPlusView extends View
 
   constructor: ->
     editorPath = keypather.get atom, 'workspace.getEditorViews[0].getEditor().getPath()'
-    opts.cwd = opts.cwd or atom.project.getPaths()[0] or editorPath or process.env.HOME
+    @pwd = atom.project.getPaths()[0] or editorPath or process.env.HOME
     @subscriptions = new CompositeDisposable
     super
 
@@ -100,29 +100,27 @@ class TerminalPlusView extends View
     @terminal.on "data", (data) =>
       @input data
 
-    @terminal.once "title", (title) =>
-      @terminal.on 'title', (title) =>
-        @statusIcon.tooltip.dispose() if @statusIcon.tooltip?
-        @statusIcon.tooltip = atom.tooltips.add @statusIcon,
-          title: title
-          html: false
-          delay:
-            show: 500
-            hide: 250
+    @terminal.once "open", =>
+      switch atom.config.get('terminal-plus.core.workingDirectory')
+        when 'Project' then cwd = @pwd
+        when 'Active File' then cwd = path.dirname atom.workspace.getActiveTextEditor()?.getPath()
+        else cwd = null
+
+      autoRunCommand = atom.config.get('terminal-plus.core.autoRunCommand')
+
+      @input "cd #{cwd}; clear; pwd#{os.EOL}" if cwd?
+      @input "#{autoRunCommand}#{os.EOL}" if autoRunCommand
 
   setWindowSizeBoundary: ->
     @maxHeight = atom.config.get('terminal-plus.style.maxPanelHeight')
     @xterm.css("max-height", "#{@maxHeight}px")
     @xterm.css("min-height", "#{@minHeight}px")
 
-  flashIconClass: (className, time=100)=>
-    @statusIcon.classList.add className
-    @timer and clearTimeout(@timer)
-    onStatusOut = =>
-      @statusIcon.classList.remove className
-    @timer = setTimeout onStatusOut, time
-
   destroy: ->
+    @hide()
+    @promise().done(@_destroy)
+
+  _destroy: ->
     @subscriptions.dispose()
     @statusIcon.remove()
     @statusBar.removeTerminalView this
@@ -145,7 +143,7 @@ class TerminalPlusView extends View
     @panel.show()
 
     if lastOpenedView and lastOpenedView != this
-      lastOpenedView.hide()
+      @promise().done(lastOpenedView.hide)
     lastOpenedView = this
     @statusIcon.classList.add 'active'
     @setWindowSizeBoundary()
@@ -181,9 +179,9 @@ class TerminalPlusView extends View
 
   toggle: ->
     if @panel.isVisible()
-      @hide()
+      @promise().done(@hide)
     else
-      @open()
+      @promise().done(@open)
 
   input: (data) ->
     @ptyProcess.send event: 'input', text: data

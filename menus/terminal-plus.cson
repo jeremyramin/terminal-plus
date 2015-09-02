@@ -13,7 +13,7 @@
     {label: 'Default', command: 'terminal-plus:status-default'},
     {type: 'separator'},
     {label: 'Hide', command: 'terminal-plus:context-hide'}
-    {label: 'Close', command: 'terminal-plus:context-destroy'},
+    {label: 'Close', command: 'terminal-plus:context-close'},
     {type: 'separator'}
   ]
   '.terminal-plus .terminal': [
@@ -22,7 +22,7 @@
     {label: 'Paste', command: 'terminal-plus:paste'},
     {type: 'separator'},
     {label: 'Hide', command: 'terminal-plus:hide'}
-    {label: 'Close', command: 'terminal-plus:destroy'}
+    {label: 'Close', command: 'terminal-plus:close'}
     {type: 'separator'}
   ]
 'menu': [
