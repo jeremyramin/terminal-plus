@@ -13,9 +13,6 @@
   'alt-shift-x': 'terminal-plus:close'
   'ctrl-`': 'terminal-plus:toggle'
 
-'.terminal-plus .terminal':
-  'escape': 'terminal-plus:toggle'
-
 '.platform-darwin .terminal-plus .terminal':
   'cmd-c': 'terminal-plus:copy'
   'cmd-v': 'terminal-plus:paste'
