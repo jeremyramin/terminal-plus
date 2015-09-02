@@ -1,12 +1,17 @@
 @import "ui-variables";
 
+@icon-padding: 5px;
+@icon-width: 16px;
+@icon-height: 16px;
+@inactive-opacity: 0.5;
+
 .terminal-plus {
 
   .left {
-    float: left;
+    float: left !important;
   }
   .right {
-    float: right;
+    float: right !important;
   }
   ul {
     padding: 0;
@@ -15,6 +20,12 @@
   .icon::before {
     margin: 0;
     padding: 0;
+    line-height: inherit;
+    height: inherit;
+  }
+
+  .icon-x::before {
+    font-size: inherit;
   }
 
   &.terminal-plus-view {
@@ -22,17 +33,24 @@
     .btn-toolbar {
       padding: 2px;
       .btn {
-        top: 0px;
+        top: 0;
         height: 3em;
-        float: right;
+        vertical-align: middle;
+        margin: 0 5px;
       }
+    }
+
+    .panel-divider {
+      background-color: black;
     }
 
     .xterm {
       max-height: 300px;
-      text-align: center;
+      width: 100%;
+      text-align: right;
       > .terminal {
         height: auto;
+        width: 100%;
         position: relative;
         > div {
           white-space: pre;
@@ -51,10 +69,14 @@
     display: flex;
     flex-direction: row;
     -webkit-user-select: none;
-    padding: 0 5px;
+    padding: 0 10px;
     width: 100%;
 
-    > i {
+    * {
+      line-height: normal;
+    }
+
+    i {
       text-align: center;
       cursor: pointer;
     }
@@ -66,26 +88,31 @@
     .status-container {
       display: -webkit-flex;
       display: flex;
+      align-items: center;
       -webkit-user-select: none;
       position: relative;
       width: 100%;
-      overflow: hidden;
-      margin: 0 5px;
+      margin: 0 @icon-padding;
 
       .status-icon {
+        -webkit-transition: opacity 0.25s ease-in-out, color 0.5s ease-in-out;
         -webkit-user-drag: element;
         -webkit-user-select: none;
-        padding: 0 6px;
-        opacity: 0.5;
+        padding: 0 @icon-padding;
+        opacity: @inactive-opacity;
         &.active {
           opacity: 1;
         }
       }
 
+      .is-dragging {
+        border-bottom: 1px solid @background-color-info;
+      }
+
       .placeholder {
         pointer-events: none;
-        position: absolute;
-        top: 0;
+        position: relative;
+        top: -@icon-height;
         color: @background-color-info;
         z-index: 999;
         margin: 0 -6px;
@@ -94,9 +121,7 @@
         line-height: 10px;
 
         &::before {
-          line-height: inherit;
-          height: inherit;
-          font-size: 14px;
+          font-size: 16px;
           font-family: 'Octicons Regular';
           font-weight: normal;
           font-style: normal;
@@ -105,6 +130,7 @@
           text-decoration: none;
           content: "\f05b";
         }
+      }
 
         // &:after {
         //   font-family: 'Octicons Regular';
@@ -116,7 +142,20 @@
         //   line-height: 8px;
         //   content: "\f05b";
         // }
-      }
+    }
+  }
+
+  .inserted {
+    -webkit-animation: flash 1s linear 1 alternate;
+  }
+
+  @-webkit-keyframes flash {
+    0% {
+      opacity: @inactive-opacity;
+    }
+
+    100% {
+      opacity: 1;
     }
   }
 }

@@ -276,7 +276,8 @@ class StatusBar extends View
     return if fromIndex is toIndex
     toIndex-- if fromIndex < toIndex
 
-    icon = @getStatusIcons()[fromIndex]
-    icon.remove()
-    @moveIconToIndex icon, toIndex
+    icon = @getStatusIcons().eq(fromIndex).detach()
+    @moveIconToIndex icon.get(0), toIndex
     @moveTerminalView fromIndex, toIndex
+    icon.addClass 'inserted'
+    icon.one 'webkitAnimationEnd', -> icon.removeClass('inserted')

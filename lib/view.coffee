@@ -35,13 +35,15 @@ class TerminalPlusView extends View
   ]
   @content: () ->
     @div tabIndex: -1, class: 'terminal-plus terminal-plus-view', outlet: 'terminalPlusView', =>
-      @div class: 'panel-divider', style: 'cursor:row-resize; width:100%; height: 5px;', outlet: 'panelDivider'
+      @div class: 'panel-divider', style: 'cursor:row-resize; width:100%; height: 2px;', outlet: 'panelDivider'
       @div class: 'panel-heading btn-toolbar', outlet:'viewToolbar', =>
-        # @div class: 'btn-group', outlet:'consoleToolbar', =>
-        @button outlet: 'hideBtn', class: 'btn icon icon-chevron-down inline-block-tight', click: 'hide', =>
-          @span 'Hide'
-        @button outlet: 'closeBtn', class: 'btn icon icon-x inline-block-tight', click: 'destroy', =>
+        @button outlet: 'closeBtn', class: 'btn inline-block-tight right', click: 'destroy', =>
+          @i class: 'icon icon-x', ' '
           @span 'Close'
+        @button outlet: 'hideBtn', class: 'btn inline-block-tight right', click: 'hide', =>
+          @i class: 'icon icon-chevron-down', ' '
+          @span 'Hide'
+
       @div class: 'xterm', outlet: 'xterm'
 
   constructor: (@opts={})->
