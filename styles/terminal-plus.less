@@ -20,12 +20,11 @@
   .icon::before {
     margin: 0;
     padding: 0;
-    line-height: inherit;
-    height: inherit;
-  }
 
+  }
   .icon-x::before {
-    font-size: inherit;
+    content: '\f081' !important;
+    line-height: normal;
   }
 
   &.terminal-plus-view {
@@ -35,8 +34,11 @@
       .btn {
         top: 0;
         height: 3em;
-        vertical-align: middle;
         margin: 0 5px;
+
+        i {
+          vertical-align: middle;
+        }
       }
     }
 
@@ -66,19 +68,22 @@
   }
 
   &.status-bar {
-    display: flex;
+    display: -webkit-flex;
     flex-direction: row;
+    align-items: center;
     -webkit-user-select: none;
-    padding: 0 10px;
-    width: 100%;
-
-    * {
-      line-height: normal;
-    }
+    margin: 0 10px;
+    box-sizing: content-box;
+    height: 18px;
 
     i {
+      display: inherit;
       text-align: center;
       cursor: pointer;
+      height: 16px;
+      width: 16px;
+      line-height: 16px;
+      align-self: center;
     }
     .icon-x {
       color: red;
@@ -86,20 +91,19 @@
     }
 
     .status-container {
-      display: -webkit-flex;
-      display: flex;
-      align-items: center;
-      -webkit-user-select: none;
+      display: inherit;
       position: relative;
       width: 100%;
+      height: 100%;
       margin: 0 @icon-padding;
 
       .status-icon {
+        display: inherit;
         -webkit-transition: opacity 0.25s ease-in-out, color 0.5s ease-in-out;
         -webkit-user-drag: element;
-        -webkit-user-select: none;
         padding: 0 @icon-padding;
         opacity: @inactive-opacity;
+        height: 100%;
         &.active {
           opacity: 1;
         }
@@ -111,7 +115,7 @@
 
       .placeholder {
         pointer-events: none;
-        position: relative;
+        position: absolute;
         top: -@icon-height;
         color: @background-color-info;
         z-index: 999;
@@ -146,14 +150,12 @@
   }
 
   .inserted {
-    -webkit-animation: flash 1s linear 1 alternate;
+    -webkit-animation: flash 0.25s linear 6 alternate;
   }
-
   @-webkit-keyframes flash {
     0% {
       opacity: @inactive-opacity;
     }
-
     100% {
       opacity: 1;
     }
