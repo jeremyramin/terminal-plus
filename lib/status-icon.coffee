@@ -12,12 +12,6 @@ class StatusIcon extends HTMLElement
 
     @dataset.type = @terminalView.constructor?.name
 
-    @terminalView.ptyProcess.on 'terminal-plus:title', (title) =>
-      @updateTooltip(title)
-
-    @terminalView.ptyProcess.on 'terminal-plus:clear-title', =>
-      @removeTooltip()
-
   updateTooltip: (title) ->
     @title = title if title?
     @tooltip = atom.tooltips.add this,

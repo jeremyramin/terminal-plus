@@ -54,15 +54,15 @@ class TerminalPlusView extends View
 
   initialize: ->
     @subscriptions.add atom.tooltips.add @closeBtn,
-     title: 'Destroy the terminal session.'
+      title: 'Destroy the terminal session.'
     @subscriptions.add atom.tooltips.add @hideBtn,
-     title: 'Hide the terminal window.'
+      title: 'Hide the terminal window.'
 
   forkPtyProcess: (shell, args=[]) ->
     project = atom.project.getPaths()[0] ? '~'
     Task.once Pty, path.resolve(project), shell, args
 
-  displayTerminal: () ->
+  displayTerminal: ->
     {cols, rows} = @getDimensions()
     shell = atom.config.get 'terminal-plus.core.shell'
     shellArguments = atom.config.get 'terminal-plus.core.shellArguments'
@@ -94,6 +94,12 @@ class TerminalPlusView extends View
 
     @ptyProcess.on 'terminal-plus:exit', (data) =>
       @destroy()
+
+    @ptyProcess.on 'terminal-plus:title', (title) =>
+      @statusIcon.updateTooltip(title)
+
+    @ptyProcess.on 'terminal-plus:clear-title', =>
+      @statusIcon.removeTooltip()
 
     @terminal.end = => @destroy()
 
@@ -143,7 +149,7 @@ class TerminalPlusView extends View
     @panel.show()
 
     if lastOpenedView and lastOpenedView != this
-      @promise().done(lastOpenedView.hide)
+      lastOpenedView.hide()
     lastOpenedView = this
     @statusIcon.classList.add 'active'
     @setWindowSizeBoundary()
@@ -219,7 +225,7 @@ class TerminalPlusView extends View
     @resizeStopped = @resizeStopped.bind(this)
     @attachResizeEvents()
 
-  resizeStarted: (e) ->
+  resizeStarted: ->
     $(document).on('mousemove', @resizePanel)
     $(document).on('mouseup', @resizeStopped)
 
@@ -227,10 +233,10 @@ class TerminalPlusView extends View
     $(document).off('mousemove', @resizePanel)
     $(document).off('mouseup', @resizeStopped)
 
-  clampResize: (height) =>
+  clampResize: (height) ->
     return Math.max(Math.min(@maxHeight, height), @minHeight)
 
-  resizePanel: (event) =>
+  resizePanel: (event) ->
     return @resizeStopped() unless event.which is 1
 
     mouseY = $(window).height() - event.pageY
