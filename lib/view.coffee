@@ -58,6 +58,8 @@ class TerminalPlusView extends View
     @subscriptions.add atom.tooltips.add @hideBtn,
       title: 'Hide the terminal window.'
 
+    @animating = $.Deferred().resolve()
+
   forkPtyProcess: (shell, args=[]) ->
     project = atom.project.getPaths()[0] ? '~'
     Task.once Pty, path.resolve(project), shell, args
@@ -117,14 +119,13 @@ class TerminalPlusView extends View
       @input "cd #{cwd}; clear; pwd#{os.EOL}" if cwd?
       @input "#{autoRunCommand}#{os.EOL}" if autoRunCommand
 
-  setWindowSizeBoundary: ->
+  setViewSizeBoundary: ->
     @maxHeight = atom.config.get('terminal-plus.style.maxPanelHeight')
     @xterm.css("max-height", "#{@maxHeight}px")
     @xterm.css("min-height", "#{@minHeight}px")
 
   destroy: ->
-    @hide()
-    @promise().done(@_destroy)
+    @hide().done(=> @_destroy())
 
   _destroy: ->
     @subscriptions.dispose()
@@ -145,15 +146,15 @@ class TerminalPlusView extends View
   maximize: ->
     @xterm.height (@maxHeight)
 
-  open: ->
+  open: (@animating=$.Deferred()) ->
     @panel.show()
 
     if lastOpenedView and lastOpenedView != this
       lastOpenedView.hide()
     lastOpenedView = this
-    @statusIcon.classList.add 'active'
-    @setWindowSizeBoundary()
     @statusBar.setActiveTerminalView this
+    @statusIcon.classList.add 'active'
+    @setViewSizeBoundary()
 
     if atom.config.get('terminal-plus.toggles.windowAnimations')
       @WindowMinHeight = @xterm.height() + 50
@@ -167,8 +168,17 @@ class TerminalPlusView extends View
         else
           @focusTerminal()
         @attr 'style', ''
+        @animating.resolve('Opened')
+    else
+      @animating.resolve('Opened')
 
-  hide: ->
+    @animating
+
+  hide: (@animating=$.Deferred()) ->
+    @terminal?.blur()
+    lastOpenedView = null
+    @statusIcon.classList.remove 'active'
+
     if atom.config.get('terminal-plus.toggles.windowAnimations')
       @WindowMinHeight = @xterm.height() + 50
       @height @WindowMinHeight
@@ -177,17 +187,19 @@ class TerminalPlusView extends View
       }, 250, =>
         @attr 'style', ''
         @panel.hide()
+        @animating.resolve('Hidden')
     else
       @panel.hide()
-    @terminal?.blur()
-    lastOpenedView = null
-    @statusIcon.classList.remove 'active'
+      @animating.resolve('Hidden')
+
+    @animating
 
   toggle: ->
+    return unless @animating.state() is "resolved"
     if @panel.isVisible()
-      @promise().done(@hide)
+      @hide()
     else
-      @promise().done(@open)
+      @open()
 
   input: (data) ->
     @ptyProcess.send event: 'input', text: data
