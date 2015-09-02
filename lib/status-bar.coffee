@@ -37,17 +37,17 @@ class StatusBar extends View
     @subscriptions.add atom.tooltips.add @plusBtn, title: 'New Terminal'
     @subscriptions.add atom.tooltips.add @closeBtn, title: 'Close All'
 
-    @statusContainer.on 'mousedown', '.sortable', ({target, which, ctrlKey}) =>
+    @statusContainer.on 'click', '.sortable', ({target, which, ctrlKey}) =>
       statusIcon = $(target).closest('.status-icon')[0]
       if which is 3 or (which is 1 and ctrlKey is true)
         @find('.right-clicked').removeClass('right-clicked')
         statusIcon.classList.add('right-clicked')
         false
       else if which is 1
-        statusIcon.terminal.toggle()
+        statusIcon.terminalView.toggle()
         true
       else if which is 2
-        statusIcon.terminal.destroy()
+        statusIcon.terminalView.destroy()
         false
 
     cancel = (event) ->
@@ -75,10 +75,10 @@ class StatusBar extends View
       'terminal-plus:status-cyan': (event) => @setStatusColor(event)
       'terminal-plus:status-magenta': (event) => @setStatusColor(event)
       'terminal-plus:status-default': (event) => @clearStatusColor(event)
-      'terminal-plus:context-destroy': (event) =>
-        $(event.target).closest('.status-icon')[0].terminal.destroy()
+      'terminal-plus:context-close': (event) =>
+        $(event.target).closest('.status-icon')[0].terminalView.destroy()
       'terminal-plus:context-hide': (event) ->
-        $(event.target).closest('.status-icon')[0].terminal.hide()
+        $(event.target).closest('.status-icon')[0].terminalView.hide()
 
   createTerminalView: ->
     statusIcon = new StatusIcon()
