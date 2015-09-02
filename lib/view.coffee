@@ -46,37 +46,39 @@ class TerminalPlusView extends View
 
       @div class: 'xterm', outlet: 'xterm'
 
-  constructor: (@opts={})->
-    if opts.shellOverride
-      opts.shell = opts.shellOverride
-    else
-      opts.shell = process.env.SHELL or 'bash'
-    opts.shellArguments or= ''
+  constructor: ->
     editorPath = keypather.get atom, 'workspace.getEditorViews[0].getEditor().getPath()'
     opts.cwd = opts.cwd or atom.project.getPaths()[0] or editorPath or process.env.HOME
     @subscriptions = new CompositeDisposable
     super
 
-  forkPtyProcess: (sh, args=[]) ->
-    path = atom.project.getPaths()[0] ? '~'
-    forceTitle = atom.config.get('terminal-plus.toggles.forceTitle')
-    Task.once Pty, fs.absolute(path), sh, args, forceTitle: forceTitle
+  initialize: ->
+    @subscriptions.add atom.tooltips.add @closeBtn,
+     title: 'Destroy the terminal session.'
+    @subscriptions.add atom.tooltips.add @hideBtn,
+     title: 'Hide the terminal window.'
+
+  forkPtyProcess: (shell, args=[]) ->
+    project = atom.project.getPaths()[0] ? '~'
+    Task.once Pty, path.resolve(project), shell, args
 
   displayTerminal: () ->
     {cols, rows} = @getDimensions()
-    {cwd, shell, shellArguments, shellOverride, runCommand, cursorBlink, scrollback} = @opts
+    shell = atom.config.get 'terminal-plus.core.shell'
+    shellArguments = atom.config.get 'terminal-plus.core.shellArguments'
     args = shellArguments.split(/\s+/g).filter (arg)-> arg
-    @ptyProcess = @forkPtyProcess shellOverride, args
+    @ptyProcess = @forkPtyProcess shell, args
 
     @terminal = new Terminal {
-      colors: @xtermColors
-      cursorBlink, scrollback, cols, rows
+      colors          : @xtermColors
+      cursorBlink     : atom.config.get 'terminal-plus.toggles.cursorBlink'
+      scrollback      : atom.config.get 'terminal-plus.core.scrollback'
+      cols, rows
     }
 
-    @setupListeners()
+    @attachListeners()
 
     @terminal.open @xterm.get(0)
-    @input "#{runCommand}#{os.EOL}" if runCommand
 
     @applyStyle()
     @attachEvents()
@@ -86,13 +88,9 @@ class TerminalPlusView extends View
       @focusTerminal()
     setTimeout onDisplay, 300
 
-  setupListeners: () ->
-    @ptyProcess.send event: 'input', text: ' clear\r'
-
-    @ptyProcess.once 'terminal-plus:data', (chunk) =>
-
-      @ptyProcess.on 'terminal-plus:data', (data) =>
-        @terminal.write data
+  attachListeners: ->
+    @ptyProcess.on 'terminal-plus:data', (data) =>
+      @terminal.write data
 
     @ptyProcess.on 'terminal-plus:exit', (data) =>
       @destroy()
@@ -152,11 +150,6 @@ class TerminalPlusView extends View
     @statusIcon.classList.add 'active'
     @setWindowSizeBoundary()
     @statusBar.setActiveTerminalView this
-
-    @subscriptions.add atom.tooltips.add @closeBtn,
-     title: 'Destroy the terminal session.'
-    @subscriptions.add atom.tooltips.add @hideBtn,
-     title: 'Hide the terminal window.'
 
     if atom.config.get('terminal-plus.toggles.windowAnimations')
       @WindowMinHeight = @xterm.height() + 50

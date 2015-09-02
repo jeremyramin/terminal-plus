@@ -83,13 +83,7 @@ class StatusBar extends View
   createTerminalView: ->
     statusIcon = new StatusIcon()
 
-    options =
-      runCommand    : atom.config.get 'terminal-plus.core.autoRunCommand'
-      shellOverride : atom.config.get 'terminal-plus.core.shellOverride'
-      shellArguments: atom.config.get 'terminal-plus.core.shellArguments'
-      cursorBlink   : atom.config.get 'terminal-plus.toggles.cursorBlink'
-
-    terminalPlusView = new TerminalPlusView(options)
+    terminalPlusView = new TerminalPlusView()
     statusIcon.initialize(terminalPlusView)
 
     terminalPlusView.statusBar = this
@@ -204,6 +198,8 @@ class StatusBar extends View
       @getPlaceholder().insertAfter(element)
 
   onDrop: (event) =>
+    event.preventDefault()
+    event.stopPropagation()
     {dataTransfer} = event.originalEvent
     return unless dataTransfer.getData('terminal-plus') is 'true'
 

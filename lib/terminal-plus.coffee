@@ -28,11 +28,6 @@ module.exports = TerminalPlus =
           description: 'Should the cursor blink when the terminal is active?'
           type: 'boolean'
           default: true
-        forceTitle:
-          title: 'Force Terminal Title'
-          description: 'Force shell to give the terminal a title.'
-          type: 'boolean'
-          default: false
         windowAnimations:
           title: 'Window Animations'
           description: 'Do you want the panel to transition on open and on hide?'
@@ -52,20 +47,27 @@ module.exports = TerminalPlus =
           description: 'How many lines of history should be kept?'
           type: 'integer'
           default: 1000
-        shellOverride:
+        shell:
           title: 'Shell Override'
           description: 'Override the default shell instance to launch.'
           type: 'string'
-          default: ''
+          default: do ->
+            switch process.platform
+              when 'win32'
+                path.resolve(process.env.SystemRoot, 'WindowsPowerShell', 'v1.0', 'powershell.exe')
+              else
+                process.env.SHELL
         shellArguments:
           title: 'Shell Arguments'
           description: 'Specify some arguments to use when launching the shell.'
           type: 'string'
-          default: do ({SHELL, HOME}=process.env) ->
-            switch path.basename SHELL.toLowerCase()
-              when 'bash' then "--init-file #{path.join HOME, '.bash_profile'}"
-              when 'zsh'  then ''
-              else ''
+          default: ''
+        workingDirectory:
+          title: 'Working Directory'
+          description: 'Which directory should be the present working directory when a new terminal is made?'
+          type: 'string'
+          default: 'Project'
+          enum: ['Home', 'Project', 'Active File']
     style:
       type: 'object'
       order: 3
@@ -93,7 +95,7 @@ module.exports = TerminalPlus =
           title: 'Font Family'
           description: 'Override the editor\'s default font family.'
           type: 'string'
-          default: do -> atom.config.get('editor.fontFamily')
+          default: 'monospace'
         fontSize:
           title: 'Font Size'
           description: 'Override the editor\'s default font size.'

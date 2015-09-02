@@ -1,58 +1,42 @@
 pty = require 'pty.js'
-{execSync} = require 'child_process'
+path = require 'path'
+fs = require 'fs'
 
-module.exports = (ptyCwd, sh, args, options={}) ->
+module.exports = (ptyCwd, shell, args, options={}) ->
   callback = @async()
-  if sh
-    shell = sh
-  else
-    if process.platform is 'win32'
-      path = require 'path'
-      shell = path.resolve(process.env.SystemRoot, 'WindowsPowerShell', 'v1.0', 'powershell.exe')
-    else
-      shell = process.env.SHELL
+  run = title = shell = path.basename shell
+
+  if fs.existsSync '/usr/bin/login'
+    run = "login"
+    args.unshift shell
+    args.unshift process.env.USER
+    args.unshift "-qpf"
 
   cols = 80
-  rows = 30
+  rows = 40
 
-  env = process.env
-  try
-    cmd = 'test -e /etc/profile && source /etc/profile;test -e ~/.profile && source ~/.profile; node -pe "JSON.stringify(process.env)"'
-    external = JSON.parse execSync cmd
-    env.PATH = external.PATH
-  catch e
-  env.HISTCONTROL = 'ignorespace'
-  env.PS1 = '\\h:\\W \\u\\$ '
-
-  ptyProcess = pty.fork shell, args,
+  ptyProcess = pty.fork run, args,
     cols: cols
     rows: rows
     cwd: ptyCwd
-    env: env
 
-  if options.forceTitle
-    switch shell.match(/\w+(\.exe)?$/)[0]
-      when 'bash', 'sh'
-        ptyProcess.write " trap 'echo -ne \"\\033]2;$BASH_COMMAND\\007\"' DEBUG\r"
-      when 'powershell.exe'
-        ptyProcess.write """
-          function prompt
-          {
-              $command = Get-History -Count 1
-              if ($command) {
-                  $host.ui.rawui.WindowTitle = $command
-              }
-              "PS $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) "
-          }\r
-        """
-      else
-        console.log 'Terminal-Plus: No suitable method found to force shell title.', shell.match(/\w+(\.exe)?$/)[0]
+  ptyProcess.on 'data', (data) ->
+    emit('terminal-plus:data', data)
 
-  ptyProcess.on 'data', (data) -> emit('terminal-plus:data', data)
+  ptyProcess.on 'data', ->
+    newTitle = ptyProcess.process
+    if newTitle is shell
+      emit('terminal-plus:clear-title')
+    else unless title is newTitle
+      emit('terminal-plus:title', newTitle)
+    title = newTitle
+
   ptyProcess.on 'exit', ->
     emit('terminal-plus:exit')
     callback()
-  ptyProcess.on 'close', (data) -> emit('terminal-plus:close', data)
+
+  ptyProcess.on 'close', (data) ->
+    emit('terminal-plus:close', data)
 
   process.on 'message', ({event, cols, rows, text}={}) ->
     switch event
