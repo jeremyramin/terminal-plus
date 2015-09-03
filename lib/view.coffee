@@ -177,7 +177,8 @@ class TerminalPlusView extends View
   maximize: ->
     @xterm.height (@maxHeight)
 
-  open: (@animating=$.Deferred()) ->
+  open: =>
+    @animating=$.Deferred()
     @panel.show()
 
     if lastOpenedView and lastOpenedView != this
@@ -186,26 +187,21 @@ class TerminalPlusView extends View
     @statusBar.setActiveTerminalView this
     @statusIcon.classList.add 'active'
     @setViewSizeBoundary()
+    height = (@opened && @xterm.height() || @maxHeight) + 40
 
     if atom.config.get('terminal-plus.toggles.windowAnimations')
-      @WindowMinHeight = @xterm.height() + 50
       @height 0
       @animate {
-        height: @opened && @WindowMinHeight || @maxHeight
-      }, 250, () =>
-        if not @opened
-          @opened = true
-          @displayTerminal()
-        else
-          @focusTerminal()
-        @attr 'style', ''
-        @animating.resolve('Opened')
+        height: height
+      }, 250, => @animating.resolve('Opened')
     else
+      @height height
       @animating.resolve('Opened')
 
     @animating
 
-  hide: (@animating=$.Deferred()) ->
+  hide: =>
+    @animating=$.Deferred()
     @terminal?.blur()
     lastOpenedView = null
     @statusIcon.classList.remove 'active'
@@ -216,7 +212,6 @@ class TerminalPlusView extends View
       @animate {
         height: 0
       }, 250, =>
-        @attr 'style', ''
         @panel.hide()
         @animating.resolve('Hidden')
     else
@@ -227,10 +222,16 @@ class TerminalPlusView extends View
 
   toggle: ->
     return unless @animating.state() is "resolved"
+
     if @panel.isVisible()
       @hide()
     else
-      @open()
+      @open().done =>
+        if not @opened
+          @opened = true
+          @displayTerminal()
+        else
+          @focusTerminal()
 
   input: (data) ->
     @ptyProcess.send event: 'input', text: data
@@ -281,6 +282,7 @@ class TerminalPlusView extends View
 
   resizePanel: (event) ->
     return @resizeStopped() unless event.which is 1
+    @attr 'style', ''
 
     mouseY = $(window).height() - event.pageY
     delta = mouseY - $('atom-panel-container.bottom').height()
@@ -308,9 +310,9 @@ class TerminalPlusView extends View
   paste: ->
     @input atom.clipboard.read()
 
-  focus: ->
-    @resizeTerminalToView
-    @focusTerminal
+  focus: =>
+    @resizeTerminalToView()
+    @focusTerminal()
 
   focusTerminal: ->
     @terminal.focus()
