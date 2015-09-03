@@ -1,6 +1,5 @@
 path = require 'path'
 os = require 'os'
-keypather = do require 'keypather'
 
 {Task, CompositeDisposable} = require 'atom'
 {$, View} = require 'atom-space-pen-views'
@@ -36,23 +35,18 @@ class TerminalPlusView extends View
   @content: () ->
     @div tabIndex: -1, class: 'terminal-plus terminal-plus-view', outlet: 'terminalPlusView', =>
       @div class: 'panel-divider', style: 'cursor:row-resize; width:100%; height: 2px;', outlet: 'panelDivider'
-      @div class: 'panel-heading btn-toolbar', outlet:'viewToolbar', =>
+      @div class: 'panel-heading btn-toolbar', outlet:'toolbarView', =>
         @button outlet: 'closeBtn', class: 'btn inline-block-tight right', click: 'destroy', =>
           @i class: 'icon icon-x', ' '
           @span 'Close'
         @button outlet: 'hideBtn', class: 'btn inline-block-tight right', click: 'hide', =>
           @i class: 'icon icon-chevron-down', ' '
           @span 'Hide'
-
       @div class: 'xterm', outlet: 'xterm'
 
-  constructor: ->
-    editorPath = keypather.get atom, 'workspace.getEditorViews[0].getEditor().getPath()'
-    @pwd = atom.project.getPaths()[0] or editorPath or process.env.HOME
-    @subscriptions = new CompositeDisposable
-    super
-
   initialize: ->
+    @subscriptions = new CompositeDisposable
+
     @subscriptions.add atom.tooltips.add @closeBtn,
       title: 'Destroy the terminal session.'
     @subscriptions.add atom.tooltips.add @hideBtn,
@@ -126,15 +120,29 @@ class TerminalPlusView extends View
     @ptyProcess.on 'terminal-plus:clear-title', =>
       @statusIcon.removeTooltip()
 
+    @terminal.scrollDisp = (disp) ->
+      @ydisp += disp > 0 && 2 || -2
+
+      if @ydisp > @ybase
+        @ydisp = @ybase
+      else if @ydisp < 0
+        @ydisp = 0
+
+      @refresh(0, @rows - 1)
+
     @terminal.end = => @destroy()
 
     @terminal.on "data", (data) =>
       @input data
 
     @terminal.once "open", =>
+      projectPath = atom.project.getPaths()[0]
+      editorPath = atom.workspace.getActiveTextEditor()?.getPath()
+      editorPath = path.dirname editorPath if editorPath?
+
       switch atom.config.get('terminal-plus.core.workingDirectory')
-        when 'Project' then cwd = @pwd
-        when 'Active File' then cwd = path.dirname atom.workspace.getActiveTextEditor()?.getPath()
+        when 'Project' then cwd = projectPath or editorPath or process.env.HOME
+        when 'Active File' then cwd = editorPath or projectPath or process.env.HOME
         else cwd = null
 
       autoRunCommand = atom.config.get('terminal-plus.core.autoRunCommand')

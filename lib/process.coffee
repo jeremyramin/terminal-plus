@@ -10,7 +10,7 @@ module.exports = (ptyCwd, shell, args, options={}) ->
     run = "login"
     args.unshift shell
     args.unshift process.env.USER
-    args.unshift "-qpf"
+    args.unshift "-qf"
 
   cols = 80
   rows = 40

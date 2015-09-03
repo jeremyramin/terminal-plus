@@ -1,22 +1,13 @@
 StatusBar = require './status-bar'
 
-path = require 'path'
-{CompositeDisposable} = require 'atom'
-
 module.exports = TerminalPlus =
   statusBar: null
-  subscriptions: null
 
   activate: (state) ->
     @statusBar = new StatusBar(state.statusBarState)
-    @subscriptions = new CompositeDisposable
 
   deactivate: ->
-    @subscriptions.dispose()
     @statusBar.destroy()
-
-  serialize: ->
-    statusBarState: @statusBar.serialize()
 
   config:
     toggles:
@@ -54,6 +45,7 @@ module.exports = TerminalPlus =
           default: do ->
             switch process.platform
               when 'win32'
+                path = require 'path'
                 path.resolve(process.env.SystemRoot, 'WindowsPowerShell', 'v1.0', 'powershell.exe')
               else
                 process.env.SHELL

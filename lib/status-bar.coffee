@@ -4,8 +4,6 @@
 TerminalPlusView = require './view'
 StatusIcon = require './status-icon'
 
-window.jQuery = window.$ = $
-
 module.exports =
 class StatusBar extends View
   terminalViews: []
