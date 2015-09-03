@@ -50,10 +50,6 @@ class StatusBar extends View
         statusIcon.terminalView.destroy()
         false
 
-    cancel = (event) ->
-      event.preventDefault()
-      return false
-
     @statusContainer.on 'dragstart', '.sortable', @onDragStart
     @statusContainer.on 'dragend', '.sortable', @onDragEnd
     @statusContainer.on 'dragleave', @onDragLeave
@@ -61,7 +57,6 @@ class StatusBar extends View
     @statusContainer.on 'drop', @onDrop
 
     @attach()
-    @createTerminalView()
 
   registerContextMenu: ->
     @subscriptions.add atom.commands.add '.terminal-plus',
@@ -201,9 +196,9 @@ class StatusBar extends View
     event.preventDefault()
     event.stopPropagation()
     {dataTransfer} = event.originalEvent
-    return unless dataTransfer.getData('terminal-plus') is 'true'
+    return unless dataTransfer.getData 'terminal-plus' is 'true'
 
-    fromIndex = parseInt(dataTransfer.getData('sortable-index'))
+    fromIndex = parseInt(dataTransfer.getData 'sortable-index')
     toIndex = @getDropTargetIndex(event)
     @clearDropTarget()
 
