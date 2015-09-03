@@ -60,6 +60,29 @@ class TerminalPlusView extends View
 
     @animating = $.Deferred().resolve()
 
+    override = (event) ->
+      event.preventDefault()
+      event.stopPropagation()
+
+    @xterm.on 'click', => @focus()
+
+    @xterm.on 'dragenter', override
+    @xterm.on 'dragover', override
+    @xterm.on 'drop', @recieveItemOrFile
+
+  recieveItemOrFile: (event) =>
+    event.preventDefault()
+    event.stopPropagation()
+    {dataTransfer} = event.originalEvent
+
+    if dataTransfer.getData('atom-event') is 'true'
+      @input "#{dataTransfer.getData('text/plain')} "
+    else if path = dataTransfer.getData('initialPath')
+      @input "#{path} "
+    else if dataTransfer.files.length > 0
+      for file in dataTransfer.files
+        @input "#{file.path} "
+
   forkPtyProcess: (shell, args=[]) ->
     project = atom.project.getPaths()[0] ? '~'
     Task.once Pty, path.resolve(project), shell, args
