@@ -6,13 +6,8 @@
 @inactive-opacity: 0.5;
 
 .terminal-plus {
+  letter-spacing: normal;
 
-  .left {
-    float: left !important;
-  }
-  .right {
-    float: right !important;
-  }
   ul {
     padding: 0;
     margin: 0;
@@ -28,32 +23,54 @@
   }
 
   &.terminal-plus-view {
+    display: -webkit-flex;
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow-y: visible;
+
+    .panel-divider {
+      display: inherit;
+      order: 1;
+      z-index: 10;
+      -webkit-user-select: none;
+      cursor: row-resize;
+      width: 100%;
+      height: 8px;
+      margin-top: -4px;
+    }
 
     .btn-toolbar {
-      padding: 2px;
+      display: block;
+      order: 2;
+      width: 100%;
+      padding: 0 2px 4px 2px;
+
+      .left {
+        float: left;
+      }
+      .right {
+        float: right;
+      }
+
       .btn {
+        font-size: 13px;
         top: 0;
         height: 3em;
         margin: 0 5px;
-
-        i {
-          vertical-align: middle;
-        }
       }
     }
 
-    .panel-divider {
-      background-color: black;
-    }
-
     .xterm {
+      display: block;
+      order: 3;
+      height: 100%;
       width: 100%;
       text-align: right;
       > .terminal {
-        height: auto;
+        height: 100%;
         width: 100%;
         position: relative;
-        letter-spacing: normal;
         > div {
           white-space: pre;
           font-size: inherit;
@@ -61,7 +78,6 @@
             display: inline-block;
             line-height: inherit;
             height: inherit;
-            font-weight: normal !important;
           }
         }
       }

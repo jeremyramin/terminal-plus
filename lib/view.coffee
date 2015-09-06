@@ -8,6 +8,7 @@ Pty = require.resolve './process'
 Terminal = require 'term.js'
 
 lastOpenedView = null
+lastActiveElement = null
 
 module.exports =
 class TerminalPlusView extends View
@@ -33,32 +34,40 @@ class TerminalPlusView extends View
     '#ffffff'  # white
   ]
   @content: () ->
-    @div tabIndex: -1, class: 'terminal-plus terminal-plus-view', outlet: 'terminalPlusView', =>
-      @div class: 'panel-divider', style: 'cursor:row-resize; width:100%; height: 2px;', outlet: 'panelDivider'
-      @div class: 'panel-heading btn-toolbar', outlet:'toolbarView', =>
+    @div class: 'terminal-plus terminal-plus-view', outlet: 'terminalPlusView', =>
+      @div class: 'panel-divider', outlet: 'panelDivider'
+      @div class: 'btn-toolbar', outlet:'toolbar', =>
         @button outlet: 'closeBtn', class: 'btn inline-block-tight right', click: 'destroy', =>
-          @i class: 'icon icon-x', ' '
-          @span 'Close'
+          @span class: 'icon icon-x', ' Close'
         @button outlet: 'hideBtn', class: 'btn inline-block-tight right', click: 'hide', =>
-          @i class: 'icon icon-chevron-down', ' '
-          @span 'Hide'
+          @span class: 'icon icon-chevron-down', ' Hide'
+        @button outlet: 'maximizeBtn', class: 'btn inline-block-tight right', click: 'maximize', =>
+          @span class: 'icon icon-screen-full', ' Maximize'
       @div class: 'xterm', outlet: 'xterm'
 
   initialize: ->
     @subscriptions = new CompositeDisposable
 
     @subscriptions.add atom.tooltips.add @closeBtn,
-      title: 'Destroy the terminal session.'
+      title: 'Exit the terminal session.'
     @subscriptions.add atom.tooltips.add @hideBtn,
       title: 'Hide the terminal window.'
+    @subscriptions.add atom.tooltips.add @maximizeBtn,
+      title: 'Maximize the terminal window.'
+
+    @maxHeight = atom.config.get('terminal-plus.style.maxPanelHeight')
+    @xterm.height @maxHeight
+    @prevHeight = @maxHeight + 48
+    @setViewSizeBoundary()
 
     @animating = $.Deferred().resolve()
 
     override = (event) ->
+      return if event.originalEvent.dataTransfer.getData('terminal-plus') is 'true'
       event.preventDefault()
       event.stopPropagation()
 
-    @xterm.on 'click', => @focus()
+    @xterm.on 'click', @focus
 
     @xterm.on 'dragenter', override
     @xterm.on 'dragover', override
@@ -151,7 +160,6 @@ class TerminalPlusView extends View
       @input "#{autoRunCommand}#{os.EOL}" if autoRunCommand
 
   setViewSizeBoundary: ->
-    @maxHeight = atom.config.get('terminal-plus.style.maxPanelHeight')
     @xterm.css("max-height", "#{@maxHeight}px")
     @xterm.css("min-height", "#{@minHeight}px")
 
@@ -175,7 +183,21 @@ class TerminalPlusView extends View
     return
 
   maximize: ->
-    @xterm.height (@maxHeight)
+    @maximizedHeight = @prevHeight + $('atom-pane-container').height()
+    if @maximized
+      @height @prevHeight
+      @setViewSizeBoundary()
+      @maximizeBtn.children('span').text(' Maximize')
+      @maximizeBtn.find('i').removeClass('icon-screen-normal').addClass('icon-screen-full')
+      @maximized = false
+    else
+      @xterm.attr 'style', ''
+      @attr 'style', ''
+      @height @maximizedHeight
+      @maximizeBtn.children('span').text(' Minimize')
+      @maximizeBtn.find('i').removeClass('icon-screen-full').addClass('icon-screen-normal')
+      @maximized = true
+    @focus()
 
   open: =>
     @animating=$.Deferred()
@@ -186,8 +208,7 @@ class TerminalPlusView extends View
     lastOpenedView = this
     @statusBar.setActiveTerminalView this
     @statusIcon.classList.add 'active'
-    @setViewSizeBoundary()
-    height = (@opened && @xterm.height() || @maxHeight) + 40
+    height = if @maximized then @maximizedHeight else @prevHeight
 
     if atom.config.get('terminal-plus.toggles.windowAnimations')
       @height 0
@@ -207,8 +228,6 @@ class TerminalPlusView extends View
     @statusIcon.classList.remove 'active'
 
     if atom.config.get('terminal-plus.toggles.windowAnimations')
-      @WindowMinHeight = @xterm.height() + 50
-      @height @WindowMinHeight
       @animate {
         height: 0
       }, 250, =>
@@ -224,14 +243,18 @@ class TerminalPlusView extends View
     return unless @animating.state() is "resolved"
 
     if @panel.isVisible()
-      @hide()
+      @animating.then =>
+        @hide().done =>
+          lastActiveElement.focus() unless lastOpenedView?
     else
-      @open().done =>
-        if not @opened
-          @opened = true
-          @displayTerminal()
-        else
-          @focusTerminal()
+      lastActiveElement = $(document.activeElement)
+      @animating.then =>
+        @open().done =>
+          if not @opened
+            @opened = true
+            @displayTerminal()
+          else
+            @focusTerminal()
 
   input: (data) ->
     @ptyProcess.send event: 'input', text: data
@@ -270,6 +293,7 @@ class TerminalPlusView extends View
     @attachResizeEvents()
 
   resizeStarted: ->
+    return if @maximized
     $(document).on('mousemove', @resizePanel)
     $(document).on('mouseup', @resizeStopped)
 
@@ -290,6 +314,7 @@ class TerminalPlusView extends View
 
     @xterm.height clamped
     $(@terminal.element).height clamped
+    @prevHeight = @height()
 
     @resizeTerminalToView()
 

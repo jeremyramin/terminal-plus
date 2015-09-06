@@ -95,7 +95,7 @@ class StatusBar extends View
 
   activeTerminalView: (index) ->
     return unless @terminalViews.length > 1
-    
+
     if index >= @terminalViews.length
       index = 0
     if index < 0
