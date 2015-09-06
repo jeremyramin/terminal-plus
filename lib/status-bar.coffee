@@ -94,11 +94,15 @@ class StatusBar extends View
     @activeTerminalView @activeIndex - 1
 
   activeTerminalView: (index) ->
+    return unless @terminalViews.length > 1
+    
     if index >= @terminalViews.length
       index = 0
     if index < 0
       index = @terminalViews.length - 1
-    @terminalViews[index].open() if @terminalViews[index]?
+
+    if active = @terminalViews[index]
+      active.open().then => active.focusTerminal()
 
   getActiveTerminalView: () ->
     return @terminalViews[@activeIndex]
@@ -191,12 +195,12 @@ class StatusBar extends View
       @getPlaceholder().insertAfter(element)
 
   onDrop: (event) =>
+    {dataTransfer} = event.originalEvent
+    return unless dataTransfer.getData('terminal-plus') is 'true'
     event.preventDefault()
     event.stopPropagation()
-    {dataTransfer} = event.originalEvent
-    return unless dataTransfer.getData 'terminal-plus' is 'true'
 
-    fromIndex = parseInt(dataTransfer.getData 'sortable-index')
+    fromIndex = parseInt(dataTransfer.getData('sortable-index'))
     toIndex = @getDropTargetIndex(event)
     @clearDropTarget()
 
