@@ -18,7 +18,6 @@
   "dependencies": {
     "atom-space-pen-views": "^2.1.0",
     "fs-plus": "^2.8.1",
-    "keypather": "^1.10.1",
     "pty.js": "^0.3",
     "term.js": "^0.0.7"
   }
