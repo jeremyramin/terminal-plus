@@ -13,26 +13,7 @@ lastActiveElement = null
 module.exports =
 class TerminalPlusView extends View
   opened: false
-  xtermColors:[
-    # dark:
-    '#000000', # black
-    '#cd0000', # red3
-    '#00cd00', # green3
-    '#cdcd00', # yellow3
-    '#0000ee', # blue2
-    '#cd00cd', # magenta3
-    '#00cdcd', # cyan3
-    '#e5e5e5', # gray90
-    # bright:
-    '#7f7f7f', # gray50
-    '#ff0000', # red
-    '#00ff00', # green
-    '#ffff00', # yellow
-    '#5c5cff', # rgb:5c/5c/ff
-    '#ff00ff', # magenta
-    '#00ffff', # cyan
-    '#ffffff'  # white
-  ]
+
   @content: () ->
     @div class: 'terminal-plus terminal-plus-view', outlet: 'terminalPlusView', =>
       @div class: 'panel-divider', outlet: 'panelDivider'
@@ -98,7 +79,6 @@ class TerminalPlusView extends View
     @ptyProcess = @forkPtyProcess shell, args
 
     @terminal = new Terminal {
-      colors          : @xtermColors
       cursorBlink     : atom.config.get 'terminal-plus.toggles.cursorBlink'
       scrollback      : atom.config.get 'terminal-plus.core.scrollback'
       cols, rows
@@ -128,16 +108,6 @@ class TerminalPlusView extends View
 
     @ptyProcess.on 'terminal-plus:clear-title', =>
       @statusIcon.removeTooltip()
-
-    @terminal.scrollDisp = (disp) ->
-      @ydisp += disp > 0 && 2 || -2
-
-      if @ydisp > @ybase
-        @ydisp = @ybase
-      else if @ydisp < 0
-        @ydisp = 0
-
-      @refresh(0, @rows - 1)
 
     @terminal.end = => @destroy()
 
@@ -200,7 +170,7 @@ class TerminalPlusView extends View
     @focus()
 
   open: =>
-    @animating=$.Deferred()
+    @animating ?= $.Deferred()
     @panel.show()
 
     if lastOpenedView and lastOpenedView != this
@@ -222,7 +192,7 @@ class TerminalPlusView extends View
     @animating
 
   hide: =>
-    @animating=$.Deferred()
+    @animating ?= $.Deferred()
     @terminal?.blur()
     lastOpenedView = null
     @statusIcon.classList.remove 'active'
@@ -240,12 +210,14 @@ class TerminalPlusView extends View
     @animating
 
   toggle: ->
-    return unless @animating.state() is "resolved"
+    if @animating?
+      return unless @animating.state() is "resolved"
 
     if @panel.isVisible()
       @animating.then =>
         @hide().done =>
           lastActiveElement.focus() unless lastOpenedView?
+          @animating = null
     else
       lastActiveElement = $(document.activeElement)
       @animating.then =>
@@ -255,6 +227,7 @@ class TerminalPlusView extends View
             @displayTerminal()
           else
             @focusTerminal()
+          @animating = null
 
   input: (data) ->
     @ptyProcess.send event: 'input', text: data
@@ -268,8 +241,6 @@ class TerminalPlusView extends View
     style = atom.config.get 'terminal-plus.style'
 
     @xterm.addClass style.theme
-    @terminal.element.style.backgroundColor = 'inherit'
-    @terminal.element.style.color = 'inherit'
 
     fontFamily = ["monospace"]
     fontFamily.unshift style.fontFamily unless style.fontFamily is ''
