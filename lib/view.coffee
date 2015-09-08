@@ -37,15 +37,11 @@ class TerminalPlusView extends View
     @subscriptions.add atom.tooltips.add @maximizeBtn,
       title: 'Maximize the terminal window.'
 
-    @maxHeight = atom.config.get('terminal-plus.style.maxPanelHeight')
-    @xterm.height @maxHeight
-    @prevHeight = @maxHeight + 48
-    @setViewSizeBoundary()
+    @prevHeight = atom.config.get('terminal-plus.style.defaultPanelHeight')
+    @xterm.height 0
 
-    animationSpeed = atom.config.get('terminal-plus.style.animationSpeed')
-    animationSpeed = 100 if animationSpeed is 0
-
-    @css 'transition', "height #{0.25 / animationSpeed}s linear"
+    @setAnimationSpeed()
+    atom.config.onDidChange('terminal-plus.style.animationSpeed', @setAnimationSpeed)
 
     override = (event) ->
       return if event.originalEvent.dataTransfer.getData('terminal-plus') is 'true'
@@ -57,6 +53,12 @@ class TerminalPlusView extends View
     @xterm.on 'dragenter', override
     @xterm.on 'dragover', override
     @xterm.on 'drop', @recieveItemOrFile
+
+  setAnimationSpeed: =>
+    @animationSpeed = atom.config.get('terminal-plus.style.animationSpeed')
+    @animationSpeed = 100 if @animationSpeed is 0
+
+    @xterm.css 'transition', "height #{0.25 / @animationSpeed}s linear"
 
   recieveItemOrFile: (event) =>
     event.preventDefault()
@@ -133,10 +135,6 @@ class TerminalPlusView extends View
       @input "cd #{cwd}; clear; pwd#{os.EOL}" if cwd?
       @input "#{autoRunCommand}#{os.EOL}" if autoRunCommand
 
-  setViewSizeBoundary: ->
-    @xterm.css("max-height", "#{@maxHeight}px")
-    @xterm.css("min-height", "#{@minHeight}px")
-
   destroy: ->
     @subscriptions.dispose()
     @statusIcon.remove()
@@ -153,19 +151,18 @@ class TerminalPlusView extends View
     @terminal?.destroy()
 
   maximize: ->
-    @maximizedHeight = @prevHeight + $('atom-pane-container').height()
+    @maxHeight = @prevHeight + $('atom-pane-container').height()
+    @xterm.css 'height', ''
+    btn = @maximizeBtn.children('span')
     if @maximized
-      @height @prevHeight
-      @setViewSizeBoundary()
-      @maximizeBtn.children('span').text(' Maximize')
-      @maximizeBtn.find('i').removeClass('icon-screen-normal').addClass('icon-screen-full')
+      @xterm.height @prevHeight
+      btn.text(' Maximize')
+      btn.removeClass('icon-screen-normal').addClass('icon-screen-full')
       @maximized = false
     else
-      @xterm.attr 'style', ''
-      @css 'height', ''
-      @height @maximizedHeight
-      @maximizeBtn.children('span').text(' Minimize')
-      @maximizeBtn.find('i').removeClass('icon-screen-full').addClass('icon-screen-normal')
+      @xterm.height @maxHeight
+      btn.text(' Minimize')
+      btn.removeClass('icon-screen-full').addClass('icon-screen-normal')
       @maximized = true
     @focus()
 
@@ -179,10 +176,9 @@ class TerminalPlusView extends View
     @statusBar.setActiveTerminalView this
     @statusIcon.activate()
 
-    @height 0
+    @xterm.height 0
     @animating = true
-    @height if @maximized then @maximizedHeight else @prevHeight
-    @xterm.show()
+    @xterm.height if @maximized then @maxHeight else @prevHeight
 
     @onTransitionEnd =>
       if not @opened
@@ -196,10 +192,9 @@ class TerminalPlusView extends View
     lastOpenedView = null
     @statusIcon.deactivate()
 
-    @height if @maximized then @maximizedHeight else @prevHeight
+    @xterm.height if @maximized then @maxHeight else @prevHeight
     @animating = true
-    @xterm.hide()
-    @height 0
+    @xterm.height 0
 
     @onTransitionEnd =>
       @panel.hide()
@@ -251,27 +246,26 @@ class TerminalPlusView extends View
 
   resizeStarted: ->
     return if @maximized
+    @maxHeight = @prevHeight + $('atom-pane-container').height()
     $(document).on('mousemove', @resizePanel)
     $(document).on('mouseup', @resizeStopped)
+    @xterm.css 'transition', ''
 
   resizeStopped: ->
     $(document).off('mousemove', @resizePanel)
     $(document).off('mouseup', @resizeStopped)
-
-  clampResize: (height) ->
-    return Math.max(Math.min(@maxHeight, height), @minHeight)
+    @xterm.css 'transition', "height #{0.25 / @animationSpeed}s linear"
 
   resizePanel: (event) ->
     return @resizeStopped() unless event.which is 1
-    @css 'height', ''
 
     mouseY = $(window).height() - event.pageY
     delta = mouseY - $('atom-panel-container.bottom').height()
-    clamped = @clampResize (@xterm.height() + delta)
+    clamped = Math.min(Math.max(@xterm.height() + delta, @minHeight), @maxHeight)
 
     @xterm.height clamped
     $(@terminal.element).height clamped
-    @prevHeight = @height()
+    @prevHeight = clamped
 
     @resizeTerminalToView()
 
@@ -311,6 +305,7 @@ class TerminalPlusView extends View
 
   getDimensions: ->
     fakeRow = $("<div><span>&nbsp;</span></div>")
+
     if @terminal
       @find('.terminal').append fakeRow
       fakeCol = fakeRow.children().first()[0].getBoundingClientRect()
@@ -325,6 +320,6 @@ class TerminalPlusView extends View
     {cols, rows}
 
   onTransitionEnd: (callback) ->
-    @one 'webkitTransitionEnd', =>
+    @xterm.one 'webkitTransitionEnd', =>
       callback()
       @animating = false

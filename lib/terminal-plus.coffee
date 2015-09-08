@@ -72,12 +72,12 @@ module.exports =
           default: do -> atom.config.get('editor.fontSize')
           minimum: 1
           maximum: 100
-        maxPanelHeight:
-          title: 'Maximum Panel Height'
-          description: 'Maximum height of a terminal panel.'
+        defaultPanelHeight:
+          title: 'Default Panel Height'
+          description: 'Default height of a terminal panel.'
           type: 'integer'
           default: 300
-          minimum: 50
+          minimum: 0
         theme:
           title: 'Theme'
           description: 'Select a theme for the terminal.'
