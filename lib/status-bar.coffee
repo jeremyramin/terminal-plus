@@ -15,7 +15,7 @@ class StatusBar extends View
       @ul class: "list-inline status-container", tabindex: '-1', outlet: 'statusContainer', is: 'space-pen-ul'
       @i class: "icon icon-x", click: 'closeAll', outlet: 'closeBtn'
 
-  initialize: (state={}) ->
+  initialize: () ->
     @subscriptions = new CompositeDisposable
 
     @subscriptions.add atom.commands.add 'atom-workspace',
@@ -101,8 +101,7 @@ class StatusBar extends View
     if index < 0
       index = @terminalViews.length - 1
 
-    if active = @terminalViews[index]
-      active.open().then => active.focusTerminal()
+    @terminalViews[index].open()
 
   getActiveTerminalView: () ->
     return @terminalViews[@activeIndex]
