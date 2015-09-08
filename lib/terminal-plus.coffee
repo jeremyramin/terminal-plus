@@ -1,32 +1,16 @@
-StatusBar = require './status-bar'
-
-module.exports = TerminalPlus =
+module.exports =
   statusBar: null
 
-  activate: (state) ->
-    @statusBar = new StatusBar(state.statusBarState)
+  activate: ->
+    @statusBar = new (require './status-bar')()
 
   deactivate: ->
     @statusBar.destroy()
 
   config:
-    toggles:
-      type: 'object'
-      order: 1
-      properties:
-        cursorBlink:
-          title: 'Cursor Blink'
-          description: 'Should the cursor blink when the terminal is active?'
-          type: 'boolean'
-          default: true
-        windowAnimations:
-          title: 'Window Animations'
-          description: 'Do you want the panel to transition on open and on hide?'
-          type: 'boolean'
-          default: true
     core:
       type: 'object'
-      order: 2
+      order: 1
       properties:
         autoRunCommand:
           title: 'Auto Run Command'
@@ -62,8 +46,38 @@ module.exports = TerminalPlus =
           enum: ['Home', 'Project', 'Active File']
     style:
       type: 'object'
-      order: 3
+      order: 2
       properties:
+        animationSpeed:
+          title: 'Animation Speed'
+          description: 'How fast should the window animate?'
+          type: 'number'
+          default: '1'
+          minimum: '0'
+          maximum: '100'
+        cursorBlink:
+          title: 'Cursor Blink'
+          description: 'Should the cursor blink when the terminal is active?'
+          type: 'boolean'
+          default: true
+        fontFamily:
+          title: 'Font Family'
+          description: 'Override the editor\'s default font family.'
+          type: 'string'
+          default: 'monospace'
+        fontSize:
+          title: 'Font Size'
+          description: 'Override the editor\'s default font size.'
+          type: 'integer'
+          default: do -> atom.config.get('editor.fontSize')
+          minimum: 1
+          maximum: 100
+        maxPanelHeight:
+          title: 'Maximum Panel Height'
+          description: 'Maximum height of a terminal panel.'
+          type: 'integer'
+          default: 300
+          minimum: 50
         theme:
           title: 'Theme'
           description: 'Select a theme for the terminal.'
@@ -83,24 +97,6 @@ module.exports = TerminalPlus =
             'silver-aerogel',
             'solid-colors',
           ]
-        fontFamily:
-          title: 'Font Family'
-          description: 'Override the editor\'s default font family.'
-          type: 'string'
-          default: 'monospace'
-        fontSize:
-          title: 'Font Size'
-          description: 'Override the editor\'s default font size.'
-          type: 'integer'
-          default: do -> atom.config.get('editor.fontSize')
-          minimum: 1
-          maximum: 100
-        maxPanelHeight:
-          title: 'Maximum Panel Height'
-          description: 'Maximum height of a terminal panel.'
-          type: 'integer'
-          default: 300
-          minimum: 50
     colors:
       type: 'object'
       order: 4
