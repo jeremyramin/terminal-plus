@@ -177,7 +177,7 @@ class TerminalPlusView extends View
       lastOpenedView.hide()
     lastOpenedView = this
     @statusBar.setActiveTerminalView this
-    @statusIcon.classList.add 'active'
+    @statusIcon.activate()
 
     @height 0
     @animating = true
@@ -194,7 +194,7 @@ class TerminalPlusView extends View
   hide: =>
     @terminal?.blur()
     lastOpenedView = null
-    @statusIcon.classList.remove 'active'
+    @statusIcon.deactivate()
 
     @height if @maximized then @maximizedHeight else @prevHeight
     @animating = true

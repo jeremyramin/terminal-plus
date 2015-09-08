@@ -35,21 +35,10 @@ class StatusBar extends View
     @subscriptions.add atom.tooltips.add @plusBtn, title: 'New Terminal'
     @subscriptions.add atom.tooltips.add @closeBtn, title: 'Close All'
 
-    @statusContainer.on 'click', '.sortable', ({target, which, ctrlKey}) =>
-      statusIcon = $(target).closest('.status-icon')[0]
-      if which is 3 or (which is 1 and ctrlKey is true)
-        @find('.right-clicked').removeClass('right-clicked')
-        statusIcon.classList.add('right-clicked')
-        false
-      else if which is 1
-        statusIcon.terminalView.toggle()
-        true
-      else if which is 2
-        statusIcon.terminalView.destroy()
-        false
+    @statusContainer.on 'dblclick', => @newTerminalView()
 
-    @statusContainer.on 'dragstart', '.sortable', @onDragStart
-    @statusContainer.on 'dragend', '.sortable', @onDragEnd
+    @statusContainer.on 'dragstart', '.status-icon', @onDragStart
+    @statusContainer.on 'dragend', '.status-icon', @onDragEnd
     @statusContainer.on 'dragleave', @onDragLeave
     @statusContainer.on 'dragover', @onDragOver
     @statusContainer.on 'drop', @onDrop
@@ -58,20 +47,23 @@ class StatusBar extends View
 
   registerContextMenu: ->
     @subscriptions.add atom.commands.add '.terminal-plus',
-      'terminal-plus:status-red': (event) => @setStatusColor(event)
-      'terminal-plus:status-orange': (event) => @setStatusColor(event)
-      'terminal-plus:status-yellow': (event) => @setStatusColor(event)
-      'terminal-plus:status-green': (event) => @setStatusColor(event)
-      'terminal-plus:status-blue': (event) => @setStatusColor(event)
-      'terminal-plus:status-purple': (event) => @setStatusColor(event)
-      'terminal-plus:status-pink': (event) => @setStatusColor(event)
-      'terminal-plus:status-cyan': (event) => @setStatusColor(event)
-      'terminal-plus:status-magenta': (event) => @setStatusColor(event)
-      'terminal-plus:status-default': (event) => @clearStatusColor(event)
-      'terminal-plus:context-close': (event) =>
+      'terminal-plus:status-red': @setStatusColor
+      'terminal-plus:status-orange': @setStatusColor
+      'terminal-plus:status-yellow': @setStatusColor
+      'terminal-plus:status-green': @setStatusColor
+      'terminal-plus:status-blue': @setStatusColor
+      'terminal-plus:status-purple': @setStatusColor
+      'terminal-plus:status-pink': @setStatusColor
+      'terminal-plus:status-cyan': @setStatusColor
+      'terminal-plus:status-magenta': @setStatusColor
+      'terminal-plus:status-default': @clearStatusColor
+      'terminal-plus:context-close': (event) ->
         $(event.target).closest('.status-icon')[0].terminalView.destroy()
       'terminal-plus:context-hide': (event) ->
-        $(event.target).closest('.status-icon')[0].terminalView.hide()
+        statusIcon = $(event.target).closest('.status-icon')[0]
+        statusIcon.terminalView.hide() if statusIcon.isActive()
+      'terminal-plus:close-all': =>
+        @closeAll()
 
   createTerminalView: ->
     statusIcon = new StatusIcon()
@@ -165,9 +157,9 @@ class StatusBar extends View
   onDragStart: (event) =>
     event.originalEvent.dataTransfer.setData 'terminal-plus', 'true'
 
-    element = $(event.target).closest('.sortable')
+    element = $(event.target).closest('.status-icon')
     element.addClass 'is-dragging'
-    event.originalEvent.dataTransfer.setData 'sortable-index', element.index()
+    event.originalEvent.dataTransfer.setData 'from-index', element.index()
 
   onDragLeave: (event) =>
     @removePlaceholder()
@@ -184,13 +176,13 @@ class StatusBar extends View
     newDropTargetIndex = @getDropTargetIndex(event)
     return unless newDropTargetIndex?
     @removeDropTargetClasses()
-    sortableObjects = @statusContainer.children(".sortable")
+    statusIcons = @statusContainer.children '.status-icon'
 
-    if newDropTargetIndex < sortableObjects.length
-      element = sortableObjects.eq(newDropTargetIndex).addClass 'is-drop-target'
+    if newDropTargetIndex < statusIcons.length
+      element = statusIcons.eq(newDropTargetIndex).addClass 'is-drop-target'
       @getPlaceholder().insertBefore(element)
     else
-      element = sortableObjects.eq(newDropTargetIndex - 1).addClass 'drop-target-is-after'
+      element = statusIcons.eq(newDropTargetIndex - 1).addClass 'drop-target-is-after'
       @getPlaceholder().insertAfter(element)
 
   onDrop: (event) =>
@@ -199,14 +191,14 @@ class StatusBar extends View
     event.preventDefault()
     event.stopPropagation()
 
-    fromIndex = parseInt(dataTransfer.getData('sortable-index'))
+    fromIndex = parseInt(dataTransfer.getData('from-index'))
     toIndex = @getDropTargetIndex(event)
     @clearDropTarget()
 
     @updateOrder(fromIndex, toIndex)
 
   clearDropTarget: ->
-    element = @find(".is-dragging")
+    element = @find('.is-dragging')
     element.removeClass 'is-dragging'
     @removeDropTargetClasses()
     @removePlaceholder()
@@ -219,20 +211,20 @@ class StatusBar extends View
     target = $(event.target)
     return if @isPlaceholder(target)
 
-    sortables = @statusContainer.children('.sortable')
-    element = target.closest('.sortable')
-    element = sortables.last() if element.length is 0
+    statusIcons = @statusContainer.children('.status-icon')
+    element = target.closest('.status-icon')
+    element = statusIcons.last() if element.length is 0
 
     return 0 unless element.length
 
     elementCenter = element.offset().left + element.width() / 2
 
     if event.originalEvent.pageX < elementCenter
-      sortables.index(element)
-    else if element.next('.sortable').length > 0
-      sortables.index(element.next('.sortable'))
+      statusIcons.index(element)
+    else if element.next('.status-icon').length > 0
+      statusIcons.index(element.next('.status-icon'))
     else
-      sortables.index(element) + 1
+      statusIcons.index(element) + 1
 
   getPlaceholder: ->
     @placeholderEl ?= $('<li class="placeholder"></li>')
