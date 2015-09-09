@@ -168,7 +168,6 @@ class TerminalPlusView extends View
 
   open: =>
     lastActiveElement ?= $(document.activeElement)
-    @panel.show()
 
     if lastOpenedView and lastOpenedView != this
       lastOpenedView.hide()
@@ -176,6 +175,7 @@ class TerminalPlusView extends View
     @statusBar.setActiveTerminalView this
     @statusIcon.activate()
 
+    @panel.show()
     @xterm.height 0
     @animating = true
     @xterm.height if @maximized then @maxHeight else @prevHeight
@@ -199,8 +199,9 @@ class TerminalPlusView extends View
     @onTransitionEnd =>
       @panel.hide()
       unless lastOpenedView?
-        lastActiveElement.focus()
-        lastActiveElement = null
+        if lastActiveElement?
+          lastActiveElement.focus()
+          lastActiveElement = null
 
   toggle: ->
     return if @animating
