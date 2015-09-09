@@ -7,3 +7,6 @@
 ### v0.1.2 - Patch
 * Absolute image source paths in README.md
  * Update image in color coding section
+
+### v0.1.3 - Patch
+* Add more features to README.md

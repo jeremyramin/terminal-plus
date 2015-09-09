@@ -10,25 +10,21 @@ Terminal-Plus stays in the bottom of your editor while you work.
 
 ### Status Bar
 ![status-bar](https://github.com/jeremyramin/terminal-plus/raw/master/resources/status-bar.png)  
-You can keep track of terminal instances via the status bar. Each new terminal is represented as a terminal icon in the bar.
+You can keep track of terminal instances via the status bar. Each terminal has a status icon ( ![status icon](https://github.com/jeremyramin/terminal-plus/raw/master/resources/status-icon.png) ) in the status bar. The ( ![plus-icon](https://github.com/jeremyramin/terminal-plus/raw/master/resources/plus-icon.png) ) button creates a new terminal, while the ( ![red-x](https://github.com/jeremyramin/terminal-plus/raw/master/resources/red-x.png) ) button closes all terminals.
 
-The ( ![plus-icon](https://github.com/jeremyramin/terminal-plus/raw/master/resources/plus-icon.png) ) button creates a new terminal, while the ( ![red-x](https://github.com/jeremyramin/terminal-plus/raw/master/resources/red-x.png) ) button closes all terminals.  
-Click on a status icon ( ![status icon](https://github.com/jeremyramin/terminal-plus/raw/master/resources/status-icon.png) ) to toggle that terminal. Right click the status icon for a list of available commands.  
-
-From the right-click menu you can color code the status icon as well as hide or close the terminal instance.
+Click on a status icon to toggle that terminal. Right click the status icon for a list of available commands. From the right-click menu you can color code the status icon as well as hide or close the terminal instance.
 
 ### Terminal
-You can toggle the terminal with the `terminal-plus:toggle` command (Default:`` ctrl-` ``). [See available commands below](#commands).  
+You can open the last active terminal with the `terminal-plus:toggle` command (Default:`` ctrl-` ``).  If no terminal instances are available, then a new one will be created. The same toggle command is used to hide the currently active terminal.
 
 From there you can begin typing into the terminal. By default the terminal will change directory into the project folder if possible. The default working directory can be changed in the settings to the home directory or to the active file directory.
+
+[See available commands below](#commands).
 
 ## Features
 
 ### Full Terminal
 Every terminal is loaded with your system’s default initialization files. This ensures that you have access to the same commands and aliases as you would in your standard terminal.
-
-### Hackable
-Plenty of settings for you to play with until your heart is content.
 
 ### Themes
 The terminal is preloaded with several themes that you can choose from. Not satisfied?  
@@ -63,21 +59,28 @@ The colors are customizable in the settings, however the names remain the same i
 ### Sorting
 Organize your open terminal instances by dragging and dropping them.
 
-![sorting](https://github.com/jeremyramin/terminal-plus/raw/master/resources/sorting.gif)
+![](https://github.com/jeremyramin/terminal-plus/raw/master/resources/sorting.gif)
+
+### Resizable
+You can resize the view vertically, or just maximize it with the maximize button.
+
+### Working Directory
+You can set the default working directory for new terminals. By default this will be the project folder.
+
+### File Dropping
+Dropping a file on the terminal will insert the file path into the input. This works with external files, tabs from the Atom tab-view, and entries from the Atom tree-view.
 
 ## Install
 Ready to install?
 
-You can install via `apm`:
-
-`apm install terminal-plus`
+You can install via apm: `apm install terminal-plus`
 
 Or navigate to the install tab in Atom’s settings view, and search for `terminal-plus`.
 
 ## Commands
 | Command | Action | Default Keybind |
 |---------|--------|-----------------|
-| terminal-plus:new | Create a new terminal instance. | `ctrl-shift-t` or `cmd-shift-t` |
-| terminal-plus:toggle | Toggle the last active terminal instance.<br>**Note:** This will create a new terminal if it needs to. | `` ctrl-` `` (Control + Backtick) |
-| terminal-plus:prev | Switch to the terminal left of the last active terminal. | `ctrl-shift-j` or `cmd-shift-j`
-| terminal-plus:next | Switch to the terminal right of the last active terminal. | `ctrl-shift-k` or `cmd-shift-k`
+| terminal-plus:new | Create a new terminal instance. | `ctrl-shift-t` or<br>`cmd-shift-t` |
+| terminal-plus:toggle | Toggle the last active terminal instance.<br>**Note:** This will create a new terminal if it needs to. | `` ctrl-` ``<br>(Control + Backtick) |
+| terminal-plus:prev | Switch to the terminal left of the last active terminal. | `ctrl-shift-j` or<br>`cmd-shift-j`
+| terminal-plus:next | Switch to the terminal right of the last active terminal. | `ctrl-shift-k` or<br>`cmd-shift-k`
