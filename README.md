@@ -1,19 +1,20 @@
 # Terminal-Plus
 Terminal-Plus is a terminal package for Atom, complete with themes and more.  
 
-![demo](/resources/demo.gif)
+![demo](https://github.com/jeremyramin/terminal-plus/raw/master/resources/demo.gif)
 
-*[Nucleus Dark UI](https://atom.io/themes/nucleus-dark-ui) with [Atom Material Syntax](https://atom.io/themes/atom-material-syntax) and our **Homebrew** theme.*
+*[Nucleus Dark UI](https://atom.io/themes/nucleus-dark-ui) with [Atom Material Syntax](https://atom.io/themes/atom-material-syntax) and our Homebrew theme.*
 
 ## Usage
 Terminal-Plus stays in the bottom of your editor while you work.
 
 ### Status Bar
-![status-bar](/resources/status-bar.png)  
+![status-bar](https://github.com/jeremyramin/terminal-plus/raw/master/resources/status-bar.png)  
 You can keep track of terminal instances via the status bar. Each new terminal is represented as a terminal icon in the bar.
 
-The ( ![plus-icon](/resources/plus-icon.png) ) button creates a new terminal, while the ( ![red-x](/resources/red-x.png) ) button closes all terminals.  
-Click on a status icon ( ![status icon](/resources/status-icon.png) ) to toggle that terminal. Right click the status icon for a list of available commands.  
+The ( ![plus-icon](https://github.com/jeremyramin/terminal-plus/raw/master/resources/plus-icon.png) ) button creates a new terminal, while the ( ![red-x](https://github.com/jeremyramin/terminal-plus/raw/master/resources/red-x.png) ) button closes all terminals.  
+Click on a status icon ( ![status icon](https://github.com/jeremyramin/terminal-plus/raw/master/resources/status-icon.png) ) to toggle that terminal. Right click the status icon for a list of available commands.  
+
 From the right-click menu you can color code the status icon as well as hide or close the terminal instance.
 
 ### Terminal
@@ -50,17 +51,19 @@ Use the following template in your stylesheet:
 ### Terminal Titles
 By hovering over the terminal status icon, you can see which command is currently running in the terminal.
 
-![](/resources/terminal_title.png)
+![](https://github.com/jeremyramin/terminal-plus/raw/master/resources/terminal_title.png)
 
 ### Color Coding
 Need a faster way to figure out which terminal is which? Color code your status icons!
 
-![](/resources/status-icon_color_coding.png)
+![](https://github.com/jeremyramin/terminal-plus/raw/master/resources/status-icon_color_coding.png)
+
+The colors are customizable in the settings, however the names remain the same in the menus.
 
 ### Sorting
 Organize your open terminal instances by dragging and dropping them.
 
-![sorting](/resources/sorting.gif)
+![sorting](https://github.com/jeremyramin/terminal-plus/raw/master/resources/sorting.gif)
 
 ## Install
 Ready to install?
