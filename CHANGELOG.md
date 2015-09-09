@@ -10,3 +10,4 @@
 
 ### v0.1.3 - Patch
 * Add more features to README.md
+* Fix issue #1
