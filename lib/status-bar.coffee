@@ -23,7 +23,6 @@ class StatusBar extends View
       'terminal-plus:toggle': => @toggle()
       'terminal-plus:next': => @activeNextTerminalView()
       'terminal-plus:prev': => @activePrevTerminalView()
-      'terminal-plus:hide': => @runInActiveView (i) -> i.hide()
       'terminal-plus:close': => @runInActiveView (i) -> i.destroy()
 
     @subscriptions.add atom.commands.add '.xterm',
