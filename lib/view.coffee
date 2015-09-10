@@ -106,9 +106,6 @@ class TerminalPlusView extends View
     @ptyProcess.on 'terminal-plus:data', (data) =>
       @terminal.write data
 
-    @ptyProcess.on 'terminal-plus:exit', (data) =>
-      @destroy()
-
     @ptyProcess.on 'terminal-plus:title', (title) =>
       @statusIcon.updateTooltip(title)
 

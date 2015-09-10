@@ -4,13 +4,16 @@ fs = require 'fs'
 
 module.exports = (ptyCwd, shell, args, options={}) ->
   callback = @async()
-  run = title = shell = path.basename shell
+  run = shell
+  title = shell = path.basename shell
 
   if fs.existsSync '/usr/bin/login'
     run = "login"
     args.unshift shell
     args.unshift process.env.USER
     args.unshift "-qf"
+  else
+    args.unshift '--login'
 
   cols = 80
   rows = 40
