@@ -11,3 +11,7 @@
 ### v0.1.3 - Patch
 * Add more features to README.md
 * Fix issue #1
+
+### v0.1.4 - Patch
+* Make terminal scroll to bottom on input
+* Don't close the terminal view on process exit
