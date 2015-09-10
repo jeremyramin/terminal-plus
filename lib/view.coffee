@@ -94,7 +94,7 @@ class TerminalPlusView extends View
     @ptyProcess = @forkPtyProcess shell, args
 
     @terminal = new Terminal {
-      cursorBlink     : atom.config.get 'terminal-plus.style.cursorBlink'
+      cursorBlink     : atom.config.get 'terminal-plus.toggles.cursorBlink'
       scrollback      : atom.config.get 'terminal-plus.core.scrollback'
       cols, rows
     }
@@ -111,6 +111,7 @@ class TerminalPlusView extends View
     @ptyProcess.on 'terminal-plus:exit', =>
       @input = ->
       @resize = ->
+      @destroy() if atom.config.get('terminal-plus.toggles.autoClose')
 
     @ptyProcess.on 'terminal-plus:title', (title) =>
       @statusIcon.updateTooltip(title)

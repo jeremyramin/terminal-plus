@@ -34,3 +34,6 @@
 ### v0.1.9 - Patch
 * Add insert selected text (see commit)
 * Remove login command
+
+### v0.1.10 - Patch
+* Add option to auto close terminal on shell process exit

@@ -2,15 +2,30 @@ module.exports =
   statusBar: null
 
   activate: ->
+    atom.config.unset('terminal-plus.style.cursorBlink')
     @statusBar = new (require './status-bar')()
 
   deactivate: ->
     @statusBar.destroy()
 
   config:
-    core:
+    toggles:
       type: 'object'
       order: 1
+      properties:
+        cursorBlink:
+          title: 'Cursor Blink'
+          description: 'Should the cursor blink when the terminal is active?'
+          type: 'boolean'
+          default: true
+        autoClose:
+          title: 'Close Terminal on Exit'
+          description: 'Should the terminal close if the shell exits?'
+          type: 'boolean'
+          default: false
+    core:
+      type: 'object'
+      order: 2
       properties:
         autoRunCommand:
           title: 'Auto Run Command'
@@ -45,7 +60,7 @@ module.exports =
           enum: ['Home', 'Project', 'Active File']
     style:
       type: 'object'
-      order: 2
+      order: 3
       properties:
         animationSpeed:
           title: 'Animation Speed'
@@ -54,11 +69,6 @@ module.exports =
           default: '1'
           minimum: '0'
           maximum: '100'
-        cursorBlink:
-          title: 'Cursor Blink'
-          description: 'Should the cursor blink when the terminal is active?'
-          type: 'boolean'
-          default: true
         fontFamily:
           title: 'Font Family'
           description: 'Override the editor\'s default font family.'
