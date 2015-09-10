@@ -26,3 +26,6 @@
 * Resize terminal on maximize and minimize
 * Fix powershell.exe resolve
 * Fix shell launch bugs
+
+### v0.1.8 - Patch
+* Remove quiet option from login

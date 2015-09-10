@@ -11,7 +11,7 @@ module.exports = (ptyCwd, shell, args, options={}) ->
   if fs.existsSync '/usr/bin/login'
     args.unshift shell
     args.unshift process.env.USER
-    args.unshift "-qf"
+    args.unshift "-f"
     shell = "login"
   else unless shell.indexOf('zsh') != -1
     args.unshift '--login'
