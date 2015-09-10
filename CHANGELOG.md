@@ -15,3 +15,6 @@
 ### v0.1.4 - Patch
 * Make terminal scroll to bottom on input
 * Don't close the terminal view on process exit
+
+### v0.1.5 - Patch
+* On process exit, disable input to prevent error
