@@ -149,6 +149,7 @@ class TerminalPlusView extends View
     @maxHeight = @prevHeight + $('atom-pane-container').height()
     @xterm.css 'height', ''
     btn = @maximizeBtn.children('span')
+    @onTransitionEnd => @focus()
     if @maximized
       @xterm.height @prevHeight
       btn.text(' Maximize')
@@ -159,7 +160,6 @@ class TerminalPlusView extends View
       btn.text(' Minimize')
       btn.removeClass('icon-screen-full').addClass('icon-screen-normal')
       @maximized = true
-    @focus()
 
   open: =>
     lastActiveElement ?= $(document.activeElement)
