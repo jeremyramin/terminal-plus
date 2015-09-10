@@ -1,3 +1,8 @@
+## Author's Note
+* There are install errors for Windows machines (fix in progress)
+* This package requires that you have the dependencies for node-gyp.  
+[See node-gyp install instructions](https://github.com/nodejs/node-gyp#installation).
+
 # Terminal-Plus
 Terminal-Plus is a terminal package for Atom, complete with themes and more.  
 
@@ -70,6 +75,14 @@ You can set the default working directory for new terminals. By default this wil
 ### File Dropping
 Dropping a file on the terminal will insert the file path into the input. This works with external files, tabs from the Atom tab-view, and entries from the Atom tree-view.
 
+### Quick Insert Command
+Quickly insert and run selected text in your text editor by running the `terminal-plus:insert-selected-text` command (`ctrl-enter`).
+
+![](https://github.com/jeremyramin/terminal-plus/raw/master/resources/insert_selected_text.gif)
+
+If you have text selected, it will insert your selected text into the active terminal and run it.  
+If you don't have text selected it, will run the text on the line where your cursor is then proceed to the next line.
+
 ## Install
 Ready to install?
 
@@ -82,5 +95,6 @@ Or navigate to the install tab in Atom’s settings view, and search for `termin
 |---------|--------|-----------------|
 | terminal-plus:new | Create a new terminal instance. | `ctrl-shift-t` or<br>`cmd-shift-t` |
 | terminal-plus:toggle | Toggle the last active terminal instance.<br>**Note:** This will create a new terminal if it needs to. | `` ctrl-` ``<br>(Control + Backtick) |
-| terminal-plus:prev | Switch to the terminal left of the last active terminal. | `ctrl-shift-j` or<br>`cmd-shift-j`
-| terminal-plus:next | Switch to the terminal right of the last active terminal. | `ctrl-shift-k` or<br>`cmd-shift-k`
+| terminal-plus:prev | Switch to the terminal left of the last active terminal. | `ctrl-shift-j` or<br>`cmd-shift-j` |
+| terminal-plus:next | Switch to the terminal right of the last active terminal. | `ctrl-shift-k` or<br>`cmd-shift-k` |
+| terminal-plus:insert-selected-text | Run the selected text as a command in the active terminal. | 'ctrl-enter' |

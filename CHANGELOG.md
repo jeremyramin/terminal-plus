@@ -1,3 +1,8 @@
+## v0.2.0 - Beta Release
+* Bump up to minor version 2
+* New settings and features added
+* Bug fixes listed below in v0.1.x patches
+
 ## v0.1.0 - Beta Release
 * Initial release
 
