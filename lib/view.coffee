@@ -175,11 +175,6 @@ class TerminalPlusView extends View
     @statusBar.setActiveTerminalView this
     @statusIcon.activate()
 
-    @panel.show()
-    @xterm.height 0
-    @animating = true
-    @xterm.height if @maximized then @maxHeight else @prevHeight
-
     @onTransitionEnd =>
       if not @opened
         @opened = true
@@ -187,14 +182,15 @@ class TerminalPlusView extends View
       else
         @focusTerminal()
 
+    @panel.show()
+    @xterm.height 0
+    @animating = true
+    @xterm.height if @maximized then @maxHeight else @prevHeight
+
   hide: =>
     @terminal?.blur()
     lastOpenedView = null
     @statusIcon.deactivate()
-
-    @xterm.height if @maximized then @maxHeight else @prevHeight
-    @animating = true
-    @xterm.height 0
 
     @onTransitionEnd =>
       @panel.hide()
@@ -202,6 +198,10 @@ class TerminalPlusView extends View
         if lastActiveElement?
           lastActiveElement.focus()
           lastActiveElement = null
+
+    @xterm.height if @maximized then @maxHeight else @prevHeight
+    @animating = true
+    @xterm.height 0
 
   toggle: ->
     return if @animating
@@ -213,6 +213,7 @@ class TerminalPlusView extends View
 
   input: (data) ->
     @ptyProcess.send event: 'input', text: data
+    @terminal.stopScrolling()
     @resizeTerminalToView()
     @focusTerminal()
 
