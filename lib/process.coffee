@@ -1,27 +1,31 @@
 pty = require 'pty.js'
 path = require 'path'
 fs = require 'fs'
+_ = require 'underscore'
+
+filteredEnv = _.omit process.env, 'ATOM_HOME', 'ATOM_SHELL_INTERNAL_RUN_AS_NODE', 'GOOGLE_API_KEY', 'NODE_ENV', 'NODE_PATH', 'userAgent', 'taskPath'
 
 module.exports = (ptyCwd, shell, args, options={}) ->
   callback = @async()
-  run = shell
-  title = shell = path.basename shell
 
   if fs.existsSync '/usr/bin/login'
-    run = "login"
     args.unshift shell
     args.unshift process.env.USER
     args.unshift "-qf"
-  else
+    shell = "login"
+  else unless shell.indexOf('zsh') != -1
     args.unshift '--login'
 
-  cols = 80
-  rows = 40
+  try
+    ptyProcess = pty.fork shell, args,
+      cwd: ptyCwd
+      env: filteredEnv
+  catch e
+    ptyProcess = pty.fork process.env.SHELL, args,
+      cwd: ptyCwd
+      env: filteredEnv
 
-  ptyProcess = pty.fork run, args,
-    cols: cols
-    rows: rows
-    cwd: ptyCwd
+  title = shell = path.basename shell
 
   ptyProcess.on 'data', (data) ->
     emit('terminal-plus:data', data)
@@ -37,9 +41,6 @@ module.exports = (ptyCwd, shell, args, options={}) ->
   ptyProcess.on 'exit', ->
     emit('terminal-plus:exit')
     callback()
-
-  ptyProcess.on 'close', (data) ->
-    emit('terminal-plus:close', data)
 
   process.on 'message', ({event, cols, rows, text}={}) ->
     switch event
