@@ -21,3 +21,8 @@
 
 ### v0.1.6 - Patch
 * Make sure to properly resize terminal on open
+
+### v0.1.7 - Patch
+* Resize terminal on maximize and minimize
+* Fix powershell.exe resolve
+* Fix shell launch bugs
