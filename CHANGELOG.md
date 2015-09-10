@@ -17,4 +17,7 @@
 * Don't close the terminal view on process exit
 
 ### v0.1.5 - Patch
-* On process exit, disable input to prevent error
+* On shell process exit, disable input to prevent error
+
+### v0.1.6 - Patch
+* Make sure to properly resize terminal on open

@@ -91,16 +91,9 @@ class TerminalPlusView extends View
     }
 
     @attachListeners()
-
     @terminal.open @xterm.get(0)
-
     @applyStyle()
     @attachEvents()
-    @resizeTerminalToView()
-
-    onDisplay = =>
-      @focusTerminal()
-    setTimeout onDisplay, 300
 
   attachListeners: ->
     @ptyProcess.on 'terminal-plus:data', (data) =>
@@ -121,6 +114,8 @@ class TerminalPlusView extends View
       @input data
 
     @terminal.once "open", =>
+      @focus()
+
       projectPath = atom.project.getPaths()[0]
       editorPath = atom.workspace.getActiveTextEditor()?.getPath()
       editorPath = path.dirname editorPath if editorPath?
@@ -180,7 +175,7 @@ class TerminalPlusView extends View
         @opened = true
         @displayTerminal()
       else
-        @focusTerminal()
+        @focus()
 
     @panel.show()
     @xterm.height 0
