@@ -27,12 +27,11 @@ module.exports =
           description: 'Override the default shell instance to launch.'
           type: 'string'
           default: do ->
-            switch process.platform
-              when 'win32'
-                path = require 'path'
-                path.resolve(process.env.SystemRoot, 'WindowsPowerShell', 'v1.0', 'powershell.exe')
-              else
-                process.env.SHELL
+            if process.platform is 'win32'
+              path = require 'path'
+              path.resolve(process.env.SystemRoot, 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe')
+            else
+              process.env.SHELL
         shellArguments:
           title: 'Shell Arguments'
           description: 'Specify some arguments to use when launching the shell.'
