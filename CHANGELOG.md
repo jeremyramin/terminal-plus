@@ -29,3 +29,4 @@
 
 ### v0.1.8 - Patch
 * Remove quiet option from login
+* Disable resize and input on terminal exit
