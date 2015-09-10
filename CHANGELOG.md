@@ -33,3 +33,4 @@
 
 ### v0.1.9 - Patch
 * Add insert selected text (see commit)
+* Remove login command

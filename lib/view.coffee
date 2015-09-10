@@ -74,8 +74,17 @@ class TerminalPlusView extends View
         @input "#{file.path} "
 
   forkPtyProcess: (shell, args=[]) ->
-    project = atom.project.getPaths()[0] ? '~'
-    Task.once Pty, path.resolve(project), shell, args
+    projectPath = atom.project.getPaths()[0]
+    editorPath = atom.workspace.getActiveTextEditor()?.getPath()
+    editorPath = path.dirname editorPath if editorPath?
+    home = if process.platform is 'win32' then process.env.HOMEPATH else process.env.HOME
+
+    switch atom.config.get('terminal-plus.core.workingDirectory')
+      when 'Project' then pwd = projectPath or editorPath or home
+      when 'Active File' then pwd = editorPath or projectPath or home
+      else pwd = home
+
+    Task.once Pty, path.resolve(pwd), shell, args
 
   displayTerminal: ->
     {cols, rows} = @getDimensions()
@@ -116,19 +125,7 @@ class TerminalPlusView extends View
 
     @terminal.once "open", =>
       @focus()
-
-      projectPath = atom.project.getPaths()[0]
-      editorPath = atom.workspace.getActiveTextEditor()?.getPath()
-      editorPath = path.dirname editorPath if editorPath?
-
-      switch atom.config.get('terminal-plus.core.workingDirectory')
-        when 'Project' then cwd = projectPath or editorPath or process.env.HOME
-        when 'Active File' then cwd = editorPath or projectPath or process.env.HOME
-        else cwd = null
-
       autoRunCommand = atom.config.get('terminal-plus.core.autoRunCommand')
-
-      @input "cd #{cwd}; clear; pwd#{os.EOL}" if cwd?
       @input "#{autoRunCommand}#{os.EOL}" if autoRunCommand
 
   destroy: ->
