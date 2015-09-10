@@ -30,3 +30,6 @@
 ### v0.1.8 - Patch
 * Remove quiet option from login
 * Disable resize and input on terminal exit
+
+### v0.1.9 - Patch
+* Add insert selected text (see commit)

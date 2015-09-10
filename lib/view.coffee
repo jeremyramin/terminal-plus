@@ -208,8 +208,8 @@ class TerminalPlusView extends View
       @open()
 
   input: (data) ->
-    @ptyProcess.send event: 'input', text: data
     @terminal.stopScrolling()
+    @ptyProcess.send event: 'input', text: data
     @resizeTerminalToView()
     @focusTerminal()
 
@@ -283,6 +283,17 @@ class TerminalPlusView extends View
 
   paste: ->
     @input atom.clipboard.read()
+
+  insertSelection: ->
+    return unless editor = atom.workspace.getActiveTextEditor()
+    if selection = editor.getSelectedText()
+      @terminal.stopScrolling()
+      @ptyProcess.send event: 'input', text: "#{selection}#{os.EOL}"
+    else if cursor = editor.getCursorBufferPosition()
+      line = editor.lineTextForBufferRow(cursor.row)
+      @terminal.stopScrolling()
+      @ptyProcess.send event: 'input', text: "#{line}#{os.EOL}"
+      editor.moveDown(1);
 
   focus: =>
     @resizeTerminalToView()
