@@ -2,7 +2,6 @@ module.exports =
   statusBar: null
 
   activate: ->
-    atom.config.unset('terminal-plus.style.cursorBlink')
     @statusBar = new (require './status-bar')()
 
   deactivate: ->

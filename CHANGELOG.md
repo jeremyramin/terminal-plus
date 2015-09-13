@@ -1,3 +1,9 @@
+## v0.3.0 - Beta Release
+* Refactor resizing to snap to row
+* Fix cursor line being removed if blank
+* Possible fix for refresh error
+* Fix for improper resizing when displaying the terminal for the first time
+
 ## v0.2.0 - Beta Release
 * Bump up to minor version 2
 * New settings and features added
