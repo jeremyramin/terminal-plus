@@ -252,12 +252,19 @@ class TerminalPlusView extends View
     $(document).off('mouseup', @resizeStopped)
     @xterm.css 'transition', "height #{0.25 / @animationSpeed}s linear"
 
+  nearestRow: (delta) ->
+    rows = (@prevHeight + delta) // @rowHeight
+    return rows * @rowHeight
+
   resizePanel: (event) ->
     return @resizeStopped() unless event.which is 1
 
     mouseY = $(window).height() - event.pageY
     delta = mouseY - $('atom-panel-container.bottom').height()
-    clamped = Math.min(Math.max(@xterm.height() + delta, @minHeight), @maxHeight)
+    return unless Math.abs(delta) > (@rowHeight * 5 / 6)
+
+    clamped = Math.max(@nearestRow(delta), @rowHeight * 3)
+    return if clamped > @maxHeight
 
     @xterm.height clamped
     $(@terminal.element).height clamped
@@ -316,9 +323,9 @@ class TerminalPlusView extends View
     if @terminal
       @find('.terminal').append fakeRow
       fakeCol = fakeRow.children().first()[0].getBoundingClientRect()
-      cols = Math.floor(@xterm.width() / (fakeCol.width or 9))
-      rows = Math.floor (@xterm.height() / (fakeCol.height or 20))
-      @minHeight = fakeCol.height
+      cols = Math.floor @xterm.width() / (fakeCol.width or 9)
+      rows = Math.floor @xterm.height() / (fakeCol.height or 20)
+      @rowHeight = fakeCol.height
       fakeRow.remove()
     else
       cols = Math.floor @xterm.width() / 9
