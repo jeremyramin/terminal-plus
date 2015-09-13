@@ -100,9 +100,8 @@ class TerminalPlusView extends View
     }
 
     @attachListeners()
-    @terminal.open @xterm.get(0)
-    @applyStyle()
     @attachEvents()
+    @terminal.open @xterm.get(0)
 
   attachListeners: ->
     @ptyProcess.on 'terminal-plus:data', (data) =>
@@ -125,6 +124,7 @@ class TerminalPlusView extends View
       @input data
 
     @terminal.once "open", =>
+      @applyStyle()
       @focus()
       autoRunCommand = atom.config.get('terminal-plus.core.autoRunCommand')
       @input "#{autoRunCommand}#{os.EOL}" if autoRunCommand
