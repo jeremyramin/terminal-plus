@@ -4,6 +4,9 @@
 * Possible fix for refresh error
 * Fix for improper resizing when displaying the terminal for the first time
 
+### v0.3.1 - Patch
+* Add warning for custom font family (must use monospaced font)
+
 ## v0.2.0 - Beta Release
 * Bump up to minor version 2
 * New settings and features added
