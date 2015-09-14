@@ -1,7 +1,8 @@
 ## Author's Note
 * There are install errors for Windows machines (fix in progress)
 * This package requires that you have the dependencies for node-gyp.  
-[See node-gyp install instructions](https://github.com/nodejs/node-gyp#installation).
+[See node-gyp install instructions](https://github.com/nodejs/node-gyp#installation).  
+* You must use a monospaced font in order for the spacing to be right.
 
 # Terminal-Plus
 Terminal-Plus is a terminal package for Atom, complete with themes and more.  

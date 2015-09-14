@@ -70,7 +70,7 @@ module.exports =
           maximum: '100'
         fontFamily:
           title: 'Font Family'
-          description: 'Override the editor\'s default font family.'
+          description: 'Override the editor\'s default font family. **You must use a [monospaced font](https://en.wikipedia.org/wiki/List_of_typefaces#Monospace)!**'
           type: 'string'
           default: 'monospace'
         fontSize:
