@@ -20,22 +20,23 @@ class TerminalPlusView extends View
       @div class: 'panel-divider', outlet: 'panelDivider'
       @div class: 'btn-toolbar', outlet:'toolbar', =>
         @button outlet: 'closeBtn', class: 'btn inline-block-tight right', click: 'destroy', =>
-          @span class: 'icon icon-x', ' Close'
+          @span class: 'icon icon-x'
         @button outlet: 'hideBtn', class: 'btn inline-block-tight right', click: 'hide', =>
-          @span class: 'icon icon-chevron-down', ' Hide'
+          @span class: 'icon icon-chevron-down'
         @button outlet: 'maximizeBtn', class: 'btn inline-block-tight right', click: 'maximize', =>
-          @span class: 'icon icon-screen-full', ' Maximize'
+          @span class: 'icon icon-screen-full'
       @div class: 'xterm', outlet: 'xterm'
 
   initialize: ->
     @subscriptions = new CompositeDisposable()
 
     @subscriptions.add atom.tooltips.add @closeBtn,
-      title: 'Exit the terminal session.'
+      title: 'Close'
     @subscriptions.add atom.tooltips.add @hideBtn,
-      title: 'Hide the terminal window.'
-    @subscriptions.add atom.tooltips.add @maximizeBtn,
-      title: 'Maximize the terminal window.'
+      title: 'Hide'
+    @maximizeBtn.tooltip = atom.tooltips.add @maximizeBtn,
+      title: 'Fullscreen'
+    @subscriptions.add @maximizeBtn.tooltip
 
     @prevHeight = atom.config.get('terminal-plus.style.defaultPanelHeight')
     @xterm.height 0
@@ -145,18 +146,26 @@ class TerminalPlusView extends View
     @terminal?.destroy()
 
   maximize: ->
+    @subscriptions.remove @maximizeBtn.tooltip
+    @maximizeBtn.tooltip.dispose()
+
     @maxHeight = @prevHeight + $('atom-pane-container').height()
     @xterm.css 'height', ''
     btn = @maximizeBtn.children('span')
     @onTransitionEnd => @focus()
+
     if @maximized
+      @maximizeBtn.tooltip = atom.tooltips.add @maximizeBtn,
+        title: 'Fullscreen'
+      @subscriptions.add @maximizeBtn.tooltip
       @xterm.height @prevHeight
-      btn.text(' Maximize')
       btn.removeClass('icon-screen-normal').addClass('icon-screen-full')
       @maximized = false
     else
+      @maximizeBtn.tooltip = atom.tooltips.add @maximizeBtn,
+        title: 'Normal'
+      @subscriptions.add @maximizeBtn.tooltip
       @xterm.height @maxHeight
-      btn.text(' Minimize')
       btn.removeClass('icon-screen-full').addClass('icon-screen-normal')
       @maximized = true
 
