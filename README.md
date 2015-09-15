@@ -1,5 +1,5 @@
 ## Author's Note
-* There are install errors for Windows machines (fix in progress)
+* ~~There are install errors for Windows machines (fix in progress)~~ Preliminary support for Windows systems.
 * This package requires that you have the dependencies for node-gyp.  
 [See node-gyp install instructions](https://github.com/nodejs/node-gyp#installation).  
 * You must use a monospaced font in order for the spacing to be right.
@@ -98,4 +98,4 @@ Or navigate to the install tab in Atom’s settings view, and search for `termin
 | terminal-plus:toggle | Toggle the last active terminal instance.<br>**Note:** This will create a new terminal if it needs to. | `` ctrl-` ``<br>(Control + Backtick) |
 | terminal-plus:prev | Switch to the terminal left of the last active terminal. | `ctrl-shift-j` or<br>`cmd-shift-j` |
 | terminal-plus:next | Switch to the terminal right of the last active terminal. | `ctrl-shift-k` or<br>`cmd-shift-k` |
-| terminal-plus:insert-selected-text | Run the selected text as a command in the active terminal. | 'ctrl-enter' |
+| terminal-plus:insert-selected-text | Run the selected text as a command in the active terminal. | `ctrl-enter` |

@@ -1,3 +1,7 @@
+## v0.4.0 - Beta Release
+* Add prebuilt binaries for pty.js
+* Better support for systems without the tools needed to compile (Windows)
+
 ## v0.3.1 - Patch
 * Add warning for custom font family (must use monospaced font)
 
