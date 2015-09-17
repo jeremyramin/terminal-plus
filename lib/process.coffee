@@ -8,7 +8,7 @@ filteredEnv = _.omit process.env, 'ATOM_HOME', 'ATOM_SHELL_INTERNAL_RUN_AS_NODE'
 module.exports = (ptyCwd, shell, args, options={}) ->
   callback = @async()
 
-  if shell.indexOf('bash') != -1
+  if /zsh|bash/.test(shell) and args.indexOf('--login') == -1
     args.unshift '--login'
 
   ptyProcess = pty.fork shell, args, cwd: ptyCwd, env: filteredEnv
