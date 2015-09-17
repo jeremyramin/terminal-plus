@@ -1,3 +1,9 @@
+## v0.4.1 - Patch
+* Make button toolbar smaller by keeping buttons minimal
+  * No more names next to button
+  * Make button fit to icon
+* Use --login shell argument by default for bash and zsh
+
 ## v0.4.0 - Beta Release
 * Add prebuilt binaries for pty.js
 * Better support for systems without the tools needed to compile (Windows)
