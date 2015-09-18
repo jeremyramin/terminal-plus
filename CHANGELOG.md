@@ -1,3 +1,6 @@
+## v0.4.2 - Patch
+* Specify commit for pty.js prebuilt
+
 ## v0.4.1 - Patch
 * Make button toolbar smaller by keeping buttons minimal
   * No more names next to button

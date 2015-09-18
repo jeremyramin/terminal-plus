@@ -1,7 +1,7 @@
 {
   "name": "terminal-plus",
   "main": "./lib/terminal-plus",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A terminal package for Atom, complete with themes and more.",
   "author": "Jeremy Ebneyamin",
   "keywords": [

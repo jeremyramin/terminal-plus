@@ -1,5 +1,5 @@
 ## Author's Note
-* ~~There are install errors for Windows machines (fix in progress)~~ Preliminary support for Windows systems.
+* Please make sure you are on the [latest version of Atom](https://atom.io/releases) before reporting bugs!
 * This package requires that you have the dependencies for node-gyp.  
 [See node-gyp install instructions](https://github.com/nodejs/node-gyp#installation).  
 * You must use a monospaced font in order for the spacing to be right.
