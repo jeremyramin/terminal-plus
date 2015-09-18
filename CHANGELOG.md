@@ -1,3 +1,7 @@
+## v0.4.3 - Patch
+* Rebuild pty.js binaries for electron release 0.30.6
+* Requires Atom >= 1.0.12
+
 ## v0.4.2 - Patch
 * Specify commit for pty.js prebuilt
 
