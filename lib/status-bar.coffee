@@ -10,7 +10,7 @@ class StatusBar extends View
   activeIndex: 0
 
   @content: ->
-    @div class: 'terminal-plus status-bar', tabindex: -1, =>
+    @div class: 'terminal-plus terminal-plus-status-bar', tabindex: -1, =>
       @i class: "icon icon-plus", click: 'newTerminalView', outlet: 'plusBtn'
       @ul class: "list-inline status-container", tabindex: '-1', outlet: 'statusContainer', is: 'space-pen-ul'
       @i class: "icon icon-x", click: 'closeAll', outlet: 'closeBtn'
