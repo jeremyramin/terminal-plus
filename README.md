@@ -110,7 +110,7 @@ Or navigate to the install tab in Atom’s settings view, and search for `termin
 | terminal-plus:insert-selected-text | Run the selected text as a command in the active terminal. | `ctrl-enter` |
 
 ## TODO
-- [ ] Add support for status icon names
+- [x] Add support for status icon names
 - [ ] Add support for terminal tabs
 - [ ] Fix native module dependencies (pty.js)
 - [ ] Improve performance for long running commands

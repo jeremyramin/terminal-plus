@@ -1,3 +1,6 @@
+## v0.5.0 - Beta Release
+* Add terminal naming via the status icon
+
 ## v0.4.3 - Patch
 * Rebuild pty.js binaries for electron release 0.30.6
 * Requires Atom >= 1.0.12
