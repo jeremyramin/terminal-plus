@@ -15,7 +15,7 @@ class TerminalPlusView extends View
   opened: false
   animating: false
 
-  @content: () ->
+  @content: ->
     @div class: 'terminal-plus terminal-view', outlet: 'terminalPlusView', =>
       @div class: 'panel-divider', outlet: 'panelDivider'
       @div class: 'btn-toolbar', outlet:'toolbar', =>

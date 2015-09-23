@@ -30,7 +30,7 @@ class StatusBar extends View
       'terminal-plus:paste': => @runInOpenView (i) -> i.paste()
       'terminal-plus:copy': => @runInOpenView (i) -> i.copy()
 
-    @registerContextMenu()
+    @registerCommands()
 
     @subscriptions.add atom.tooltips.add @plusBtn, title: 'New Terminal'
     @subscriptions.add atom.tooltips.add @closeBtn, title: 'Close All'
@@ -45,7 +45,7 @@ class StatusBar extends View
 
     @attach()
 
-  registerContextMenu: ->
+  registerCommands: ->
     @subscriptions.add atom.commands.add '.terminal-plus',
       'terminal-plus:status-red': @setStatusColor
       'terminal-plus:status-orange': @setStatusColor
@@ -62,8 +62,9 @@ class StatusBar extends View
       'terminal-plus:context-hide': (event) ->
         statusIcon = $(event.target).closest('.status-icon')[0]
         statusIcon.terminalView.hide() if statusIcon.isActive()
-      'terminal-plus:close-all': =>
-        @closeAll()
+      'terminal-plus:context-rename': (event) ->
+        $(event.target).closest('.status-icon')[0].rename()
+      'terminal-plus:close-all': @closeAll
 
   createTerminalView: ->
     statusIcon = new StatusIcon()
@@ -128,7 +129,7 @@ class StatusBar extends View
   destroyActiveTerm: ->
     @terminalViews[@activeIndex].destroy() if @terminalViews[@activeIndex]?
 
-  closeAll: ->
+  closeAll: =>
     for index in [@terminalViews.length .. 0]
       o = @terminalViews[index]
       if o?

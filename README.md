@@ -50,17 +50,26 @@ Use the following template in your stylesheet:
 }
 ```
 
-### Terminal Titles
-By hovering over the terminal status icon, you can see which command is currently running in the terminal.
+### Process Titles
+By hovering over the terminal status icon, you can see which command process is currently running in the terminal.
 
 ![](https://github.com/jeremyramin/terminal-plus/raw/master/resources/terminal_title.png)
 
+### Terminal Naming
+Need a faster way to figure out which terminal is which? Name your status icons!
+
+![](https://github.com/jeremyramin/terminal-plus/raw/master/resources/status-icon_rename.png)
+
+Available via the status icon context menu.
+
+![](https://github.com/jeremyramin/terminal-plus/raw/master/resources/status-icon_rename-dialog.png)
+
 ### Color Coding
-Need a faster way to figure out which terminal is which? Color code your status icons!
+Color code your status icons!
 
 ![](https://github.com/jeremyramin/terminal-plus/raw/master/resources/status-icon_color_coding.png)
 
-The colors are customizable in the settings, however the names remain the same in the menus.
+The colors are customizable in the settings, however the color names remain the same in the context menu.
 
 ### Sorting
 Organize your open terminal instances by dragging and dropping them.

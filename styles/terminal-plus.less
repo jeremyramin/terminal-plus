@@ -3,6 +3,7 @@
 @icon-padding: 5px;
 @icon-width: 16px;
 @icon-height: 16px;
+@status-bar-height: 20px;
 @inactive-opacity: 0.5;
 
 .terminal-plus {
@@ -92,16 +93,14 @@
     -webkit-user-select: none;
     margin: 0 10px;
     box-sizing: content-box;
-    height: 18px;
+    height: @status-bar-height;
 
     i {
+      cursor: pointer;
       display: inherit;
       text-align: center;
-      cursor: pointer;
-      height: 16px;
-      width: 16px;
-      line-height: 16px;
       align-self: center;
+      line-height: @status-bar-height;
     }
     .icon-x {
       color: red;
@@ -113,10 +112,12 @@
       position: relative;
       width: 100%;
       height: 100%;
+      line-height: @status-bar-height;
       margin: 0 @icon-padding;
 
       .status-icon {
         display: inherit;
+        cursor: pointer;
         -webkit-transition: opacity 0.25s ease-in-out, color 0.5s ease-in-out;
         -webkit-user-drag: element;
         padding: 0 @icon-padding;

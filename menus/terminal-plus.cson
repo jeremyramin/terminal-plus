@@ -12,7 +12,8 @@
     {label: 'Magenta', command: 'terminal-plus:status-magenta'},
     {label: 'Default', command: 'terminal-plus:status-default'},
     {type: 'separator'},
-    {label: 'Hide', command: 'terminal-plus:context-hide'}
+    {label: 'Hide', command: 'terminal-plus:context-hide'},
+    {label: 'Rename', command: 'terminal-plus:context-rename'},
     {label: 'Close', command: 'terminal-plus:context-close'},
     {type: 'separator'}
   ]
@@ -21,7 +22,7 @@
     {label: 'Copy', command: 'terminal-plus:copy'},
     {label: 'Paste', command: 'terminal-plus:paste'},
     {type: 'separator'},
-    {label: 'Hide', command: 'terminal-plus:hide'}
+    {label: 'Hide', command: 'terminal-plus:hide'},
     {label: 'Close', command: 'terminal-plus:close'}
     {type: 'separator'}
   ]

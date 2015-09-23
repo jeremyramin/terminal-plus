@@ -1,9 +1,12 @@
 {$} = require 'atom-space-pen-views'
 {CompositeDisposable} = require 'atom'
 
+RenameDialog = null
+
 module.exports =
 class StatusIcon extends HTMLElement
   active: false
+  process: ''
 
   initialize: (@terminalView) ->
     @classList.add 'status-icon'
@@ -11,6 +14,10 @@ class StatusIcon extends HTMLElement
     @icon = document.createElement('i')
     @icon.classList.add 'icon', 'icon-terminal'
     @appendChild(@icon)
+
+    @name = document.createElement('span')
+    @name.classList.add 'name'
+    @appendChild(@name)
 
     @dataset.type = @terminalView.constructor?.name
 
@@ -22,10 +29,12 @@ class StatusIcon extends HTMLElement
         @terminalView.destroy()
         false
 
-  updateTooltip: (title) ->
-    @title = title if title?
+  updateTooltip: (process) ->
+    return unless process?
+
+    @process = process
     @tooltip = atom.tooltips.add this,
-      title: @title
+      title: @process
       html: false
       delay:
         show: 500
@@ -59,5 +68,15 @@ class StatusIcon extends HTMLElement
 
   isActive: ->
     return @active
+
+  rename: ->
+    RenameDialog ?= require './rename-dialog'
+    dialog = new RenameDialog(this)
+    dialog.attach()
+
+  getName: -> @name.textContent.substring(1)
+
+  updateName: (name) ->
+    @name.innerHTML = "&nbsp;#{name}"
 
 module.exports = document.registerElement('status-icon', prototype: StatusIcon.prototype, extends: 'li')
