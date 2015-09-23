@@ -1,3 +1,6 @@
+## v0.5.1 - Patch
+* Remove trailing whitespace from terminal rename
+
 ## v0.5.0 - Beta Release
 * Add terminal naming via the status icon
 
