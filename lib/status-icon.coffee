@@ -77,6 +77,7 @@ class StatusIcon extends HTMLElement
   getName: -> @name.textContent.substring(1)
 
   updateName: (name) ->
-    @name.innerHTML = "&nbsp;#{name}"
+    name = "&nbsp;" + name if name
+    @name.innerHTML = name
 
 module.exports = document.registerElement('status-icon', prototype: StatusIcon.prototype, extends: 'li')

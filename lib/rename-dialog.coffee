@@ -10,7 +10,7 @@ class RenameDialog extends View
   initialize: (@statusIcon) ->
     atom.commands.add @element,
       'core:confirm': =>
-        @statusIcon.updateName @miniEditor.getText()
+        @statusIcon.updateName @miniEditor.getText().trim()
         @close()
       'core:cancel': => @cancel()
     @miniEditor.on 'blur', => @close()
