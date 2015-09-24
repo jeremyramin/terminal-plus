@@ -1,3 +1,6 @@
+## v0.6.0 - Beta Release
+* Dynamic terminal view resizing
+
 ## v0.5.1 - Patch
 * Remove trailing whitespace from terminal rename
 
