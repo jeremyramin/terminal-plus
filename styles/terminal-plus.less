@@ -69,12 +69,21 @@
       height: 100%;
       width: 100%;
       > .terminal {
+        display: -webkit-flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        position: relative;
+
         height: 100%;
         width: 100%;
-        position: relative;
         margin: 0 5px;
+        overflow: hidden;
         > div {
-          white-space: pre;
+          flex: 1;
+          flex-shrink: 0;
+          flex-basis: auto;
+
+          white-space: nowrap;
           font-size: inherit;
           > span {
             display: inline-block;
