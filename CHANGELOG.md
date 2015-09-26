@@ -1,3 +1,6 @@
+## v0.6.1 - Patch
+* Fix text-wrap overflow hiding prompt
+
 ## v0.6.0 - Beta Release
 * Dynamic terminal view resizing
 
