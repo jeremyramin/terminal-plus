@@ -1,3 +1,6 @@
+## v0.6.2 - Patch
+* Fix path variable overwrite bug
+
 ## v0.6.1 - Patch
 * Fix text-wrap overflow hiding prompt
 
