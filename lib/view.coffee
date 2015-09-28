@@ -69,21 +69,21 @@ class TerminalPlusView extends View
 
     if dataTransfer.getData('atom-event') is 'true'
       @input "#{dataTransfer.getData('text/plain')} "
-    else if path = dataTransfer.getData('initialPath')
-      @input "#{path} "
+    else if filePath = dataTransfer.getData('initialPath')
+      @input "#{filePath} "
     else if dataTransfer.files.length > 0
       for file in dataTransfer.files
         @input "#{file.path} "
 
   forkPtyProcess: (shell, args=[]) ->
-    projectPath = atom.project.getPaths()[0]
+    projectFolder = atom.project.getPaths()[0]
     editorPath = atom.workspace.getActiveTextEditor()?.getPath()
-    editorPath = path.dirname editorPath if editorPath?
+    editorFolder = path.dirname(editorPath) if editorPath?
     home = if process.platform is 'win32' then process.env.HOMEPATH else process.env.HOME
 
     switch atom.config.get('terminal-plus.core.workingDirectory')
-      when 'Project' then pwd = projectPath or editorPath or home
-      when 'Active File' then pwd = editorPath or projectPath or home
+      when 'Project' then pwd = projectFolder or editorFolder or home
+      when 'Active File' then pwd = editorFolder or projectFolder or home
       else pwd = home
 
     Task.once Pty, path.resolve(pwd), shell, args
