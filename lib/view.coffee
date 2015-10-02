@@ -339,6 +339,7 @@ class TerminalPlusView extends View
   focus: =>
     @resizeTerminalToView()
     @focusTerminal()
+    super()
 
   focusTerminal: ->
     @terminal.focus()
