@@ -3,6 +3,7 @@
 * This package requires that you have the dependencies for node-gyp.  
 [See node-gyp install instructions](https://github.com/nodejs/node-gyp#installation).  
 * You must use a monospaced font in order for the spacing to be right.
+* Having issues on Windows 10? [Try this](https://github.com/jeremyramin/terminal-plus/issues/15#issuecomment-144618245).
 
 # Terminal-Plus
 Terminal-Plus is a terminal package for Atom, complete with themes and more.  
