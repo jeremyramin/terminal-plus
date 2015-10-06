@@ -1,3 +1,6 @@
+## v0.6.4 - Patch
+* Fix terminal not scrolling for zsh shell with plugins
+
 ## v0.6.3 - Patch
 * Call super after overriding focus
 * Update the author's note with Windows 10 fix
