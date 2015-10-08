@@ -108,6 +108,7 @@ class TerminalPlusView extends View
   attachListeners: ->
     @ptyProcess.on 'terminal-plus:data', (data) =>
       @terminal.write data
+      @focusTerminal()
 
     @ptyProcess.on 'terminal-plus:exit', =>
       @input = ->
