@@ -1,3 +1,6 @@
+## v0.6.5 - Patch
+* Focus bug fix
+
 ## v0.6.4 - Patch
 * Fix terminal not scrolling for zsh shell with plugins
 
