@@ -1,3 +1,9 @@
+## v0.7.0 - Beta Release
+* Add support for international characters
+* Make sure to declare the terminal as xterm-256color
+* Improve colors in xterm-256color
+* Set TERM_PROGRAM to Terminal-Plus
+
 ## v0.6.5 - Patch
 * Focus bug fix
 
