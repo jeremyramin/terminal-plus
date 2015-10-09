@@ -3,7 +3,10 @@ path = require 'path'
 fs = require 'fs'
 _ = require 'underscore'
 
-filteredEnv = _.omit process.env, 'ATOM_HOME', 'ATOM_SHELL_INTERNAL_RUN_AS_NODE', 'GOOGLE_API_KEY', 'NODE_ENV', 'NODE_PATH', 'userAgent', 'taskPath'
+filteredEnv = do ->
+  env = _.omit process.env, 'ATOM_HOME', 'ATOM_SHELL_INTERNAL_RUN_AS_NODE', 'GOOGLE_API_KEY', 'NODE_ENV', 'NODE_PATH', 'userAgent', 'taskPath'
+  env.LANG = 'en_US.UTF-8'
+  env
 
 module.exports = (ptyCwd, shell, args, options={}) ->
   callback = @async()
