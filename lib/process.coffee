@@ -6,6 +6,7 @@ _ = require 'underscore'
 filteredEnv = do ->
   env = _.omit process.env, 'ATOM_HOME', 'ATOM_SHELL_INTERNAL_RUN_AS_NODE', 'GOOGLE_API_KEY', 'NODE_ENV', 'NODE_PATH', 'userAgent', 'taskPath'
   env.LANG = 'en_US.UTF-8'
+  env.TERM_PROGRAM = 'Terminal-Plus'
   env
 
 module.exports = (ptyCwd, shell, args, options={}) ->
@@ -14,7 +15,10 @@ module.exports = (ptyCwd, shell, args, options={}) ->
   if /zsh|bash/.test(shell) and args.indexOf('--login') == -1
     args.unshift '--login'
 
-  ptyProcess = pty.fork shell, args, cwd: ptyCwd, env: filteredEnv
+  ptyProcess = pty.fork shell, args,
+    cwd: ptyCwd,
+    env: filteredEnv,
+    name: 'xterm-256color'
 
   title = shell = path.basename shell
 
