@@ -1,3 +1,6 @@
+## v0.7.1 - Patch
+* Block resize and input when there is no pty process to message
+
 ## v0.7.0 - Beta Release
 * Add support for international characters
 * Make sure to declare the terminal as xterm-256color
