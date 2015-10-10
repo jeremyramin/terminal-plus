@@ -86,7 +86,9 @@ class TerminalPlusView extends View
       when 'Active File' then pwd = editorFolder or projectFolder or home
       else pwd = home
 
-    Task.once Pty, path.resolve(pwd), shell, args
+    Task.once Pty, path.resolve(pwd), shell, args, =>
+      @input = ->
+      @resize = ->
 
   displayTerminal: ->
     {cols, rows} = @getDimensions()
@@ -111,8 +113,6 @@ class TerminalPlusView extends View
       @focusTerminal()
 
     @ptyProcess.on 'terminal-plus:exit', =>
-      @input = ->
-      @resize = ->
       @destroy() if atom.config.get('terminal-plus.toggles.autoClose')
 
     @ptyProcess.on 'terminal-plus:title', (title) =>
