@@ -1,3 +1,6 @@
+## v0.8.0 - Beta Release
+* Implement finer scrolling in dependencies
+
 ## v0.7.1 - Patch
 * Block resize and input when there is no pty process to message
 
