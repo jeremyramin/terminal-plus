@@ -110,9 +110,12 @@ Or navigate to the install tab in Atom’s settings view, and search for `termin
 | terminal-plus:next | Switch to the terminal right of the last active terminal. | `ctrl-shift-k` or<br>`cmd-shift-k` |
 | terminal-plus:insert-selected-text | Run the selected text as a command in the active terminal. | `ctrl-enter` |
 
-## TODO
-- [x] Add support for status icon names
+## To-Do List
+- [ ] Fix `ctrl+c` for bash prompts on OS X and Linux
+- [ ] Add support for custom ANSI colors in terminal
+- [ ] Add support for automatic directory switching
+- [ ] Update winpty in pty.js dependency
+- [ ] Possibly merge dependencies into Terminal-Plus?
+- [ ] Add support for dead keys and IME input
 - [ ] Add support for terminal tabs
-- [ ] Fix native module dependencies (pty.js)
-- [ ] Improve performance for long running commands
-- [ ] Add support for IME (Japanese characters)
+- [x] Add support for status icon names
