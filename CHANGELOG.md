@@ -1,3 +1,7 @@
+## v0.8.2 - Patch
+* Detect system language on OS X
+* Even finer scrolling algorithm implemented
+
 ## v0.8.1 - Patch
 * Disable double click on status icons
 
