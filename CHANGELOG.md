@@ -1,3 +1,6 @@
+## v0.8.1 - Patch
+* Disable double click on status icons
+
 ## v0.8.0 - Beta Release
 * Implement finer scrolling in dependencies
 
