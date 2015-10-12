@@ -2,22 +2,31 @@ pty = require 'pty.js'
 path = require 'path'
 fs = require 'fs'
 _ = require 'underscore'
+child = require 'child_process'
 
-filteredEnv = do ->
+systemLanguage = do ->
+  language = "en_US.UTF-8"
+  if process.platform is 'darwin'
+    try
+      command = 'plutil -convert json -o - ~/Library/Preferences/.GlobalPreferences.plist'
+      language = "#{JSON.parse(child.execSync(command).toString()).AppleLocale}.UTF-8"
+  return language
+
+filteredEnvironment = do ->
   env = _.omit process.env, 'ATOM_HOME', 'ATOM_SHELL_INTERNAL_RUN_AS_NODE', 'GOOGLE_API_KEY', 'NODE_ENV', 'NODE_PATH', 'userAgent', 'taskPath'
-  env.LANG = 'en_US.UTF-8'
+  env.LANG = systemLanguage
   env.TERM_PROGRAM = 'Terminal-Plus'
-  env
+  return env
 
-module.exports = (ptyCwd, shell, args, options={}) ->
+module.exports = (pwd, shell, args, options={}) ->
   callback = @async()
 
   if /zsh|bash/.test(shell) and args.indexOf('--login') == -1
     args.unshift '--login'
 
   ptyProcess = pty.fork shell, args,
-    cwd: ptyCwd,
-    env: filteredEnv,
+    cwd: pwd,
+    env: filteredEnvironment,
     name: 'xterm-256color'
 
   title = shell = path.basename shell
