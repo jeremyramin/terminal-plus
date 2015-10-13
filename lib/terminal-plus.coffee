@@ -70,12 +70,12 @@ module.exports =
           maximum: '100'
         fontFamily:
           title: 'Font Family'
-          description: 'Override the editor\'s default font family. **You must use a [monospaced font](https://en.wikipedia.org/wiki/List_of_typefaces#Monospace)!**'
+          description: 'Override the terminal\'s font family. **You must use a [monospaced font](https://en.wikipedia.org/wiki/List_of_typefaces#Monospace)!**'
           type: 'string'
           default: 'monospace'
         fontSize:
           title: 'Font Size'
-          description: 'Override the editor\'s default font size.'
+          description: 'Override the terminal\'s default font size.'
           type: 'integer'
           default: do -> atom.config.get('editor.fontSize')
           minimum: 1
@@ -105,52 +105,148 @@ module.exports =
             'silver-aerogel',
             'solid-colors',
           ]
+    termColors:
+      title: 'Terminal Colors'
+      description: 'Set termnal colors.'
+      order: 4
+      type: 'object'
+      properties:
+        black:
+          title: 'Dark Black'
+          description: 'Dark black color used for terminal.'
+          type: 'color'
+          default: '#2e3436'
+        red:
+          title: 'Dark Red'
+          description: 'Dark red color used for terminal.'
+          type: 'color'
+          default: '#cc0000'
+        green:
+          title: 'Dark Green'
+          description: 'Dark green color used for terminal.'
+          type: 'color'
+          default: '#4e9a06'
+        yellow:
+          title: 'Dark Yellow'
+          description: 'Dark black color used for terminal.'
+          type: 'color'
+          default: '#c4a000'
+        blue:
+          title: 'Dark Blue'
+          description: 'Dark black color used for terminal.'
+          type: 'color'
+          default: '#3465a4'
+        magenta:
+          title: 'Dark Magenta'
+          description: 'Dark black color used for terminal.'
+          type: 'color'
+          default: '#75507b'
+        cyan:
+          title: 'Dark Cyan'
+          description: 'Dark black color used for terminal.'
+          type: 'color'
+          default: '#06989a'
+        white:
+          title: 'Dark White'
+          description: 'Dark black color used for terminal.'
+          type: 'color'
+          default: '#d3d7cf'
+        brightBlack:
+          title: 'Bright Black'
+          description: 'Dark black color used for terminal.'
+          type: 'color'
+          default: '#555753'
+        brightRed:
+          title: 'Bright Red'
+          description: 'Bright red color used for terminal.'
+          type: 'color'
+          default: '#ef2929'
+        brightGreen:
+          title: 'Bright Green'
+          description: 'Bright green color used for terminal.'
+          type: 'color'
+          default: '#8ae234'
+        brightYellow:
+          title: 'Bright Yellow'
+          description: 'Bright yellow color used for terminal.'
+          type: 'color'
+          default: '#fce94f'
+        brightBlue:
+          title: 'Bright Blue'
+          description: 'Bright blue color used for terminal.'
+          type: 'color'
+          default: '#729fcf'
+        brightMagenta:
+          title: 'Bright Magenta'
+          description: 'Bright magenta color used for terminal.'
+          type: 'color'
+          default: '#ad7fa8'
+        brightCyan:
+          title: 'Bright Cyan'
+          description: 'Bright cyan color used for terminal.'
+          type: 'color'
+          default: '#34e2e2'
+        brightWhite:
+          title: 'Bright White'
+          description: 'Bright white color used for terminal.'
+          type: 'color'
+          default: '#eeeeec'
+        bgColor:
+          title: 'Background color'
+          description: 'Background color used for terminal.'
+          type: 'color'
+          default: '#2e3436'
+        fgColor:
+          title: 'Foreground color'
+          description: 'Foreground (text) color used for terminal.'
+          type: 'color'
+          default: '#d3d7cf'
     colors:
       type: 'object'
-      order: 4
+      order: 5
       properties:
         red:
-          title: 'Red'
+          title: 'Status Icon Red'
           description: 'Red color used for status icon.'
           type: 'color'
           default: 'red'
         orange:
-          title: 'Orange'
+          title: 'Status Icon Orange'
           description: 'Orange color used for status icon.'
           type: 'color'
           default: 'orange'
         yellow:
-          title: 'Yellow'
+          title: 'Status Icon Yellow'
           description: 'Yellow color used for status icon.'
           type: 'color'
           default: 'yellow'
         green:
-          title: 'Green'
+          title: 'Status Icon Green'
           description: 'Green color used for status icon.'
           type: 'color'
           default: 'green'
         blue:
-          title: 'Blue'
+          title: 'Status Icon Blue'
           description: 'Blue color used for status icon.'
           type: 'color'
           default: 'blue'
         purple:
-          title: 'Purple'
+          title: 'Status Icon Purple'
           description: 'Purple color used for status icon.'
           type: 'color'
           default: 'purple'
         pink:
-          title: 'Pink'
+          title: 'Status Icon Pink'
           description: 'Pink color used for status icon.'
           type: 'color'
           default: 'hotpink'
         cyan:
-          title: 'Cyan'
+          title: 'Status Icon Cyan'
           description: 'Cyan color used for status icon.'
           type: 'color'
           default: 'cyan'
         magenta:
-          title: 'Magenta'
+          title: 'Status Icon Magenta'
           description: 'Magenta color used for status icon.'
           type: 'color'
           default: 'magenta'
