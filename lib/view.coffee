@@ -227,41 +227,36 @@ class TerminalPlusView extends View
 
   applyStyle: ->
     style = atom.config.get 'terminal-plus.style'
-    termColors = atom.config.get 'terminal-plus.termColors'
+    ansiColors = atom.config.get 'terminal-plus.ansiColors'
 
-    #@xterm.addClass style.theme
+    @xterm.addClass style.theme
 
     fontFamily = ["monospace"]
     fontFamily.unshift style.fontFamily unless style.fontFamily is ''
     @terminal.element.style.fontFamily = fontFamily.join ', '
     @terminal.element.style.fontSize = style.fontSize + 'px'
+
     # first 8 colors i.e. 'dark' colors
-    @terminal.colors[8..15] = @terminal.colors[0..7] = [
-      termColors.black.toHexString()
-      termColors.red.toHexString()
-      termColors.green.toHexString()
-      termColors.yellow.toHexString()
-      termColors.blue.toHexString()
-      termColors.magenta.toHexString()
-      termColors.cyan.toHexString()
-      termColors.white.toHexString()
+    @terminal.colors[0..7] = [
+      ansiColors.normal.black.toHexString()
+      ansiColors.normal.red.toHexString()
+      ansiColors.normal.green.toHexString()
+      ansiColors.normal.yellow.toHexString()
+      ansiColors.normal.blue.toHexString()
+      ansiColors.normal.magenta.toHexString()
+      ansiColors.normal.cyan.toHexString()
+      ansiColors.normal.white.toHexString()
     ]
     # 'bright' colors
     @terminal.colors[8..15] = [
-      termColors.brightBlack.toHexString()
-      termColors.brightRed.toHexString()
-      termColors.brightGreen.toHexString()
-      termColors.brightYellow.toHexString()
-      termColors.brightBlue.toHexString()
-      termColors.brightMagenta.toHexString()
-      termColors.brightCyan.toHexString()
-      termColors.brightWhite.toHexString()
-    ]
-    # bg and fg colors
-    # (index 16-255 are rest of the colors in a 256-color term)
-    @terminal.colors[256..257] = [
-      termColors.bgColor.toHexString()
-      termColors.fgColor.toHexString()
+      ansiColors.zBright.brightBlack.toHexString()
+      ansiColors.zBright.brightRed.toHexString()
+      ansiColors.zBright.brightGreen.toHexString()
+      ansiColors.zBright.brightYellow.toHexString()
+      ansiColors.zBright.brightBlue.toHexString()
+      ansiColors.zBright.brightMagenta.toHexString()
+      ansiColors.zBright.brightCyan.toHexString()
+      ansiColors.zBright.brightWhite.toHexString()
     ]
 
   attachResizeEvents: ->
