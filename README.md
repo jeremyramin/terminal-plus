@@ -1,4 +1,7 @@
 ## Author's Note
+* Atom might ask you to rebuild with every update.  
+Please just click the rebuild button then reload Atom.  
+[Why? Look here](https://github.com/jeremyramin/terminal-plus/issues/36).
 * Please make sure you are on the [latest version of Atom](https://atom.io/releases) before reporting bugs!
 * This package requires that you have the dependencies for node-gyp.  
 [See node-gyp install instructions](https://github.com/nodejs/node-gyp#installation).  
@@ -112,6 +115,7 @@ Or navigate to the install tab in Atom’s settings view, and search for `termin
 
 ## To-Do List
 - [ ] Fix `ctrl+c` for bash prompts on OS X and Linux
+- [ ] Fix Atom requesting a rebuild after every update
 - [ ] Add support for custom ANSI colors in terminal
 - [ ] Add support for automatic directory switching
 - [ ] Update winpty in pty.js dependency
