@@ -1,7 +1,4 @@
 ## Author's Note
-* Atom might ask you to rebuild with every update.  
-Please just click the rebuild button then reload Atom.  
-[Why? Look here](https://github.com/jeremyramin/terminal-plus/issues/36).
 * Please make sure you are on the [latest version of Atom](https://atom.io/releases) before reporting bugs!
 * This package requires that you have the dependencies for node-gyp.  
 [See node-gyp install instructions](https://github.com/nodejs/node-gyp#installation).  
@@ -114,11 +111,11 @@ Or navigate to the install tab in Atom’s settings view, and search for `termin
 | terminal-plus:insert-selected-text | Run the selected text as a command in the active terminal. | `ctrl-enter` |
 
 ## To-Do List
-- [ ] Fix Atom requesting a rebuild after every update
-- [ ] Add support for automatic directory switching
 - [ ] Possibly merge dependencies into Terminal-Plus?
 - [ ] Add support for dead keys and IME input
 - [ ] Add support for terminal tabs
+- [x] Add support for automatic directory switching
+- [x] Fix Atom requesting a rebuild after every update
 - [x] Update winpty in pty.js dependency
 - [x] Add support for custom ANSI colors in terminal
 - [x] Fix `ctrl+c` for bash prompts on OS X and Linux

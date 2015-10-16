@@ -1,3 +1,8 @@
+## v0.10.0 - Beta Release
+* Added automatic terminal switching
+* Add CMD+K to clear terminal [Term.js fork]
+* Fix terminal errors relating to Atom setting project path to `atom://config`
+
 ## v0.9.1 - Patch
 * Fix bug where Atom rebuilds Terminal-Plus for every update
 * Fix status icon colors keypath
