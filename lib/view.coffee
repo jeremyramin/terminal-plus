@@ -15,6 +15,8 @@ class TerminalPlusView extends View
   opened: false
   animating: false
   windowHeight: $(window).height()
+  pwd: ''
+  id: ''
 
   @content: ->
     @div class: 'terminal-plus terminal-view', outlet: 'terminalPlusView', =>
@@ -82,13 +84,19 @@ class TerminalPlusView extends View
     home = if process.platform is 'win32' then process.env.HOMEPATH else process.env.HOME
 
     switch atom.config.get('terminal-plus.core.workingDirectory')
-      when 'Project' then pwd = projectFolder or editorFolder or home
-      when 'Active File' then pwd = editorFolder or projectFolder or home
-      else pwd = home
+      when 'Project' then @pwd = projectFolder or editorFolder or home
+      when 'Active File' then @pwd = editorFolder or projectFolder or home
+      else @pwd = home
 
-    Task.once Pty, path.resolve(pwd), shell, args, =>
+    @id = editorPath or projectFolder or home
+    @id = filePath: @id, folderPath: path.dirname(@id)
+
+    Task.once Pty, path.resolve(@pwd), shell, args, =>
       @input = ->
       @resize = ->
+
+  getId: ->
+    return @id
 
   displayTerminal: ->
     {cols, rows} = @getDimensions()

@@ -12,16 +12,16 @@ module.exports =
       type: 'object'
       order: 1
       properties:
-        cursorBlink:
-          title: 'Cursor Blink'
-          description: 'Should the cursor blink when the terminal is active?'
-          type: 'boolean'
-          default: true
         autoClose:
           title: 'Close Terminal on Exit'
           description: 'Should the terminal close if the shell exits?'
           type: 'boolean'
           default: false
+        cursorBlink:
+          title: 'Cursor Blink'
+          description: 'Should the cursor blink when the terminal is active?'
+          type: 'boolean'
+          default: true
     core:
       type: 'object'
       order: 2
@@ -31,6 +31,17 @@ module.exports =
           description: 'Command to run on terminal initialization.'
           type: 'string'
           default: ''
+        mapTerminalsTo:
+          title: 'Map Terminals To'
+          description: 'Map terminals to each file or folder. Default is no action or mapping at all. **Restart required.**'
+          type: 'string'
+          default: 'None'
+          enum: ['None', 'File', 'Folder']
+        mapTerminalsToAutoOpen:
+          title: 'Auto Open a New Terminal (For Terminal Mapping)'
+          description: 'Should a new terminal be opened for new items? **Note:** This works in conjunction with `Map Terminals To` above.'
+          type: 'boolean'
+          default: false
         scrollback:
           title: 'Scroll Back'
           description: 'How many lines of history should be kept?'

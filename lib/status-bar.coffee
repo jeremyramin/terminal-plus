@@ -4,6 +4,8 @@
 TerminalPlusView = require './view'
 StatusIcon = require './status-icon'
 
+path = require 'path'
+
 module.exports =
 class StatusBar extends View
   terminalViews: []
@@ -29,6 +31,24 @@ class StatusBar extends View
     @subscriptions.add atom.commands.add '.xterm',
       'terminal-plus:paste': => @runInOpenView (i) -> i.paste()
       'terminal-plus:copy': => @runInOpenView (i) -> i.copy()
+
+    unless atom.config.get('terminal-plus.core.oneTerminalPer') is 'None'
+      @subscriptions.add atom.workspace.onDidChangeActivePaneItem (item) =>
+        return unless item?
+        return unless item.constructor.name is "TextEditor"
+        return unless @getActiveTerminalView()?.panel.isVisible()
+
+        switch atom.config.get('terminal-plus.core.mapTerminalsTo')
+          when 'File'
+            terminal = @getTerminalById item.getPath(), (terminal) -> terminal.getId().filePath
+          when 'Folder'
+            terminal = @getTerminalById path.dirname(item.getPath()), (terminal) -> terminal.getId().folderPath
+
+        unless @getActiveTerminalView() == terminal
+          if terminal?
+            terminal.toggle()
+          else if atom.config.get('terminal-plus.core.mapTerminalsToAutoOpen')
+            @createTerminalView().toggle()
 
     @registerCommands()
 
@@ -97,8 +117,18 @@ class StatusBar extends View
 
     @terminalViews[index].open()
 
-  getActiveTerminalView: () ->
+  getActiveTerminalView: ->
     return @terminalViews[@activeIndex]
+
+  getTerminalById: (id, selector) ->
+    selector ?= (terminal) -> terminal.id
+
+    for index in [0 .. @terminalViews.length]
+      terminal = @terminalViews[index]
+      if terminal?
+        return terminal if selector(terminal) == id
+
+    return null
 
   runInActiveView: (callback) ->
     view = @getActiveTerminalView()
