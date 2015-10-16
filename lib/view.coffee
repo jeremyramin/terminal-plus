@@ -79,6 +79,7 @@ class TerminalPlusView extends View
 
   forkPtyProcess: (shell, args=[]) ->
     projectFolder = atom.project.getPaths()[0]
+    projectFolder = undefined unless projectFolder?.indexOf('atom://') < 0
     editorPath = atom.workspace.getActiveTextEditor()?.getPath()
     editorFolder = path.dirname(editorPath) if editorPath?
     home = if process.platform is 'win32' then process.env.HOMEPATH else process.env.HOME
