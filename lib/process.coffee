@@ -14,7 +14,7 @@ systemLanguage = do ->
 
 filteredEnvironment = do ->
   env = _.omit process.env, 'ATOM_HOME', 'ATOM_SHELL_INTERNAL_RUN_AS_NODE', 'GOOGLE_API_KEY', 'NODE_ENV', 'NODE_PATH', 'userAgent', 'taskPath'
-  env.LANG = systemLanguage
+  env.LANG ?= systemLanguage
   env.TERM_PROGRAM = 'Terminal-Plus'
   return env
 
