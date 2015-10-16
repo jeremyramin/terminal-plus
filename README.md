@@ -114,12 +114,12 @@ Or navigate to the install tab in Atom’s settings view, and search for `termin
 | terminal-plus:insert-selected-text | Run the selected text as a command in the active terminal. | `ctrl-enter` |
 
 ## To-Do List
-- [ ] Fix `ctrl+c` for bash prompts on OS X and Linux
 - [ ] Fix Atom requesting a rebuild after every update
-- [ ] Add support for custom ANSI colors in terminal
 - [ ] Add support for automatic directory switching
-- [ ] Update winpty in pty.js dependency
 - [ ] Possibly merge dependencies into Terminal-Plus?
 - [ ] Add support for dead keys and IME input
 - [ ] Add support for terminal tabs
+- [x] Update winpty in pty.js dependency
+- [x] Add support for custom ANSI colors in terminal
+- [x] Fix `ctrl+c` for bash prompts on OS X and Linux
 - [x] Add support for status icon names
