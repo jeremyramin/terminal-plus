@@ -150,7 +150,7 @@ class StatusBar extends View
 
   setStatusColor: (event) ->
     color = event.type.match(/\w+$/)[0]
-    color = atom.config.get("terminal-plus.colors.#{color}").toRGBAString()
+    color = atom.config.get("terminal-plus.iconColors.#{color}").toRGBAString()
     $(event.target).closest('.status-icon').css 'color', color
 
   clearStatusColor: (event) ->
