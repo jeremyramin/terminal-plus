@@ -1,3 +1,7 @@
+## v0.9.1 - Patch
+* Fix bug where Atom rebuilds Terminal-Plus for every update
+* Fix status icon colors keypath
+
 ## v0.9.0 - Beta Release
 * Add support for custom ANSI color set
 * Fix `ctrl+c` (SIGINT) not working in bash
