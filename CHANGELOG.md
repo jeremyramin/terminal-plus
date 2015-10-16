@@ -1,3 +1,9 @@
+## v0.9.0 - Beta Release
+* Add support for custom ANSI color set
+* Fix `ctrl+c` (SIGINT) not working in bash
+* Update winpty module (for Windows) in pty.js
+* Fix issues with maintaining focus on the terminal
+
 ## v0.8.2 - Patch
 * Detect system language on OS X
 * Even finer scrolling algorithm implemented
