@@ -110,7 +110,6 @@ class TerminalPlusView extends View
   attachListeners: ->
     @ptyProcess.on 'terminal-plus:data', (data) =>
       @terminal.write data
-      @focusTerminal()
 
     @ptyProcess.on 'terminal-plus:exit', =>
       @destroy() if atom.config.get('terminal-plus.toggles.autoClose')
@@ -128,7 +127,8 @@ class TerminalPlusView extends View
 
     @terminal.once "open", =>
       @applyStyle()
-      @focus()
+
+      return unless @ptyProcess.childProcess?
       autoRunCommand = atom.config.get('terminal-plus.core.autoRunCommand')
       @input "#{autoRunCommand}#{os.EOL}" if autoRunCommand
 
@@ -221,8 +221,7 @@ class TerminalPlusView extends View
 
     @terminal.stopScrolling()
     @ptyProcess.send event: 'input', text: data
-    @resizeTerminalToView()
-    @focusTerminal()
+    @focus()
 
   resize: (cols, rows) ->
     return unless @ptyProcess.childProcess?
@@ -338,12 +337,12 @@ class TerminalPlusView extends View
     $(@terminal.element).height height
 
   copy: ->
-    if  @terminal._selected  # term.js visual mode selections
+    if  @terminal._selected
       textarea = @terminal.getCopyTextarea()
       text = @terminal.grabText(
         @terminal._selected.x1, @terminal._selected.x2,
         @terminal._selected.y1, @terminal._selected.y2)
-    else # fallback to DOM-based selections
+    else
       rawText = @terminal.context.getSelection().toString()
       rawLines = rawText.split(/\r?\n/g)
       lines = rawLines.map (line) ->
@@ -372,7 +371,7 @@ class TerminalPlusView extends View
     @focusTerminal()
     super()
 
-  focusTerminal: ->
+  focusTerminal: =>
     @terminal.focus()
     @terminal.element.focus()
 
