@@ -1,3 +1,7 @@
+## v0.10.1 - Patch
+* Fix resizing bug
+* Fix language overwrite bug
+
 ## v0.10.0 - Beta Release
 * Added automatic terminal switching
 * Add CMD+K to clear terminal [Term.js fork]
