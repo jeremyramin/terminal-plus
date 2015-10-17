@@ -12,11 +12,13 @@ lastActiveElement = null
 
 module.exports =
 class TerminalPlusView extends View
-  opened: false
   animating: false
-  windowHeight: $(window).height()
-  pwd: ''
   id: ''
+  maximized: false
+  opened: false
+  pwd: ''
+  windowHeight: $(window).height()
+  rowHeight: 20
 
   @content: ->
     @div class: 'terminal-plus terminal-view', outlet: 'terminalPlusView', =>
@@ -113,7 +115,7 @@ class TerminalPlusView extends View
     }
 
     @attachListeners()
-    @attachEvents()
+    @attachResizeEvents()
     @terminal.open @xterm.get(0)
 
   attachListeners: ->
@@ -136,6 +138,7 @@ class TerminalPlusView extends View
 
     @terminal.once "open", =>
       @applyStyle()
+      @resizeTerminalToView()
 
       return unless @ptyProcess.childProcess?
       autoRunCommand = atom.config.get('terminal-plus.core.autoRunCommand')
@@ -296,27 +299,21 @@ class TerminalPlusView extends View
         @prevHeight = clamped
       @resizeTerminalToView()
       @xterm.css 'transition', "height #{0.25 / @animationSpeed}s linear"
-    @panelDivider.on 'mousedown', @resizeStarted.bind(this)
+    @panelDivider.on 'mousedown', @resizeStarted
 
   detachResizeEvents: ->
     @off 'focus', @focus
     $(window).off 'resize'
     @panelDivider.off 'mousedown'
 
-  attachEvents: ->
-    @resizeTerminalToView = @resizeTerminalToView.bind this
-    @resizePanel = @resizePanel.bind(this)
-    @resizeStopped = @resizeStopped.bind(this)
-    @attachResizeEvents()
-
-  resizeStarted: ->
+  resizeStarted: =>
     return if @maximized
     @maxHeight = @prevHeight + $('.item-views').height()
     $(document).on('mousemove', @resizePanel)
     $(document).on('mouseup', @resizeStopped)
     @xterm.css 'transition', ''
 
-  resizeStopped: ->
+  resizeStopped: =>
     $(document).off('mousemove', @resizePanel)
     $(document).off('mouseup', @resizeStopped)
     @xterm.css 'transition', "height #{0.25 / @animationSpeed}s linear"
@@ -325,7 +322,7 @@ class TerminalPlusView extends View
     rows = value // @rowHeight
     return rows * @rowHeight
 
-  resizePanel: (event) ->
+  resizePanel: (event) =>
     return @resizeStopped() unless event.which is 1
 
     mouseY = $(window).height() - event.pageY
