@@ -27,6 +27,7 @@ class StatusBar extends View
       'terminal-plus:prev': => @activePrevTerminalView()
       'terminal-plus:close': => @runInActiveView (i) -> i.destroy()
       'terminal-plus:insert-selected-text': => @runInActiveView (i) -> i.insertSelection()
+      'terminal-plus:input-dialog': => @runInActiveView (i) -> i.inputDialog()
 
     @subscriptions.add atom.commands.add '.xterm',
       'terminal-plus:paste': => @runInOpenView (i) -> i.paste()
@@ -50,7 +51,7 @@ class StatusBar extends View
           else if atom.config.get('terminal-plus.core.mapTerminalsToAutoOpen')
             @createTerminalView().toggle() unless item.isEmpty()
 
-    @registerCommands()
+    @registerContextMenu()
 
     @subscriptions.add atom.tooltips.add @plusBtn, title: 'New Terminal'
     @subscriptions.add atom.tooltips.add @closeBtn, title: 'Close All'
@@ -66,7 +67,7 @@ class StatusBar extends View
 
     @attach()
 
-  registerCommands: ->
+  registerContextMenu: ->
     @subscriptions.add atom.commands.add '.terminal-plus',
       'terminal-plus:status-red': @setStatusColor
       'terminal-plus:status-orange': @setStatusColor

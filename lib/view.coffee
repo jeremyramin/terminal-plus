@@ -3,6 +3,7 @@
 
 Pty = require.resolve './process'
 Terminal = require 'term.js'
+InputDialog = null
 
 path = require 'path'
 os = require 'os'
@@ -30,6 +31,8 @@ class TerminalPlusView extends View
           @span class: 'icon icon-chevron-down'
         @button outlet: 'maximizeBtn', class: 'btn inline-block-tight right', click: 'maximize', =>
           @span class: 'icon icon-screen-full'
+        @button outlet: 'inputBtn', class: 'btn inline-block-tight left', click: 'inputDialog', =>
+          @span class: 'icon icon-keyboard'
       @div class: 'xterm', outlet: 'xterm'
 
   initialize: ->
@@ -413,3 +416,8 @@ class TerminalPlusView extends View
     @xterm.one 'webkitTransitionEnd', =>
       callback()
       @animating = false
+
+  inputDialog: ->
+    InputDialog ?= require('./input-dialog')
+    dialog = new InputDialog(this)
+    dialog.attach()
