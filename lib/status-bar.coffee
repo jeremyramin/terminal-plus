@@ -49,7 +49,7 @@ class StatusBar extends View
           if terminal?
             terminal.toggle()
           else if atom.config.get('terminal-plus.core.mapTerminalsToAutoOpen')
-            @createTerminalView().toggle() unless item.isEmpty()
+            @createTerminalView().toggle() unless item.getTitle() is 'untitled'
 
     @registerContextMenu()
 
