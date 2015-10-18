@@ -1,3 +1,6 @@
+## v0.11.1 - Patch
+* Fix broken links in README
+
 ## v0.11.0 - Beta Release
 * Add insert text dialog for inserting special characters and running commands
   * Users can enable `Run Inserted Text` in the settings to have Terminal-Plus run inserted text as a command
