@@ -136,7 +136,7 @@ Or navigate to the install tab in Atom’s settings view, and search for `termin
 | terminal-plus:prev | Switch to the terminal left of the last active terminal. | `ctrl-shift-j`<br>or<br>`cmd-shift-j` |
 | terminal-plus:next | Switch to the terminal right of the last active terminal. | `ctrl-shift-k`<br>or<br>`cmd-shift-k` |
 | terminal-plus:insert-selected-text | Run the selected text as a command in the active terminal. | `ctrl-enter` |
-| terminal-plus:input-dialog | Bring up an input box for using IME and special keys. | –––––––––––– |
+| terminal-plus:insert-text | Bring up an input box for using IME and special keys. | –––––––––––– |
 
 ## To-Do List
 - [ ] Possibly merge dependencies into Terminal-Plus?
