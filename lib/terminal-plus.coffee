@@ -22,6 +22,11 @@ module.exports =
           description: 'Should the cursor blink when the terminal is active?'
           type: 'boolean'
           default: true
+        runInsertedText:
+          title: 'Run Inserted Text'
+          description: 'Run text inserted via `terminal-plus:insert-text` as a command? (Will append an end-line to input)'
+          type: 'boolean'
+          default: false
     core:
       type: 'object'
       order: 2

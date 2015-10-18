@@ -27,7 +27,7 @@ class StatusBar extends View
       'terminal-plus:prev': => @activePrevTerminalView()
       'terminal-plus:close': => @runInActiveView (i) -> i.destroy()
       'terminal-plus:insert-selected-text': => @runInActiveView (i) -> i.insertSelection()
-      'terminal-plus:input-dialog': => @runInActiveView (i) -> i.inputDialog()
+      'terminal-plus:insert-text': => @runInActiveView (i) -> i.inputDialog()
 
     @subscriptions.add atom.commands.add '.xterm',
       'terminal-plus:paste': => @runInOpenView (i) -> i.paste()

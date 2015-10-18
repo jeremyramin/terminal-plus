@@ -4,15 +4,16 @@ module.exports =
 class InputDialog extends View
   @content: () ->
     @div class: 'terminal-plus input-dialog', =>
-      @label 'Input', outlet: 'promptText'
+      @label 'Insert Text', outlet: 'promptText'
       @subview 'miniEditor', new TextEditorView(mini: true)
       @label 'Escape (Esc) to exit', style: 'float: left;'
-      @label 'Enter (\u21B5) to accept', style: 'float: right;'
+      @label 'Enter (\u21B5) to confirm', style: 'float: right;'
 
-  initialize: (@terminalView) ->
+  initialize: ({terminalView, runCommand, eol}) ->
     atom.commands.add @element,
       'core:confirm': =>
-        @terminalView.input @miniEditor.getText().trim()
+        data = "#{@miniEditor.getText()}#{if runCommand then eol else ''}"
+        terminalView.input data
         @close()
       'core:cancel': => @cancel()
 

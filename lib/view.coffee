@@ -44,6 +44,8 @@ class TerminalPlusView extends View
       title: 'Hide'
     @maximizeBtn.tooltip = atom.tooltips.add @maximizeBtn,
       title: 'Fullscreen'
+    @inputBtn.tooltip = atom.tooltips.add @inputBtn,
+      title: 'Insert Text'
     @subscriptions.add @maximizeBtn.tooltip
 
     @prevHeight = atom.config.get('terminal-plus.style.defaultPanelHeight')
@@ -419,5 +421,8 @@ class TerminalPlusView extends View
 
   inputDialog: ->
     InputDialog ?= require('./input-dialog')
-    dialog = new InputDialog(this)
+    dialog = new InputDialog
+      terminalView: this,
+      runCommand: atom.config.get('terminal-plus.toggles.runInsertedText'),
+      eol: os.EOL
     dialog.attach()
