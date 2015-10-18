@@ -238,7 +238,6 @@ class TerminalPlusView extends View
 
     @terminal.stopScrolling()
     @ptyProcess.send event: 'input', text: data
-    @focus()
 
   resize: (cols, rows) ->
     return unless @ptyProcess.childProcess?
@@ -366,15 +365,14 @@ class TerminalPlusView extends View
 
   insertSelection: ->
     return unless editor = atom.workspace.getActiveTextEditor()
-    return unless @ptyProcess.childProcess?
 
     if selection = editor.getSelectedText()
       @terminal.stopScrolling()
-      @ptyProcess.send event: 'input', text: "#{selection}#{os.EOL}"
+      @input "#{selection}#{os.EOL}"
     else if cursor = editor.getCursorBufferPosition()
       line = editor.lineTextForBufferRow(cursor.row)
       @terminal.stopScrolling()
-      @ptyProcess.send event: 'input', text: "#{line}#{os.EOL}"
+      @input "#{line}#{os.EOL}"
       editor.moveDown(1);
 
   focus: =>
