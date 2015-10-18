@@ -1,3 +1,13 @@
+## v0.11.0 - Beta Release
+* Add insert text dialog for inserting special characters and running commands
+  * Users can enable `Run Inserted Text` in the settings to have Terminal-Plus run inserted text as a command
+  * Users can use the insert text dialog to type special characters
+* Center terminal lines in the terminal-view
+* Improved terminal mapping
+* Improve terminal view focusing
+  * Do not steal focus for the cursor blink
+  * Do not steal focus for text input
+
 ## v0.10.1 - Patch
 * Fix resizing bug
 * Fix language overwrite bug
