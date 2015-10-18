@@ -86,13 +86,40 @@ You can set the default working directory for new terminals. By default this wil
 ### File Dropping
 Dropping a file on the terminal will insert the file path into the input. This works with external files, tabs from the Atom tab-view, and entries from the Atom tree-view.
 
-### Quick Insert Command
-Quickly insert and run selected text in your text editor by running the `terminal-plus:insert-selected-text` command (`ctrl-enter`).
+### Insert Selected Text
+Insert and run selected text from your text editor by running the `terminal-plus:insert-selected-text` command (`ctrl-enter`).
 
 ![](https://github.com/jeremyramin/terminal-plus/raw/master/resources/insert_selected_text.gif)
 
 If you have text selected, it will insert your selected text into the active terminal and run it.  
 If you don't have text selected it, will run the text on the line where your cursor is then proceed to the next line.
+
+### Quick Command Insert
+Quickly insert a command to your active terminal by executing the `terminal-plus:insert-text` command.
+
+![](https://github.com/jeremyramin/terminal-plus/raw/master/resources/insert_text.png)
+
+A dialog will pop up asking for the input to insert. If you have the `Run Inserted Text` option enabled in the settings (default is false), Terminal-Plus will automatically run the command for you.
+
+#### Support for Special Keys
+Support for IME, dead keys and other key combinations via the `Insert Text` dialog box. Just click the keyboard button in the top left of the terminal or set up a keymap to the `terminal-plus:insert-text` command.
+
+![](https://github.com/jeremyramin/terminal-plus/raw/master/resources/special_keys.gif)
+
+Note: Make sure you have the `Run Inserted Command` toggle off otherwise it will run your inserted text.
+
+### Map Terminal To
+Map your terminals to each file or folder you are working on for automatic terminal switching.
+
+#### File
+![](https://github.com/jeremyramin/terminal-plus/raw/master/resources/map_terminals_to_file.gif)
+
+#### Folder
+![](https://github.com/jeremyramin/terminal-plus/raw/master/resources/map_terminals_to_folder.gif)
+
+Toggling the `Auto Open a New Terminal (For Terminal Mapping)` option will have the mapping create a new terminal automatically for files and folders that don't have a terminal. The toggle is located right under the `Map Terminals To` option.
+
+![](https://github.com/jeremyramin/terminal-plus/raw/master/resources/map_terminals_to_auto_open.gif)
 
 ## Install
 Ready to install?
@@ -103,12 +130,13 @@ Or navigate to the install tab in Atom’s settings view, and search for `termin
 
 ## Commands
 | Command | Action | Default Keybind |
-|---------|--------|-----------------|
-| terminal-plus:new | Create a new terminal instance. | `ctrl-shift-t` or<br>`cmd-shift-t` |
+|---------|--------|:-----------------:|
+| terminal-plus:new | Create a new terminal instance. | `ctrl-shift-t`<br>or<br>`cmd-shift-t` |
 | terminal-plus:toggle | Toggle the last active terminal instance.<br>**Note:** This will create a new terminal if it needs to. | `` ctrl-` ``<br>(Control + Backtick) |
-| terminal-plus:prev | Switch to the terminal left of the last active terminal. | `ctrl-shift-j` or<br>`cmd-shift-j` |
-| terminal-plus:next | Switch to the terminal right of the last active terminal. | `ctrl-shift-k` or<br>`cmd-shift-k` |
+| terminal-plus:prev | Switch to the terminal left of the last active terminal. | `ctrl-shift-j`<br>or<br>`cmd-shift-j` |
+| terminal-plus:next | Switch to the terminal right of the last active terminal. | `ctrl-shift-k`<br>or<br>`cmd-shift-k` |
 | terminal-plus:insert-selected-text | Run the selected text as a command in the active terminal. | `ctrl-enter` |
+| terminal-plus:input-dialog | Bring up an input box for using IME and special keys. | –––––––––––– |
 
 ## To-Do List
 - [ ] Possibly merge dependencies into Terminal-Plus?
