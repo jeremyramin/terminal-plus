@@ -1,3 +1,6 @@
+## v0.11.2 - Patch
+* Fix tooltips staying after the terminal has been closed
+
 ## v0.11.1 - Patch
 * Fix broken links in README
 
