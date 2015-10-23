@@ -41,14 +41,11 @@ class StatusIcon extends HTMLElement
         hide: 250
 
   removeTooltip: ->
-    @tooltip?.dispose()
-
-  close: ->
-    @terminal.destroy()
-    @destroy()
+    @tooltip.dispose() if @tooltip?
+    @tooltip = null
 
   destroy: ->
-    @subscriptions.dispose()
+    @removeTooltip()
     @remove()
 
   activate: ->

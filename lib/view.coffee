@@ -151,7 +151,7 @@ class TerminalPlusView extends View
 
   destroy: ->
     @subscriptions.dispose()
-    @statusIcon.remove()
+    @statusIcon.destroy()
     @statusBar.removeTerminalView this
     @detachResizeEvents()
 
