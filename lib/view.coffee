@@ -42,11 +42,10 @@ class TerminalPlusView extends View
       title: 'Close'
     @subscriptions.add atom.tooltips.add @hideBtn,
       title: 'Hide'
-    @maximizeBtn.tooltip = atom.tooltips.add @maximizeBtn,
+    @subscriptions.add @maximizeBtn.tooltip = atom.tooltips.add @maximizeBtn,
       title: 'Fullscreen'
     @inputBtn.tooltip = atom.tooltips.add @inputBtn,
       title: 'Insert Text'
-    @subscriptions.add @maximizeBtn.tooltip
 
     @prevHeight = atom.config.get('terminal-plus.style.defaultPanelHeight')
     @xterm.height 0
@@ -77,7 +76,8 @@ class TerminalPlusView extends View
     {dataTransfer} = event.originalEvent
 
     if dataTransfer.getData('atom-event') is 'true'
-      @input "#{dataTransfer.getData('text/plain')} "
+      filePath = dataTransfer.getData('text/plain')
+      @input "#{filePath} " if filePath
     else if filePath = dataTransfer.getData('initialPath')
       @input "#{filePath} "
     else if dataTransfer.files.length > 0
