@@ -1,3 +1,8 @@
+## v0.12.0 - Beta Release
+* Clean up tooltip
+* Prevent file path insertion for empty file paths (Atom tabs)
+* Add experimental support for tab view
+
 ## v0.11.2 - Patch
 * Fix tooltips staying after the terminal has been closed
 
