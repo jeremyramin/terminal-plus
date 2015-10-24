@@ -20,6 +20,7 @@ class TerminalPlusView extends View
   pwd: ''
   windowHeight: $(window).height()
   rowHeight: 20
+  tabView: false
 
   @content: ->
     @div class: 'terminal-plus terminal-view', outlet: 'terminalPlusView', =>
@@ -385,7 +386,7 @@ class TerminalPlusView extends View
     @terminal.element.focus()
 
   resizeTerminalToView: ->
-    return unless @panel.isVisible()
+    return unless @panel.isVisible() or @tabView
 
     {cols, rows} = @getDimensions()
     return unless cols > 0 and rows > 0
@@ -424,3 +425,27 @@ class TerminalPlusView extends View
       runCommand: atom.config.get('terminal-plus.toggles.runInsertedText'),
       eol: os.EOL
     dialog.attach()
+
+  getTitle: ->
+    @statusIcon.getName() or "Terminal-Plus"
+
+  getIconName: ->
+    "terminal"
+
+  toggleTabView: ->
+    if @tabView
+      @panel = atom.workspace.addBottomPanel(item: this, visible: false)
+      @panelDivider.show()
+      @closeBtn.show()
+      @hideBtn.show()
+      @maximizeBtn.show()
+      @tabView = false
+    else
+      @panel.destroy()
+      @panelDivider.hide()
+      @closeBtn.hide()
+      @hideBtn.hide()
+      @maximizeBtn.hide()
+      @xterm.css "height", ""
+      @tabView = true
+      lastOpenedView = null if lastOpenedView == this

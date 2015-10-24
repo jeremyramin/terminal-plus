@@ -52,6 +52,9 @@ class StatusIcon extends HTMLElement
     @classList.add 'active'
     @active = true
 
+  isActive: ->
+    @classList.contains 'active'
+
   deactivate: ->
     @classList.remove 'active'
     @active = false

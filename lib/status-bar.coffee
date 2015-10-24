@@ -33,13 +33,17 @@ class StatusBar extends View
       'terminal-plus:paste': => @runInOpenView (i) -> i.paste()
       'terminal-plus:copy': => @runInOpenView (i) -> i.copy()
 
-    unless atom.config.get('terminal-plus.core.oneTerminalPer') is 'None'
-      @subscriptions.add atom.workspace.onDidChangeActivePaneItem (item) =>
-        return unless item?
-        return unless item.constructor.name is "TextEditor"
+    @subscriptions.add atom.workspace.onDidChangeActivePaneItem (item) =>
+      return unless item?
+
+      if item.constructor.name is "TerminalPlusView"
+        setTimeout item.focus, 100
+      else if item.constructor.name is "TextEditor"
+        mapping = atom.config.get('terminal-plus.core.mapTerminalsTo')
+        return if mapping is 'None'
         return unless @getActiveTerminalView()?.panel.isVisible()
 
-        switch atom.config.get('terminal-plus.core.mapTerminalsTo')
+        switch mapping
           when 'File'
             terminal = @getTerminalById item.getPath(), (terminal) -> terminal.getId().filePath
           when 'Folder'
@@ -88,9 +92,21 @@ class StatusBar extends View
         $(event.target).closest('.status-icon')[0].rename()
       'terminal-plus:close-all': @closeAll
 
-  createTerminalView: ->
-    statusIcon = new StatusIcon()
+  registerPaneSubscription: ->
+    @subscriptions.add @paneSubscription = atom.workspace.observePanes (pane) =>
+      paneElement = $(atom.views.getView(pane))
+      tabBar = paneElement.find('ul')
 
+      tabBar.on 'drop', (event) => @onDropTabBar(event, pane)
+      tabBar.on 'dragstart', (event) ->
+        return unless event.target.item?.constructor.name is 'TerminalPlusView'
+        event.originalEvent.dataTransfer.setData 'terminal-plus-tab', 'true'
+      pane.onDidDestroy -> tabBar.off 'drop', @onDropTabBar
+
+  createTerminalView: ->
+    @registerPaneSubscription() unless @paneSubscription?
+
+    statusIcon = new StatusIcon()
     terminalPlusView = new TerminalPlusView()
     statusIcon.initialize(terminalPlusView)
 
@@ -188,7 +204,7 @@ class StatusBar extends View
     $(event.target).closest('.status-icon').css 'color', ''
 
   onDragStart: (event) =>
-    event.originalEvent.dataTransfer.setData 'terminal-plus', 'true'
+    event.originalEvent.dataTransfer.setData 'terminal-plus-panel', 'true'
 
     element = $(event.target).closest('.status-icon')
     element.addClass 'is-dragging'
@@ -220,15 +236,53 @@ class StatusBar extends View
 
   onDrop: (event) =>
     {dataTransfer} = event.originalEvent
-    return unless dataTransfer.getData('terminal-plus') is 'true'
+    panelEvent = dataTransfer.getData('terminal-plus-panel') is 'true'
+    tabEvent = dataTransfer.getData('terminal-plus-tab') is 'true'
+    return unless panelEvent or tabEvent
+
     event.preventDefault()
     event.stopPropagation()
 
-    fromIndex = parseInt(dataTransfer.getData('from-index'))
     toIndex = @getDropTargetIndex(event)
     @clearDropTarget()
 
+    if tabEvent
+      fromIndex = parseInt(dataTransfer.getData('sortable-index'))
+      paneIndex = parseInt(dataTransfer.getData('from-pane-index'))
+      pane = atom.workspace.getPanes()[paneIndex]
+      view = pane.itemAtIndex(fromIndex)
+      pane.removeItem(view, false)
+      view.show()
+
+      view.toggleTabView()
+      @terminalViews.push view
+      view.open() if view.statusIcon.isActive()
+      @statusContainer.append view.statusIcon
+      fromIndex = @terminalViews.length - 1
+    else
+      fromIndex = parseInt(dataTransfer.getData('from-index'))
     @updateOrder(fromIndex, toIndex)
+
+  onDropTabBar: (event, pane) =>
+    {dataTransfer} = event.originalEvent
+    return unless dataTransfer.getData('terminal-plus-panel') is 'true'
+
+    event.preventDefault()
+    event.stopPropagation()
+    @clearDropTarget()
+
+    fromIndex = parseInt(dataTransfer.getData('from-index'))
+    view = @terminalViews[fromIndex]
+    tabBar = $(event.target).closest('.tab-bar')
+
+    view.toggleTabView()
+    @removeTerminalView view
+    @statusContainer.children().eq(fromIndex).detach()
+
+    pane.addItem view, pane.getItems().length
+    pane.activateItem view
+
+    view.focus()
 
   clearDropTarget: ->
     element = @find('.is-dragging')

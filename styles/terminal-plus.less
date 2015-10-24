@@ -8,6 +8,7 @@
 
 .terminal-plus {
   letter-spacing: normal;
+  position: inherit;
 
   ul {
     padding: 0;
@@ -33,6 +34,7 @@
     .panel-divider {
       display: inherit;
       order: 1;
+      flex-grow: 0;
       z-index: 10;
       -webkit-user-select: none;
       cursor: ns-resize;
@@ -44,6 +46,7 @@
     .btn-toolbar {
       display: block;
       order: 2;
+      flex-grow: 0;
       width: 100%;
       padding: 0 2px 4px 2px;
 
@@ -64,19 +67,18 @@
     }
 
     .xterm {
-      display: block;
+      display: -webkit-flex;
       order: 3;
-      height: 100%;
+      flex-grow: 1;
       width: 100%;
       > .terminal {
         display: -webkit-flex;
+
         flex-direction: column;
         align-content: flex-end;
-        justify-content: center;
         position: relative;
         padding: 0 5px;
 
-        height: 100%;
         width: 100%;
         overflow: hidden;
         > div {
