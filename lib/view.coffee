@@ -379,6 +379,7 @@ class TerminalPlusView extends View
   focus: =>
     @resizeTerminalToView()
     @focusTerminal()
+    @statusBar.setActiveTerminalView(this)
     super()
 
   focusTerminal: =>

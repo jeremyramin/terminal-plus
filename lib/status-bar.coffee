@@ -9,7 +9,7 @@ path = require 'path'
 module.exports =
 class StatusBar extends View
   terminalViews: []
-  activeIndex: 0
+  activeTerminal: null
 
   @content: ->
     @div class: 'terminal-plus status-bar', tabindex: -1, =>
@@ -23,15 +23,23 @@ class StatusBar extends View
     @subscriptions.add atom.commands.add 'atom-workspace',
       'terminal-plus:new': => @newTerminalView()
       'terminal-plus:toggle': => @toggle()
-      'terminal-plus:next': => @activeNextTerminalView()
-      'terminal-plus:prev': => @activePrevTerminalView()
-      'terminal-plus:close': => @runInActiveView (i) -> i.destroy()
+      'terminal-plus:next': =>
+        return if @activeTerminal.animating
+
+        @activeNextTerminalView()
+        @activeTerminal.open()
+      'terminal-plus:prev': =>
+        return if @activeTerminal.animating
+
+        @activePrevTerminalView()
+        @activeTerminal.open()
+      'terminal-plus:close': => @destroyActiveTerm()
       'terminal-plus:insert-selected-text': => @runInActiveView (i) -> i.insertSelection()
       'terminal-plus:insert-text': => @runInActiveView (i) -> i.inputDialog()
 
     @subscriptions.add atom.commands.add '.xterm',
-      'terminal-plus:paste': => @runInOpenView (i) -> i.paste()
-      'terminal-plus:copy': => @runInOpenView (i) -> i.copy()
+      'terminal-plus:paste': => @runInActiveView (i) -> i.paste()
+      'terminal-plus:copy': => @runInActiveView (i) -> i.copy()
 
     @subscriptions.add atom.workspace.onDidChangeActivePaneItem (item) =>
       return unless item?
@@ -119,10 +127,19 @@ class StatusBar extends View
     return terminalPlusView
 
   activeNextTerminalView: ->
-    @activeTerminalView @activeIndex + 1
+    index = @indexOf(@activeTerminal)
+    return unless index >= 0
+    @activeTerminal = null
+    @activeTerminalView index + 1
 
   activePrevTerminalView: ->
-    @activeTerminalView @activeIndex - 1
+    index = @indexOf(@activeTerminal)
+    return unless index >= 0
+    @activeTerminal = null
+    @activeTerminalView index - 1
+
+  indexOf: (view) ->
+    @terminalViews.indexOf(view)
 
   activeTerminalView: (index) ->
     return unless @terminalViews.length > 1
@@ -132,10 +149,10 @@ class StatusBar extends View
     if index < 0
       index = @terminalViews.length - 1
 
-    @terminalViews[index].open()
+    @activeTerminal = @terminalViews[index]
 
   getActiveTerminalView: ->
-    return @terminalViews[@activeIndex]
+    return @activeTerminal
 
   getTerminalById: (id, selector) ->
     selector ?= (terminal) -> terminal.id
@@ -159,30 +176,40 @@ class StatusBar extends View
       return callback(view)
     return null
 
-  setActiveTerminalView: (terminalView) ->
-    @activeIndex = @terminalViews.indexOf terminalView
+  setActiveTerminalView: (view) ->
+    @activeTerminal = view
 
-  removeTerminalView: (terminalView) ->
-    index = @terminalViews.indexOf terminalView
+  removeTerminalView: (view) ->
+    index = @indexOf view
     return if index < 0
     @terminalViews.splice index, 1
-    @activeIndex-- if index <= @activeIndex and @activeIndex > 0
+    @activeTerminal = null if @activeTerminal == view
 
   newTerminalView: ->
+    return if @activeTerminal?.animating
+
     @createTerminalView().toggle()
 
-  attach: () ->
+  attach: ->
     atom.workspace.addBottomPanel(item: this, priority: 100)
 
   destroyActiveTerm: ->
-    @terminalViews[@activeIndex].destroy() if @terminalViews[@activeIndex]?
+    return unless @activeTerminal?
+
+    index = @indexOf(@activeTerminal)
+    @activeTerminal.destroy()
+    @activeTerminal = null
+
+    return unless @terminalViews.length > 0
+    index = Math.max(0, index - 1)
+    @activeTerminal = @terminalViews[index]
 
   closeAll: =>
     for index in [@terminalViews.length .. 0]
-      o = @terminalViews[index]
-      if o?
-        o.destroy()
-    @activeIndex = 0
+      view = @terminalViews[index]
+      if view?
+        view.destroy()
+    @activeTerminal = null
 
   destroy: ->
     @subscriptions.dispose()
@@ -192,8 +219,8 @@ class StatusBar extends View
     @detach()
 
   toggle: ->
-    @createTerminalView() unless @terminalViews[@activeIndex]?
-    @terminalViews[@activeIndex].toggle()
+    @activeTerminal = @createTerminalView() unless @terminalViews.length > 0
+    @activeTerminal.toggle()
 
   setStatusColor: (event) ->
     color = event.type.match(/\w+$/)[0]
@@ -273,6 +300,8 @@ class StatusBar extends View
 
     fromIndex = parseInt(dataTransfer.getData('from-index'))
     view = @terminalViews[fromIndex]
+    view.css "height", ""
+    view.terminal.element.style.height = ""
     tabBar = $(event.target).closest('.tab-bar')
 
     view.toggleTabView()
