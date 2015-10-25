@@ -1,3 +1,9 @@
+## v0.12.1 - Patch
+* Make sure status icon tooltip dismisses when the status icon is detached
+* Fix copy and pasting bug with tabs
+* Improve active terminal system
+* Fix terminal resizing removing lines
+
 ## v0.12.0 - Beta Release
 * Clean up tooltip
 * Prevent file path insertion for empty file paths (Atom tabs)
