@@ -278,6 +278,7 @@ class StatusBar extends View
     view.toggleTabView()
     @removeTerminalView view
     @statusContainer.children().eq(fromIndex).detach()
+    view.statusIcon.removeTooltip()
 
     pane.addItem view, pane.getItems().length
     pane.activateItem view
