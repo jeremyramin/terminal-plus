@@ -1,3 +1,7 @@
+## v0.12.2 - Patch
+* Prevent terminal from intercepting alt+(key) events
+  * Fixes broken copy and paste on Linux and Windows
+
 ## v0.12.1 - Patch
 * Make sure status icon tooltip dismisses when the status icon is detached
 * Fix copy and pasting bug with tabs
