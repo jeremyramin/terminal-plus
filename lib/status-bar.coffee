@@ -18,7 +18,7 @@ class StatusBar extends View
       @i class: "icon icon-x", click: 'closeAll', outlet: 'closeBtn'
 
   initialize: () ->
-    @subscriptions = new CompositeDisposable
+    @subscriptions = new CompositeDisposable()
 
     @subscriptions.add atom.commands.add 'atom-workspace',
       'terminal-plus:new': => @newTerminalView()
@@ -76,6 +76,10 @@ class StatusBar extends View
     @statusContainer.on 'dragleave', @onDragLeave
     @statusContainer.on 'dragover', @onDragOver
     @statusContainer.on 'drop', @onDrop
+
+    window.addEventListener 'blur', =>
+      if view = TerminalPlusView.getFocusedTerminal()
+        view.blur()
 
     @attach()
 

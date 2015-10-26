@@ -36,6 +36,9 @@ class TerminalPlusView extends View
           @span class: 'icon icon-keyboard'
       @div class: 'xterm', outlet: 'xterm'
 
+  @getFocusedTerminal: ->
+    return Terminal.Terminal.focus
+
   initialize: ->
     @subscriptions = new CompositeDisposable()
 
