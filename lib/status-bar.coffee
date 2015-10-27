@@ -187,12 +187,22 @@ class StatusBar extends View
     index = @indexOf view
     return if index < 0
     @terminalViews.splice index, 1
-    @activeTerminal = null if @activeTerminal == view
+
+    @activateAdjacentTerminal index
+
+  activateAdjacentTerminal: (index=0) ->
+    return false unless @terminalViews.length > 0
+
+    index = Math.max(0, index - 1)
+    @activeTerminal = @terminalViews[index]
+
+    return true
 
   newTerminalView: ->
     return if @activeTerminal?.animating
 
-    @createTerminalView().toggle()
+    @activeTerminal = @createTerminalView()
+    @activeTerminal.toggle()
 
   attach: ->
     atom.workspace.addBottomPanel(item: this, priority: 100)
@@ -204,9 +214,7 @@ class StatusBar extends View
     @activeTerminal.destroy()
     @activeTerminal = null
 
-    return unless @terminalViews.length > 0
-    index = Math.max(0, index - 1)
-    @activeTerminal = @terminalViews[index]
+    @activateAdjacentTerminal index
 
   closeAll: =>
     for index in [@terminalViews.length .. 0]
@@ -223,7 +231,10 @@ class StatusBar extends View
     @detach()
 
   toggle: ->
-    @activeTerminal = @createTerminalView() unless @terminalViews.length > 0
+    if @terminalViews.length == 0
+      @activeTerminal = @createTerminalView()
+    else if @activeTerminal == null
+      @activeTerminal = @terminalViews[0]
     @activeTerminal.toggle()
 
   setStatusColor: (event) ->
