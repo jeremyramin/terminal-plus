@@ -1,3 +1,8 @@
+## v0.12.3 - Patch
+* Blur terminal window on window blur
+* Adjust default ANSI colors for terminal
+* Confirm that the active terminal is not null
+
 ## v0.12.2 - Patch
 * Prevent terminal from intercepting alt+(key) events
   * Fixes broken copy and paste on Linux and Windows
