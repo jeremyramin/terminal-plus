@@ -39,7 +39,7 @@ class TerminalPlusView extends View
   @getFocusedTerminal: ->
     return Terminal.Terminal.focus
 
-  initialize: ->
+  initialize: (@id, @pwd, @statusIcon, @statusBar) ->
     @subscriptions = new CompositeDisposable()
 
     @subscriptions.add atom.tooltips.add @closeBtn,
@@ -68,6 +68,10 @@ class TerminalPlusView extends View
     @xterm.on 'dragover', override
     @xterm.on 'drop', @recieveItemOrFile
 
+  attach: ->
+    return if @panel?
+    @panel = atom.workspace.addBottomPanel(item: this, visible: false)
+
   setAnimationSpeed: =>
     @animationSpeed = atom.config.get('terminal-plus.style.animationSpeed')
     @animationSpeed = 100 if @animationSpeed is 0
@@ -89,20 +93,6 @@ class TerminalPlusView extends View
         @input "#{file.path} "
 
   forkPtyProcess: (shell, args=[]) ->
-    projectFolder = atom.project.getPaths()[0]
-    projectFolder = undefined unless projectFolder?.indexOf('atom://') < 0
-    editorPath = atom.workspace.getActiveTextEditor()?.getPath()
-    editorFolder = path.dirname(editorPath) if editorPath?
-    home = if process.platform is 'win32' then process.env.HOMEPATH else process.env.HOME
-
-    switch atom.config.get('terminal-plus.core.workingDirectory')
-      when 'Project' then @pwd = projectFolder or editorFolder or home
-      when 'Active File' then @pwd = editorFolder or projectFolder or home
-      else @pwd = home
-
-    @id = editorPath or projectFolder or home
-    @id = filePath: @id, folderPath: path.dirname(@id)
-
     Task.once Pty, path.resolve(@pwd), shell, args, =>
       @input = ->
       @resize = ->
@@ -114,7 +104,7 @@ class TerminalPlusView extends View
     {cols, rows} = @getDimensions()
     shell = atom.config.get 'terminal-plus.core.shell'
     shellArguments = atom.config.get 'terminal-plus.core.shellArguments'
-    args = shellArguments.split(/\s+/g).filter (arg)-> arg
+    args = shellArguments.split(/\s+/g).filter (arg) -> arg
     @ptyProcess = @forkPtyProcess shell, args
 
     @terminal = new Terminal {

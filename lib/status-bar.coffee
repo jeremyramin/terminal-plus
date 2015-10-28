@@ -49,19 +49,23 @@ class StatusBar extends View
       else if item.constructor.name is "TextEditor"
         mapping = atom.config.get('terminal-plus.core.mapTerminalsTo')
         return if mapping is 'None'
-        return unless @getActiveTerminalView()?.panel.isVisible()
 
         switch mapping
           when 'File'
-            terminal = @getTerminalById item.getPath(), (terminal) -> terminal.getId().filePath
+            nextTerminal = @getTerminalById item.getPath(), (view) -> view.getId().filePath
           when 'Folder'
-            terminal = @getTerminalById path.dirname(item.getPath()), (terminal) -> terminal.getId().folderPath
+            nextTerminal = @getTerminalById path.dirname(item.getPath()), (view) -> view.getId().folderPath
 
-        unless @getActiveTerminalView() == terminal
-          if terminal?
-            terminal.toggle()
-          else if atom.config.get('terminal-plus.core.mapTerminalsToAutoOpen')
-            @createTerminalView().toggle() unless item.getTitle() is 'untitled'
+        prevTerminal = @getActiveTerminalView()
+        console.log prevTerminal
+        if prevTerminal != nextTerminal
+          if not nextTerminal?
+            if item.getTitle() isnt 'untitled'
+              if atom.config.get('terminal-plus.core.mapTerminalsToAutoOpen')
+                nextTerminal = @createTerminalView()
+
+          @setActiveTerminalView(nextTerminal)
+          nextTerminal.toggle() if prevTerminal?.panel.isVisible()
 
     @registerContextMenu()
 
@@ -118,13 +122,25 @@ class StatusBar extends View
   createTerminalView: ->
     @registerPaneSubscription() unless @paneSubscription?
 
+    projectFolder = atom.project.getPaths()[0]
+    projectFolder = undefined unless projectFolder?.indexOf('atom://') < 0
+    editorPath = atom.workspace.getActiveTextEditor()?.getPath()
+    editorFolder = path.dirname(editorPath) if editorPath?
+    home = if process.platform is 'win32' then process.env.HOMEPATH else process.env.HOME
+
+    switch atom.config.get('terminal-plus.core.workingDirectory')
+      when 'Project' then pwd = projectFolder or editorFolder or home
+      when 'Active File' then pwd = editorFolder or projectFolder or home
+      else pwd = home
+
+    id = editorPath or projectFolder or home
+    id = filePath: id, folderPath: path.dirname(id)
+
     statusIcon = new StatusIcon()
-    terminalPlusView = new TerminalPlusView()
+    terminalPlusView = new TerminalPlusView(id, pwd, statusIcon, this)
     statusIcon.initialize(terminalPlusView)
 
-    terminalPlusView.statusBar = this
-    terminalPlusView.statusIcon = statusIcon
-    terminalPlusView.panel = atom.workspace.addBottomPanel(item: terminalPlusView, visible: false)
+    terminalPlusView.attach()
 
     @terminalViews.push terminalPlusView
     @statusContainer.append statusIcon
