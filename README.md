@@ -137,11 +137,14 @@ Or navigate to the install tab in Atom’s settings view, and search for `termin
 | terminal-plus:next | Switch to the terminal right of the last active terminal. | `ctrl-shift-k`<br>or<br>`cmd-shift-k` |
 | terminal-plus:insert-selected-text | Run the selected text as a command in the active terminal. | `ctrl-enter` |
 | terminal-plus:insert-text | Bring up an input box for using IME and special keys. | –––––––––––– |
+| terminal-plus:close | Close the active terminal. | `ctrl-shift-x`<br>or<br>`cmd-shift-x` |
+| terminal-plus:close-all | Close all terminals. | –––––––––––– |
+| terminal-plus:rename | Rename the active terminal. | –––––––––––– |
 
 ## To-Do List
 - [ ] Possibly merge dependencies into Terminal-Plus?
 - [ ] Add support for dead keys and IME input
-- [ ] Add support for terminal tabs
+- [x] Add support for terminal tabs
 - [x] Add support for automatic directory switching
 - [x] Fix Atom requesting a rebuild after every update
 - [x] Update winpty in pty.js dependency
