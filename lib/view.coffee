@@ -108,7 +108,7 @@ class TerminalPlusView extends View
     @ptyProcess = @forkPtyProcess shell, args
 
     @terminal = new Terminal {
-      cursorBlink     : atom.config.get 'terminal-plus.toggles.cursorBlink'
+      cursorBlink     : false
       scrollback      : atom.config.get 'terminal-plus.core.scrollback'
       cols, rows
     }
@@ -239,37 +239,40 @@ class TerminalPlusView extends View
     @ptyProcess.send {event: 'resize', rows, cols}
 
   applyStyle: ->
-    style = atom.config.get 'terminal-plus.style'
-    ansiColors = atom.config.get 'terminal-plus.ansiColors'
+    config = atom.config.get 'terminal-plus'
 
-    @xterm.addClass style.theme
+    @xterm.addClass config.style.theme
+    @xterm.addClass 'cursor-blink' if config.toggles.cursorBlink
+    cursorColor = $('.terminal-cursor').css 'background-color'
+    $('.terminal-cursor').css 'background-color', 'transparent'
+    $('.terminal-cursor:after').css 'background-color', cursorColor
 
     fontFamily = ["monospace"]
-    fontFamily.unshift style.fontFamily unless style.fontFamily is ''
+    fontFamily.unshift config.style.fontFamily unless config.style.fontFamily is ''
     @terminal.element.style.fontFamily = fontFamily.join ', '
-    @terminal.element.style.fontSize = style.fontSize + 'px'
+    @terminal.element.style.fontSize = config.style.fontSize + 'px'
 
     # first 8 colors i.e. 'dark' colors
     @terminal.colors[0..7] = [
-      ansiColors.normal.black.toHexString()
-      ansiColors.normal.red.toHexString()
-      ansiColors.normal.green.toHexString()
-      ansiColors.normal.yellow.toHexString()
-      ansiColors.normal.blue.toHexString()
-      ansiColors.normal.magenta.toHexString()
-      ansiColors.normal.cyan.toHexString()
-      ansiColors.normal.white.toHexString()
+      config.ansiColors.normal.black.toHexString()
+      config.ansiColors.normal.red.toHexString()
+      config.ansiColors.normal.green.toHexString()
+      config.ansiColors.normal.yellow.toHexString()
+      config.ansiColors.normal.blue.toHexString()
+      config.ansiColors.normal.magenta.toHexString()
+      config.ansiColors.normal.cyan.toHexString()
+      config.ansiColors.normal.white.toHexString()
     ]
     # 'bright' colors
     @terminal.colors[8..15] = [
-      ansiColors.zBright.brightBlack.toHexString()
-      ansiColors.zBright.brightRed.toHexString()
-      ansiColors.zBright.brightGreen.toHexString()
-      ansiColors.zBright.brightYellow.toHexString()
-      ansiColors.zBright.brightBlue.toHexString()
-      ansiColors.zBright.brightMagenta.toHexString()
-      ansiColors.zBright.brightCyan.toHexString()
-      ansiColors.zBright.brightWhite.toHexString()
+      config.ansiColors.zBright.brightBlack.toHexString()
+      config.ansiColors.zBright.brightRed.toHexString()
+      config.ansiColors.zBright.brightGreen.toHexString()
+      config.ansiColors.zBright.brightYellow.toHexString()
+      config.ansiColors.zBright.brightBlue.toHexString()
+      config.ansiColors.zBright.brightMagenta.toHexString()
+      config.ansiColors.zBright.brightCyan.toHexString()
+      config.ansiColors.zBright.brightWhite.toHexString()
     ]
 
   attachResizeEvents: ->

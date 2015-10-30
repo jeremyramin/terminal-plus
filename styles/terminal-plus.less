@@ -96,6 +96,16 @@
         }
       }
     }
+
+    .cursor-blink {
+      .terminal-cursor {
+        -webkit-animation: blink 1s step-start 0s infinite;
+        -webkit-animation-delay: 1s;
+        @-webkit-keyframes blink {
+          50%  { background: transparent; }
+        }
+      }
+    }
   }
 
   &.status-bar {
