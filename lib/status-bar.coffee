@@ -25,14 +25,10 @@ class StatusBar extends View
       'terminal-plus:toggle': => @toggle()
       'terminal-plus:next': =>
         return if @activeTerminal.animating
-
-        @activeNextTerminalView()
-        @activeTerminal.open()
+        @activeTerminal.open() if @activeNextTerminalView()
       'terminal-plus:prev': =>
         return if @activeTerminal.animating
-
-        @activePrevTerminalView()
-        @activeTerminal.open()
+        @activeTerminal.open() if @activePrevTerminalView()
       'terminal-plus:close': => @destroyActiveTerm()
       'terminal-plus:insert-selected-text': => @runInActiveView (i) -> i.insertSelection()
       'terminal-plus:insert-text': => @runInActiveView (i) -> i.inputDialog()
@@ -148,21 +144,19 @@ class StatusBar extends View
 
   activeNextTerminalView: ->
     index = @indexOf(@activeTerminal)
-    return unless index >= 0
-    @activeTerminal = null
+    return false if index < 0
     @activeTerminalView index + 1
 
   activePrevTerminalView: ->
     index = @indexOf(@activeTerminal)
-    return unless index >= 0
-    @activeTerminal = null
+    return false if index < 0
     @activeTerminalView index - 1
 
   indexOf: (view) ->
     @terminalViews.indexOf(view)
 
   activeTerminalView: (index) ->
-    return unless @terminalViews.length > 1
+    return false if @terminalViews.length < 2
 
     if index >= @terminalViews.length
       index = 0
@@ -170,6 +164,7 @@ class StatusBar extends View
       index = @terminalViews.length - 1
 
     @activeTerminal = @terminalViews[index]
+    return true
 
   getActiveTerminalView: ->
     return @activeTerminal
