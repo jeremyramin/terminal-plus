@@ -429,6 +429,9 @@ class TerminalPlusView extends View
   getIconName: ->
     "terminal"
 
+  rename: ->
+    @statusIcon.rename()
+
   toggleTabView: ->
     if @tabView
       @panel = atom.workspace.addBottomPanel(item: this, visible: false)

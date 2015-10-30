@@ -30,6 +30,8 @@ class StatusBar extends View
         return if @activeTerminal.animating
         @activeTerminal.open() if @activePrevTerminalView()
       'terminal-plus:close': => @destroyActiveTerm()
+      'terminal-plus:close-all': => @closeAll()
+      'terminal-plus:rename': => @runInActiveView (i) -> i.rename()
       'terminal-plus:insert-selected-text': => @runInActiveView (i) -> i.insertSelection()
       'terminal-plus:insert-text': => @runInActiveView (i) -> i.inputDialog()
 
