@@ -1,3 +1,11 @@
+## v0.12.4 - Patch
+* Map terminals while the active terminal is hidden
+* Fix prev/next terminal switch
+* Improve cursor blink animation
+* New commands:
+ * terminal-plus:close-all for closing all terminals
+ * terminal-plus:rename for renaming the active terminal
+
 ## v0.12.3 - Patch
 * Blur terminal window on window blur
 * Adjust default ANSI colors for terminal
