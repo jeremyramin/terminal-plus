@@ -1,3 +1,7 @@
+## v0.12.5 - Patch
+* Fix `ctrl` key intercepting to ignore `ctrl-shift` combinations
+* Fix `ctrl-s` pausing terminal on Linux systems
+
 ## v0.12.4 - Patch
 * Map terminals while the active terminal is hidden
 * Fix prev/next terminal switch
