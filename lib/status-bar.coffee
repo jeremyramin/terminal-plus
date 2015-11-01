@@ -55,15 +55,14 @@ class StatusBar extends View
             nextTerminal = @getTerminalById path.dirname(item.getPath()), (view) -> view.getId().folderPath
 
         prevTerminal = @getActiveTerminalView()
-        console.log prevTerminal
         if prevTerminal != nextTerminal
           if not nextTerminal?
             if item.getTitle() isnt 'untitled'
               if atom.config.get('terminal-plus.core.mapTerminalsToAutoOpen')
                 nextTerminal = @createTerminalView()
-
-          @setActiveTerminalView(nextTerminal)
-          nextTerminal.toggle() if prevTerminal?.panel.isVisible()
+          else
+            @setActiveTerminalView(nextTerminal)
+            nextTerminal.toggle() if prevTerminal?.panel.isVisible()
 
     @registerContextMenu()
 
