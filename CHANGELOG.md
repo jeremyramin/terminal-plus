@@ -1,3 +1,12 @@
+## v0.13.0 - Beta Release
+* Add support for alt+key combinations
+* Right alt for escape sequences
+* Fix terminal mapping toggle error when `Auto Open a New Terminal` is false
+* Improve cursor:
+  * Preserve the color of the character the cursor is over
+  * Fix terminal cursor background-color being overwritten
+* Only intercept ctrl+key combinations if ctrl is the only key being pressed
+
 ## v0.12.5 - Patch
 * Fix `ctrl` key intercepting to ignore `ctrl-shift` combinations
 * Fix `ctrl-s` pausing terminal on Linux systems
