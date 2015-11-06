@@ -362,14 +362,15 @@ class TerminalPlusView extends View
 
   insertSelection: ->
     return unless editor = atom.workspace.getActiveTextEditor()
+    runCommand = atom.config.get('terminal-plus.toggles.runInsertedText')
 
     if selection = editor.getSelectedText()
       @terminal.stopScrolling()
-      @input "#{selection}#{os.EOL}"
+      @input "#{selection}#{if runCommand then os.EOL else ''}"
     else if cursor = editor.getCursorBufferPosition()
       line = editor.lineTextForBufferRow(cursor.row)
       @terminal.stopScrolling()
-      @input "#{line}#{os.EOL}"
+      @input "#{line}#{if runCommand then os.EOL else ''}"
       editor.moveDown(1);
 
   focus: =>
