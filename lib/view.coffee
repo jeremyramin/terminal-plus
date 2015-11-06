@@ -20,6 +20,7 @@ class TerminalPlusView extends View
   pwd: ''
   windowHeight: $(window).height()
   rowHeight: 20
+  shell: ''
   tabView: false
 
   @content: ->
@@ -102,10 +103,10 @@ class TerminalPlusView extends View
 
   displayTerminal: ->
     {cols, rows} = @getDimensions()
-    shell = atom.config.get 'terminal-plus.core.shell'
+    @shell = atom.config.get 'terminal-plus.core.shell'
     shellArguments = atom.config.get 'terminal-plus.core.shellArguments'
     args = shellArguments.split(/\s+/g).filter (arg) -> arg
-    @ptyProcess = @forkPtyProcess shell, args
+    @ptyProcess = @forkPtyProcess @shell, args
 
     @terminal = new Terminal {
       cursorBlink     : false
@@ -124,16 +125,13 @@ class TerminalPlusView extends View
     @ptyProcess.on 'terminal-plus:exit', =>
       @destroy() if atom.config.get('terminal-plus.toggles.autoClose')
 
-    @ptyProcess.on 'terminal-plus:title', (title) =>
-      @statusIcon.updateTooltip(title)
-
-    @ptyProcess.on 'terminal-plus:clear-title', =>
-      @statusIcon.removeTooltip()
-
     @terminal.end = => @destroy()
 
     @terminal.on "data", (data) =>
       @input data
+
+    @terminal.on "title", (title) =>
+      @statusIcon.updateTooltip(title)
 
     @terminal.once "open", =>
       @applyStyle()
@@ -450,3 +448,9 @@ class TerminalPlusView extends View
       @xterm.css "height", ""
       @tabView = true
       lastOpenedView = null if lastOpenedView == this
+
+  getShell: ->
+    return path.basename @shell
+
+  getShellPath: ->
+    return @shell

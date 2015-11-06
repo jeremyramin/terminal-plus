@@ -1,4 +1,3 @@
-{$} = require 'atom-space-pen-views'
 {CompositeDisposable} = require 'atom'
 
 RenameDialog = null
@@ -6,7 +5,6 @@ RenameDialog = null
 module.exports =
 class StatusIcon extends HTMLElement
   active: false
-  process: ''
 
   initialize: (@terminalView) ->
     @classList.add 'status-icon'
@@ -29,12 +27,14 @@ class StatusIcon extends HTMLElement
         @terminalView.destroy()
         false
 
-  updateTooltip: (process) ->
-    return unless process?
+    @updateTooltip()
 
-    @process = process
+  updateTooltip: (process) ->
+    process ?= @terminalView.getShell()
+
+    @removeTooltip()
     @tooltip = atom.tooltips.add this,
-      title: @process
+      title: process
       html: false
       delay:
         show: 500

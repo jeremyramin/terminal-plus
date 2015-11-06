@@ -34,14 +34,6 @@ module.exports = (pwd, shell, args, options={}) ->
   ptyProcess.on 'data', (data) ->
     emit('terminal-plus:data', data)
 
-  ptyProcess.on 'data', ->
-    newTitle = ptyProcess.process
-    if newTitle is shell
-      emit('terminal-plus:clear-title')
-    else unless title is newTitle
-      emit('terminal-plus:title', newTitle)
-    title = newTitle
-
   ptyProcess.on 'exit', ->
     emit('terminal-plus:exit')
     callback()
