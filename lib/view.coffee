@@ -40,7 +40,7 @@ class TerminalPlusView extends View
   @getFocusedTerminal: ->
     return Terminal.Terminal.focus
 
-  initialize: (@id, @pwd, @statusIcon, @statusBar) ->
+  initialize: (@id, @pwd, @statusIcon, @statusBar, @shell, @args=[]) ->
     @subscriptions = new CompositeDisposable()
 
     @subscriptions.add atom.tooltips.add @closeBtn,
@@ -93,8 +93,8 @@ class TerminalPlusView extends View
       for file in dataTransfer.files
         @input "#{file.path} "
 
-  forkPtyProcess: (shell, args=[]) ->
-    Task.once Pty, path.resolve(@pwd), shell, args, =>
+  forkPtyProcess: ->
+    Task.once Pty, path.resolve(@pwd), @shell, @args, =>
       @input = ->
       @resize = ->
 
@@ -103,10 +103,7 @@ class TerminalPlusView extends View
 
   displayTerminal: ->
     {cols, rows} = @getDimensions()
-    @shell = atom.config.get 'terminal-plus.core.shell'
-    shellArguments = atom.config.get 'terminal-plus.core.shellArguments'
-    args = shellArguments.split(/\s+/g).filter (arg) -> arg
-    @ptyProcess = @forkPtyProcess @shell, args
+    @ptyProcess = @forkPtyProcess()
 
     @terminal = new Terminal {
       cursorBlink     : false

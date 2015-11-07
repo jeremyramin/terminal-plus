@@ -139,8 +139,12 @@ class StatusBar extends View
     id = editorPath or projectFolder or home
     id = filePath: id, folderPath: path.dirname(id)
 
+    shell = atom.config.get 'terminal-plus.core.shell'
+    shellArguments = atom.config.get 'terminal-plus.core.shellArguments'
+    args = shellArguments.split(/\s+/g).filter (arg) -> arg
+
     statusIcon = new StatusIcon()
-    terminalPlusView = new TerminalPlusView(id, pwd, statusIcon, this)
+    terminalPlusView = new TerminalPlusView(id, pwd, statusIcon, this, shell, args)
     statusIcon.initialize(terminalPlusView)
 
     terminalPlusView.attach()
