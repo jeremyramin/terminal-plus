@@ -85,7 +85,7 @@ class StatusBar extends View
     @attach()
 
   registerContextMenu: ->
-    @subscriptions.add atom.commands.add '.terminal-plus',
+    @subscriptions.add atom.commands.add '.terminal-plus.status-bar',
       'terminal-plus:status-red': @setStatusColor
       'terminal-plus:status-orange': @setStatusColor
       'terminal-plus:status-yellow': @setStatusColor
@@ -103,7 +103,6 @@ class StatusBar extends View
         statusIcon.terminalView.hide() if statusIcon.isActive()
       'terminal-plus:context-rename': (event) ->
         $(event.target).closest('.status-icon')[0].rename()
-      'terminal-plus:close-all': @closeAll
 
   registerPaneSubscription: ->
     @subscriptions.add @paneSubscription = atom.workspace.observePanes (pane) =>
@@ -120,9 +119,16 @@ class StatusBar extends View
     @registerPaneSubscription() unless @paneSubscription?
 
     projectFolder = atom.project.getPaths()[0]
-    projectFolder = undefined unless projectFolder?.indexOf('atom://') < 0
     editorPath = atom.workspace.getActiveTextEditor()?.getPath()
-    editorFolder = path.dirname(editorPath) if editorPath?
+
+    if editorPath?
+      editorFolder = path.dirname(editorPath)
+      for directory in atom.project.getPaths()
+        if editorPath.indexOf(directory) >= 0
+          projectFolder = directory
+
+    projectFolder = undefined if projectFolder?.indexOf('atom://') >= 0
+
     home = if process.platform is 'win32' then process.env.HOMEPATH else process.env.HOME
 
     switch atom.config.get('terminal-plus.core.workingDirectory')
