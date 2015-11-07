@@ -1,3 +1,10 @@
+## v0.13.1 - Patch
+* Only run inserted text if `Run Inserted Text` is enabled
+* Improve terminal title handling
+  * Make sure the terminal title does not stay behind on new title
+* Open the correct project folder for the active file
+* Post-install clean-up script for pty.js (see issue #71)
+
 ## v0.13.0 - Beta Release
 * Add support for alt+key combinations
 * Right alt for escape sequences
