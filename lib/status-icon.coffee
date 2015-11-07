@@ -27,18 +27,32 @@ class StatusIcon extends HTMLElement
         @terminalView.destroy()
         false
 
-    @updateTooltip()
+    @setupTooltip()
 
-  updateTooltip: (process) ->
-    process ?= @terminalView.getShell()
+  setupTooltip: ->
 
+    onMouseEnter = (event) =>
+      return if event.detail is 'terminal-plus'
+      @updateTooltip()
+
+    @mouseEnterSubscription = dispose: =>
+      @removeEventListener('mouseenter', onMouseEnter)
+      @mouseEnterSubscription = null
+
+    @addEventListener('mouseenter', onMouseEnter)
+
+  updateTooltip: ->
     @removeTooltip()
-    @tooltip = atom.tooltips.add this,
-      title: process
-      html: false
-      delay:
-        show: 500
-        hide: 250
+
+    if process = @terminalView.getTerminalTitle()
+      @tooltip = atom.tooltips.add this,
+        title: process
+        html: false
+        delay:
+          show: 1000
+          hide: 100
+
+    @dispatchEvent(new CustomEvent('mouseenter', bubbles: true, detail: 'terminal-plus'))
 
   removeTooltip: ->
     @tooltip.dispose() if @tooltip?
@@ -46,6 +60,7 @@ class StatusIcon extends HTMLElement
 
   destroy: ->
     @removeTooltip()
+    @mouseEnterSubscription.dispose()
     @remove()
 
   activate: ->
@@ -80,5 +95,6 @@ class StatusIcon extends HTMLElement
     if name isnt @getName()
       name = "&nbsp;" + name if name
       @name.innerHTML = name
+      @terminalView.emit 'did-change-title'
 
 module.exports = document.registerElement('status-icon', prototype: StatusIcon.prototype, extends: 'li')

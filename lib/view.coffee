@@ -1,4 +1,4 @@
-{Task, CompositeDisposable} = require 'atom'
+{Task, CompositeDisposable, Emitter} = require 'atom'
 {$, View} = require 'atom-space-pen-views'
 
 Pty = require.resolve './process'
@@ -41,7 +41,8 @@ class TerminalPlusView extends View
     return Terminal.Terminal.focus
 
   initialize: (@id, @pwd, @statusIcon, @statusBar, @shell, @args=[]) ->
-    @subscriptions = new CompositeDisposable()
+    @subscriptions = new CompositeDisposable
+    @emitter = new Emitter
 
     @subscriptions.add atom.tooltips.add @closeBtn,
       title: 'Close'
@@ -64,7 +65,6 @@ class TerminalPlusView extends View
       event.stopPropagation()
 
     @xterm.on 'click', @focus
-
     @xterm.on 'dragenter', override
     @xterm.on 'dragover', override
     @xterm.on 'drop', @recieveItemOrFile
@@ -127,8 +127,10 @@ class TerminalPlusView extends View
     @terminal.on "data", (data) =>
       @input data
 
+    @ptyProcess.on "terminal-plus:title", (title) =>
+      @process = title
     @terminal.on "title", (title) =>
-      @statusIcon.updateTooltip(title)
+      @title = title
 
     @terminal.once "open", =>
       @applyStyle()
@@ -419,12 +421,6 @@ class TerminalPlusView extends View
       eol: os.EOL
     dialog.attach()
 
-  getTitle: ->
-    @statusIcon.getName() or "Terminal-Plus"
-
-  getIconName: ->
-    "terminal"
-
   rename: ->
     @statusIcon.rename()
 
@@ -446,8 +442,26 @@ class TerminalPlusView extends View
       @tabView = true
       lastOpenedView = null if lastOpenedView == this
 
+  getTitle: ->
+    @statusIcon.getName() or "Terminal-Plus"
+
+  getIconName: ->
+    "terminal"
+
   getShell: ->
     return path.basename @shell
 
   getShellPath: ->
     return @shell
+
+  emit: (event, data) ->
+    @emitter.emit event, data
+
+  onDidChangeTitle: (callback) ->
+    @emitter.on 'did-change-title', callback
+
+  getPath: ->
+    return @getTerminalTitle()
+
+  getTerminalTitle: ->
+    return @title or @process

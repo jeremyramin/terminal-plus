@@ -33,6 +33,7 @@ module.exports = (pwd, shell, args, options={}) ->
 
   ptyProcess.on 'data', (data) ->
     emit('terminal-plus:data', data)
+    emit('terminal-plus:title', ptyProcess.process)
 
   ptyProcess.on 'exit', ->
     emit('terminal-plus:exit')
