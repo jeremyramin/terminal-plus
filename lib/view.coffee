@@ -182,6 +182,17 @@ class TerminalPlusView extends View
     lastActiveElement ?= $(document.activeElement)
 
     if lastOpenedView and lastOpenedView != this
+      if lastOpenedView.maximized
+        @subscriptions.remove @maximizeBtn.tooltip
+        @maximizeBtn.tooltip.dispose()
+        icon = @maximizeBtn.children('span')
+
+        @maxHeight = lastOpenedView.maxHeight
+        @maximizeBtn.tooltip = atom.tooltips.add @maximizeBtn,
+          title: 'Normal'
+        @subscriptions.add @maximizeBtn.tooltip
+        icon.removeClass('icon-screen-full').addClass('icon-screen-normal')
+        @maximized = true
       lastOpenedView.hide()
     lastOpenedView = this
     @statusBar.setActiveTerminalView this
