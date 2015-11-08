@@ -415,10 +415,7 @@ class TerminalPlusView extends View
 
   inputDialog: ->
     InputDialog ?= require('./input-dialog')
-    dialog = new InputDialog
-      terminalView: this,
-      runCommand: atom.config.get('terminal-plus.toggles.runInsertedText'),
-      eol: os.EOL
+    dialog = new InputDialog this
     dialog.attach()
 
   rename: ->

@@ -86,7 +86,7 @@ class StatusIcon extends HTMLElement
 
   rename: ->
     RenameDialog ?= require './rename-dialog'
-    dialog = new RenameDialog(this)
+    dialog = new RenameDialog this
     dialog.attach()
 
   getName: -> @name.textContent.substring(1)
