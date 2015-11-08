@@ -160,7 +160,6 @@ class TerminalPlusView extends View
     @maximizeBtn.tooltip.dispose()
 
     @maxHeight = @prevHeight + $('.item-views').height()
-    @xterm.css 'height', ''
     btn = @maximizeBtn.children('span')
     @onTransitionEnd => @focus()
 
