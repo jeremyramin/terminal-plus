@@ -1,3 +1,14 @@
+## v0.14.0 - Beta Release
+* Added support for non-English characters
+ * Thanks to @yoshiokatsuneo for [his work](https://github.com/jeremyramin/term.js/commit/e851ea232a114902ea6a8e5cc8f7d34d07969c42).
+ * Dead keys now work in the terminal
+ * CJK (IME) should now work in the terminal
+* Keep terminals maximized on new terminal view
+* Improve terminal title handling
+* Fix fullscreen not focusing
+* Refactor dialog classes
+* Update Windows binaries
+
 ## v0.13.1 - Patch
 * Only run inserted text if `Run Inserted Text` is enabled
 * Improve terminal title handling
