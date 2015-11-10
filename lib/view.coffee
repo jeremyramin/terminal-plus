@@ -410,7 +410,6 @@ class TerminalPlusView extends View
       cols = Math.floor @xterm.width() / (fakeCol.width or 9)
       rows = Math.floor @xterm.height() / (fakeCol.height or 20)
       @rowHeight = fakeCol.height
-      @terminal.rowHeight = fakeCol.height
       fakeRow.remove()
     else
       cols = Math.floor @xterm.width() / 9
