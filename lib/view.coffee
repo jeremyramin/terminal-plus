@@ -116,10 +116,10 @@ class TerminalPlusView extends View
     @terminal.open @xterm.get(0)
 
   attachListeners: ->
-    @ptyProcess.on 'terminal-plus:data', (data) =>
+    @ptyProcess.on "terminal-plus:data", (data) =>
       @terminal.write data
 
-    @ptyProcess.on 'terminal-plus:exit', =>
+    @ptyProcess.on "terminal-plus:exit", =>
       @destroy() if atom.config.get('terminal-plus.toggles.autoClose')
 
     @terminal.end = => @destroy()
@@ -387,6 +387,8 @@ class TerminalPlusView extends View
     super()
 
   focusTerminal: =>
+    return unless @terminal
+
     @terminal.focus()
     @terminal.element.focus()
 
