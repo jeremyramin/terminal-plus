@@ -386,11 +386,21 @@ class TerminalPlusView extends View
     @statusBar.setActiveTerminalView(this)
     super()
 
+  blur: =>
+    @blurTerminal()
+    super()
+
   focusTerminal: =>
     return unless @terminal
 
     @terminal.focus()
     @terminal.element.focus()
+
+  blurTerminal: =>
+    return unless @terminal
+
+    @terminal.blur()
+    @terminal.element.blur()
 
   resizeTerminalToView: ->
     return unless @panel.isVisible() or @tabView
@@ -473,3 +483,6 @@ class TerminalPlusView extends View
 
   getTerminalTitle: ->
     return @title or @process
+
+  getTerminal: ->
+    return @terminal

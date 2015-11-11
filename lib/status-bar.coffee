@@ -10,6 +10,7 @@ module.exports =
 class StatusBar extends View
   terminalViews: []
   activeTerminal: null
+  returnFocus: null
 
   @content: ->
     @div class: 'terminal-plus status-bar', tabindex: -1, =>
@@ -78,9 +79,25 @@ class StatusBar extends View
     @statusContainer.on 'dragover', @onDragOver
     @statusContainer.on 'drop', @onDrop
 
-    window.addEventListener 'blur', =>
-      if view = TerminalPlusView.getFocusedTerminal()
-        view.blur()
+    handleBlur = =>
+      if terminal = TerminalPlusView.getFocusedTerminal()
+        @returnFocus = @terminalViewForTerminal(terminal)
+        terminal.blur()
+
+    handleFocus = =>
+      if @returnFocus
+        setTimeout =>
+          @returnFocus.focus()
+          @returnFocus = null
+        , 100
+
+    window.addEventListener 'blur', handleBlur
+    @subscriptions.add dispose: ->
+      window.removeEventListener 'blur', handleBlur
+
+    window.addEventListener 'focus', handleFocus
+    @subscriptions.add dispose: ->
+      window.removeEventListener 'focus', handleFocus
 
     @attach()
 
@@ -180,13 +197,21 @@ class StatusBar extends View
   getActiveTerminalView: ->
     return @activeTerminal
 
-  getTerminalById: (id, selector) ->
+  getTerminalById: (target, selector) ->
     selector ?= (terminal) -> terminal.id
 
     for index in [0 .. @terminalViews.length]
       terminal = @terminalViews[index]
       if terminal?
-        return terminal if selector(terminal) == id
+        return terminal if selector(terminal) == target
+
+    return null
+
+  terminalViewForTerminal: (terminal) ->
+    for index in [0 .. @terminalViews.length]
+      terminalView = @terminalViews[index]
+      if terminalView?
+        return terminalView if terminalView.getTerminal() == terminal
 
     return null
 
