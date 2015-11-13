@@ -1,3 +1,9 @@
+## v0.14.1 - Patch
+* Recompile binaries for Atom 1.2.0
+* Fix focus error
+* Return focus to terminal on window focus
+* Minor fixes to text area and terminal resizing
+
 ## v0.14.0 - Beta Release
 * Added support for non-English characters
  * Thanks to @yoshiokatsuneo for [his work](https://github.com/jeremyramin/term.js/commit/e851ea232a114902ea6a8e5cc8f7d34d07969c42).
