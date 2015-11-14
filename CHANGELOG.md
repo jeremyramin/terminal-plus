@@ -1,3 +1,9 @@
+## v0.14.2 - Patch
+* Bring back default selection process
+* Improvements to terminal (jeremyramin/term.js)
+* Fix several bugs
+* Clean up menus
+
 ## v0.14.1 - Patch
 * Recompile binaries for Atom 1.2.0
 * Fix focus error
