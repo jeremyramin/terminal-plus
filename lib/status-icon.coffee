@@ -55,12 +55,12 @@ class StatusIcon extends HTMLElement
     @dispatchEvent(new CustomEvent('mouseenter', bubbles: true, detail: 'terminal-plus'))
 
   removeTooltip: ->
-    @tooltip.dispose() if @tooltip?
+    @tooltip.dispose() if @tooltip
     @tooltip = null
 
   destroy: ->
     @removeTooltip()
-    @mouseEnterSubscription.dispose()
+    @mouseEnterSubscription.dispose() if @mouseEnterSubscription
     @remove()
 
   activate: ->
