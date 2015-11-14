@@ -25,10 +25,12 @@ class StatusBar extends View
       'terminal-plus:new': => @newTerminalView()
       'terminal-plus:toggle': => @toggle()
       'terminal-plus:next': =>
-        return if @activeTerminal.animating
+        return unless @activeTerminal
+        return if @activeTerminal.isAnimating()
         @activeTerminal.open() if @activeNextTerminalView()
       'terminal-plus:prev': =>
-        return if @activeTerminal.animating
+        return unless @activeTerminal
+        return if @activeTerminal.isAnimating()
         @activeTerminal.open() if @activePrevTerminalView()
       'terminal-plus:close': => @destroyActiveTerm()
       'terminal-plus:close-all': => @closeAll()

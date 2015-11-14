@@ -492,3 +492,6 @@ class TerminalPlusView extends View
 
   getTerminal: ->
     return @terminal
+
+  isAnimating: ->
+    return @animating
