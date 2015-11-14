@@ -364,7 +364,6 @@ class TerminalPlusView extends View
       lines = rawLines.map (line) ->
         line.replace(/\s/g, " ").trimRight()
       text = lines.join("\n")
-    console.log text
     atom.clipboard.write text
 
   paste: ->
