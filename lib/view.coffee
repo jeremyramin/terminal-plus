@@ -64,7 +64,9 @@ class TerminalPlusView extends View
       event.preventDefault()
       event.stopPropagation()
 
-    @xterm.on 'click', @focus
+    @xterm.on 'mousedown', (event) =>
+      if event.which != 3
+        @focus()
     @xterm.on 'dragenter', override
     @xterm.on 'dragover', override
     @xterm.on 'drop', @recieveItemOrFile
@@ -351,7 +353,7 @@ class TerminalPlusView extends View
     $(@terminal.element).height height
 
   copy: ->
-    if  @terminal._selected
+    if @terminal._selected
       textarea = @terminal.getCopyTextarea()
       text = @terminal.grabText(
         @terminal._selected.x1, @terminal._selected.x2,
@@ -362,6 +364,7 @@ class TerminalPlusView extends View
       lines = rawLines.map (line) ->
         line.replace(/\s/g, " ").trimRight()
       text = lines.join("\n")
+    console.log text
     atom.clipboard.write text
 
   paste: ->
@@ -394,7 +397,10 @@ class TerminalPlusView extends View
     return unless @terminal
 
     @terminal.focus()
-    @terminal.element.focus()
+    if @terminal._textarea
+      @terminal._textarea.focus()
+    else
+      @terminal.element.focus()
 
   blurTerminal: =>
     return unless @terminal
