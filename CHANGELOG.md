@@ -1,3 +1,8 @@
+## v0.14.3 - Patch
+* Remove extra logs
+* Bug fixes
+* Match Atom's font size
+
 ## v0.14.2 - Patch
 * Bring back default selection process
 * Improvements to terminal (jeremyramin/term.js)
