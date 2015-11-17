@@ -64,9 +64,11 @@ class TerminalPlusView extends View
       event.preventDefault()
       event.stopPropagation()
 
-    @xterm.on 'mousedown', (event) =>
+    @xterm.on 'mouseup', (event) =>
       if event.which != 3
-        @focus()
+        text = window.getSelection().toString()
+        unless text
+          @focus()
     @xterm.on 'dragenter', override
     @xterm.on 'dragover', override
     @xterm.on 'drop', @recieveItemOrFile
