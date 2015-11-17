@@ -261,7 +261,11 @@ class TerminalPlusView extends View
     fontFamily = ["monospace"]
     fontFamily.unshift config.style.fontFamily unless config.style.fontFamily is ''
     @terminal.element.style.fontFamily = fontFamily.join ', '
-    @terminal.element.style.fontSize = config.style.fontSize + 'px'
+
+    @terminal.element.style.fontSize = "#{atom.config.get 'editor.fontSize'}px"
+    @subscriptions.add atom.config.onDidChange 'editor.fontSize', (event) =>
+      @terminal.element.style.fontSize = "#{event.newValue}px"
+      @resizeTerminalToView()
 
     # first 8 colors i.e. 'dark' colors
     @terminal.colors[0..7] = [
