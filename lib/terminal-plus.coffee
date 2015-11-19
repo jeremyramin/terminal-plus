@@ -26,7 +26,7 @@ module.exports =
           title: 'Run Inserted Text'
           description: 'Run text inserted via `terminal-plus:insert-text` as a command? (Will append an end-line to input)'
           type: 'boolean'
-          default: false
+          default: true
     core:
       type: 'object'
       order: 2
