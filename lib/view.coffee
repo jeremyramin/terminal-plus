@@ -264,9 +264,20 @@ class TerminalPlusView extends View
     $('.terminal-cursor').css 'background-color', 'transparent'
     $('.terminal-cursor:after').css 'background-color', cursorColor
 
-    fontFamily = ["monospace"]
-    fontFamily.unshift config.style.fontFamily unless config.style.fontFamily is ''
-    @terminal.element.style.fontFamily = fontFamily.join ', '
+    editorFont = atom.config.get('editor.fontFamily')
+    if activeEditor = atom.workspace.getActiveTextEditor()
+      editorView = atom.views.getView(activeEditor)
+      editorStyle = window.getComputedStyle(editorView)
+      computedFont = editorStyle.getPropertyValue("font-family")
+    fontFamily = config.style.fontFamily or editorFont or computedFont
+    @terminal.element.style.fontFamily = fontFamily
+
+    @subscriptions.add atom.config.onDidChange 'editor.fontFamily', (event) =>
+      if event.newValue
+        fontFamily = config.style.fontFamily or event.newValue
+        @terminal.element.style.fontFamily = fontFamily
+    @subscriptions.add atom.config.onDidChange 'terminal-plus.style.fontFamily', (event) =>
+      @terminal.element.style.fontFamily = event.newValue if event.newValue
 
     @terminal.element.style.fontSize = "#{atom.config.get 'editor.fontSize'}px"
     @subscriptions.add atom.config.onDidChange 'editor.fontSize', (event) =>

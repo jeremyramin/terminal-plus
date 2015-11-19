@@ -88,7 +88,7 @@ module.exports =
           title: 'Font Family'
           description: 'Override the terminal\'s default font family. **You must use a [monospaced font](https://en.wikipedia.org/wiki/List_of_typefaces#Monospace)!**'
           type: 'string'
-          default: 'monospace'
+          default: ''
         defaultPanelHeight:
           title: 'Default Panel Height'
           description: 'Default height of a terminal panel.'
