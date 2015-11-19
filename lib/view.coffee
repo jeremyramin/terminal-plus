@@ -73,6 +73,10 @@ class TerminalPlusView extends View
     @xterm.on 'dragover', override
     @xterm.on 'drop', @recieveItemOrFile
 
+    @on 'focus', @focus
+    @subscriptions.add dispose: =>
+      @off 'focus', @focus
+
   attach: ->
     return if @panel?
     @panel = atom.workspace.addBottomPanel(item: this, visible: false)
@@ -117,6 +121,7 @@ class TerminalPlusView extends View
 
     @attachListeners()
     @attachResizeEvents()
+    @attachWindowEvents()
     @terminal.open @xterm.get(0)
 
   attachListeners: ->
@@ -149,6 +154,7 @@ class TerminalPlusView extends View
     @statusIcon.destroy()
     @statusBar.removeTerminalView this
     @detachResizeEvents()
+    @detachWindowEvents()
 
     if @panel.isVisible()
       @hide()
@@ -290,12 +296,23 @@ class TerminalPlusView extends View
       config.ansiColors.zBright.brightWhite.toHexString()
     ]
 
+  attachWindowEvents: ->
+    $(window).on 'resize', @onWindowResize
+
+  detachWindowEvents: ->
+    $(window).off 'resize', @onWindowResize
+
   attachResizeEvents: ->
-    @on 'focus', @focus
-    $(window).on 'resize', =>
+    @panelDivider.on 'mousedown', @resizeStarted
+
+  detachResizeEvents: ->
+    @panelDivider.off 'mousedown'
+
+  onWindowResize: =>
+    if not @tabView
       @xterm.css 'transition', ''
       newHeight = $(window).height()
-      bottomPanel = $('atom-panel-container.bottom')[0]
+      bottomPanel = $('atom-panel-container.bottom').first().get(0)
       overflow = bottomPanel.scrollHeight - bottomPanel.offsetHeight
 
       delta = newHeight - @windowHeight
@@ -313,14 +330,9 @@ class TerminalPlusView extends View
 
         @adjustHeight clamped if @panel.isVisible()
         @prevHeight = clamped
-      @resizeTerminalToView()
-      @xterm.css 'transition', "height #{0.25 / @animationSpeed}s linear"
-    @panelDivider.on 'mousedown', @resizeStarted
 
-  detachResizeEvents: ->
-    @off 'focus', @focus
-    $(window).off 'resize'
-    @panelDivider.off 'mousedown'
+      @xterm.css 'transition', "height #{0.25 / @animationSpeed}s linear"
+    @resizeTerminalToView()
 
   resizeStarted: =>
     return if @maximized
@@ -456,14 +468,14 @@ class TerminalPlusView extends View
   toggleTabView: ->
     if @tabView
       @panel = atom.workspace.addBottomPanel(item: this, visible: false)
-      @panelDivider.show()
+      @attachResizeEvents()
       @closeBtn.show()
       @hideBtn.show()
       @maximizeBtn.show()
       @tabView = false
     else
       @panel.destroy()
-      @panelDivider.hide()
+      @detachResizeEvents()
       @closeBtn.hide()
       @hideBtn.hide()
       @maximizeBtn.hide()
