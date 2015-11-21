@@ -54,10 +54,14 @@ class TerminalPlusView extends View
       title: 'Insert Text'
 
     @prevHeight = atom.config.get('terminal-plus.style.defaultPanelHeight')
+    if @prevHeight.indexOf('%') > 0
+      percent = Math.abs(Math.min(parseFloat(@prevHeight) / 100.0, 1))
+      bottomHeight = $('atom-panel.bottom').children(".terminal-view").height() or 0
+      @prevHeight = percent * ($('.item-views').height() + bottomHeight)
     @xterm.height 0
 
     @setAnimationSpeed()
-    atom.config.onDidChange('terminal-plus.style.animationSpeed', @setAnimationSpeed)
+    @subscriptions.add atom.config.onDidChange 'terminal-plus.style.animationSpeed', @setAnimationSpeed
 
     override = (event) ->
       return if event.originalEvent.dataTransfer.getData('terminal-plus') is 'true'
@@ -207,6 +211,7 @@ class TerminalPlusView extends View
         icon.removeClass('icon-screen-full').addClass('icon-screen-normal')
         @maximized = true
       lastOpenedView.hide()
+
     lastOpenedView = this
     @statusBar.setActiveTerminalView this
     @statusIcon.activate()
@@ -215,6 +220,7 @@ class TerminalPlusView extends View
       if not @opened
         @opened = true
         @displayTerminal()
+        @prevHeight = @xterm.height()
       else
         @focus()
 
