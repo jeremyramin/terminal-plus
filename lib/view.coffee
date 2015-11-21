@@ -260,28 +260,30 @@ class TerminalPlusView extends View
 
     @xterm.addClass config.style.theme
     @xterm.addClass 'cursor-blink' if config.toggles.cursorBlink
-    cursorColor = $('.terminal-cursor').css 'background-color'
-    $('.terminal-cursor').css 'background-color', 'transparent'
-    $('.terminal-cursor:after').css 'background-color', cursorColor
 
     editorFont = atom.config.get('editor.fontFamily')
-    if activeEditor = atom.workspace.getActiveTextEditor()
-      editorView = atom.views.getView(activeEditor)
-      editorStyle = window.getComputedStyle(editorView)
-      computedFont = editorStyle.getPropertyValue("font-family")
-    fontFamily = config.style.fontFamily or editorFont or computedFont
-    @terminal.element.style.fontFamily = fontFamily
+    defaultFont = "Menlo, Consolas, 'DejaVu Sans Mono', monospace"
+    overrideFont = config.style.fontFamily
+    @terminal.element.style.fontFamily = overrideFont or editorFont or defaultFont
 
     @subscriptions.add atom.config.onDidChange 'editor.fontFamily', (event) =>
-      if event.newValue
-        fontFamily = config.style.fontFamily or event.newValue
-        @terminal.element.style.fontFamily = fontFamily
+      editorFont = event.newValue
+      @terminal.element.style.fontFamily = overrideFont or editorFont or defaultFont
     @subscriptions.add atom.config.onDidChange 'terminal-plus.style.fontFamily', (event) =>
-      @terminal.element.style.fontFamily = event.newValue if event.newValue
+      overrideFont = event.newValue
+      @terminal.element.style.fontFamily = overrideFont or editorFont or defaultFont
 
-    @terminal.element.style.fontSize = "#{atom.config.get 'editor.fontSize'}px"
+    editorFontSize = atom.config.get('editor.fontSize')
+    overrideFontSize = config.style.fontSize
+    @terminal.element.style.fontSize = "#{overrideFontSize or editorFontSize}px"
+
     @subscriptions.add atom.config.onDidChange 'editor.fontSize', (event) =>
-      @terminal.element.style.fontSize = "#{event.newValue}px"
+      editorFontSize = event.newValue
+      @terminal.element.style.fontSize = "#{overrideFontSize or editorFontSize}px"
+      @resizeTerminalToView()
+    @subscriptions.add atom.config.onDidChange 'terminal-plus.style.fontSize', (event) =>
+      overrideFontSize = event.newValue
+      @terminal.element.style.fontSize = "#{overrideFontSize or editorFontSize}px"
       @resizeTerminalToView()
 
     # first 8 colors i.e. 'dark' colors
