@@ -1,3 +1,12 @@
+## v0.14.4 - Patch
+* Fix `reset` and `clear` command issues
+* Improve `cmd-k` clear command
+* Insert text as a command by default
+* Match text editor font family for consistency
+* Add font size setting back
+* Destroy panel on terminal destroy
+* Allow any css value for default panel height
+
 ## v0.14.3 - Patch
 * Remove extra logs
 * Bug fixes
