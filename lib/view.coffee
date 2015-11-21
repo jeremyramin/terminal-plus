@@ -159,6 +159,9 @@ class TerminalPlusView extends View
     if @panel.isVisible()
       @hide()
       @onTransitionEnd => @panel.destroy()
+    else
+      @panel.destroy()
+
     if @statusIcon and @statusIcon.parentNode
       @statusIcon.parentNode.removeChild(@statusIcon)
 
