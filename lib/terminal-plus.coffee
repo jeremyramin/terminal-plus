@@ -117,6 +117,7 @@ module.exports =
             'red-sands',
             'silver-aerogel',
             'solid-colors',
+            'dracula'
           ]
     ansiColors:
       type: 'object'
