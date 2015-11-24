@@ -220,7 +220,8 @@ class TerminalPlusView extends View
       if not @opened
         @opened = true
         @displayTerminal()
-        @prevHeight = @xterm.height()
+        @prevHeight = @nearestRow(@xterm.height())
+        @xterm.height(@prevHeight)
       else
         @focus()
 
