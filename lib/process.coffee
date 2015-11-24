@@ -31,9 +31,13 @@ module.exports = (pwd, shell, args, options={}) ->
 
   title = shell = path.basename shell
 
+  emitTitle = _.throttle ->
+    emit('terminal-plus:title', ptyProcess.process)
+  , 500, true
+
   ptyProcess.on 'data', (data) ->
     emit('terminal-plus:data', data)
-    emit('terminal-plus:title', ptyProcess.process)
+    emitTitle()
 
   ptyProcess.on 'exit', ->
     emit('terminal-plus:exit')
