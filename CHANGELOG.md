@@ -1,3 +1,9 @@
+## v0.14.5 - Patch
+* Fix key-presses deselecting lines from the terminal
+* Add alt-(arrow) and alt-(click) for moving cursor in terminal
+* Improve `clear` command handling
+* Make sure initial height is to the nearest row
+
 ## v0.14.4 - Patch
 * Fix `reset` and `clear` command issues
 * Improve `cmd-k` clear command
