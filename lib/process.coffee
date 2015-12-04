@@ -2,7 +2,6 @@ pty = require 'pty.js'
 path = require 'path'
 fs = require 'fs'
 _ = require 'underscore'
-child = require 'child_process'
 
 systemLanguage = do ->
   language = "en_US.UTF-8"
