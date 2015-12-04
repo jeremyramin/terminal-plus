@@ -4,6 +4,9 @@ os = require "os"
 module.exports =
 class InputDialog extends Dialog
   constructor: (@terminalView) ->
+    @focus = @terminalView.isFocused()
+    @terminalView.blur()
+
     super
       prompt: "Insert Text"
       iconClass: "icon-keyboard"
@@ -18,3 +21,7 @@ class InputDialog extends Dialog
     data = "#{input}#{eol}"
     @terminalView.input data
     @cancel()
+
+  cancel: ->
+    @terminalView.focus() if @focus
+    super()

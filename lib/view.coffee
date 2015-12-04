@@ -535,3 +535,6 @@ class TerminalPlusView extends View
 
   isAnimating: ->
     return @animating
+
+  isFocused: ->
+    return TerminalPlusView.getFocusedTerminal() == @terminal
