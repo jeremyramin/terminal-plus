@@ -1,7 +1,5 @@
 {CompositeDisposable} = require 'atom'
 
-RenameDialog = null
-
 module.exports =
 class StatusIcon extends HTMLElement
   active: false
@@ -29,6 +27,9 @@ class StatusIcon extends HTMLElement
 
     @setupTooltip()
 
+  attach: (statusBar) ->
+    statusBar.addStatusIcon(this)
+
   setupTooltip: ->
 
     onMouseEnter = (event) =>
@@ -44,7 +45,7 @@ class StatusIcon extends HTMLElement
   updateTooltip: ->
     @removeTooltip()
 
-    if process = @terminalView.getTerminalTitle()
+    if process = @terminalView.getProcessTitle()
       @tooltip = atom.tooltips.add this,
         title: process
         html: false
@@ -84,17 +85,11 @@ class StatusIcon extends HTMLElement
   isActive: ->
     return @active
 
-  rename: ->
-    RenameDialog ?= require './rename-dialog'
-    dialog = new RenameDialog this
-    dialog.attach()
-
   getName: -> @name.textContent.substring(1)
 
   updateName: (name) ->
     if name isnt @getName()
       name = "&nbsp;" + name if name
       @name.innerHTML = name
-      @terminalView.emit 'did-change-title'
 
 module.exports = document.registerElement('status-icon', prototype: StatusIcon.prototype, extends: 'li')

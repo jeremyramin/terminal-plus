@@ -2,12 +2,12 @@ Dialog = require "./dialog"
 
 module.exports =
 class RenameDialog extends Dialog
-  constructor: (@statusIcon) ->
+  constructor: (@view) ->
     super
       prompt: "Rename"
       iconClass: "icon-pencil"
-      placeholderText: @statusIcon.getName()
+      placeholderText: @view.getName()
 
   onConfirm: (newTitle) ->
-    @statusIcon.updateName newTitle.trim()
+    @view.setName newTitle.trim()
     @cancel()

@@ -1,8 +1,8 @@
 {CompositeDisposable} = require 'atom'
 {$, View} = require 'atom-space-pen-views'
 
-TerminalPlusView = require './view'
-StatusIcon = require './status-icon'
+PanelView = require './panel-view'
+TabView = require './tab-view'
 
 path = require 'path'
 
@@ -34,9 +34,9 @@ class StatusBar extends View
         @activeTerminal.open() if @activePrevTerminalView()
       'terminal-plus:close': => @destroyActiveTerm()
       'terminal-plus:close-all': => @closeAll()
-      'terminal-plus:rename': => @runInActiveView (i) -> i.rename()
+      'terminal-plus:rename': => @runInActiveView (i) -> i.promptForRename()
       'terminal-plus:insert-selected-text': => @runInActiveView (i) -> i.insertSelection()
-      'terminal-plus:insert-text': => @runInActiveView (i) -> i.inputDialog()
+      'terminal-plus:insert-text': => @runInActiveView (i) -> i.promptForInput()
 
     @subscriptions.add atom.commands.add '.xterm',
       'terminal-plus:paste': => @runInActiveView (i) -> i.paste()
@@ -45,7 +45,7 @@ class StatusBar extends View
     @subscriptions.add atom.workspace.onDidChangeActivePaneItem (item) =>
       return unless item?
 
-      if item.constructor.name is "TerminalPlusView"
+      if item.constructor.name is "TerminalView"
         setTimeout item.focus, 100
       else if item.constructor.name is "TextEditor"
         mapping = atom.config.get('terminal-plus.core.mapTerminalsTo')
@@ -82,7 +82,7 @@ class StatusBar extends View
     @statusContainer.on 'drop', @onDrop
 
     handleBlur = =>
-      if terminal = TerminalPlusView.getFocusedTerminal()
+      if terminal = PanelView.getFocusedTerminal()
         @returnFocus = @terminalViewForTerminal(terminal)
         terminal.blur()
 
@@ -130,7 +130,7 @@ class StatusBar extends View
 
       tabBar.on 'drop', (event) => @onDropTabBar(event, pane)
       tabBar.on 'dragstart', (event) ->
-        return unless event.target.item?.constructor.name is 'TerminalPlusView'
+        return unless event.target.item?.constructor.name is 'TerminalView'
         event.originalEvent.dataTransfer.setData 'terminal-plus-tab', 'true'
       pane.onDidDestroy -> tabBar.off 'drop', @onDropTabBar
 
@@ -158,19 +158,18 @@ class StatusBar extends View
     id = editorPath or projectFolder or home
     id = filePath: id, folderPath: path.dirname(id)
 
-    shell = atom.config.get 'terminal-plus.core.shell'
+    shellPath = atom.config.get 'terminal-plus.core.shell'
     shellArguments = atom.config.get 'terminal-plus.core.shellArguments'
     args = shellArguments.split(/\s+/g).filter (arg) -> arg
 
-    statusIcon = new StatusIcon()
-    terminalPlusView = new TerminalPlusView(id, pwd, statusIcon, this, shell, args)
-    statusIcon.initialize(terminalPlusView)
+    TerminalView = new PanelView {
+      statusBar: this,
+      id, pwd, shellPath
+    }
+    TerminalView.attach()
 
-    terminalPlusView.attach()
-
-    @terminalViews.push terminalPlusView
-    @statusContainer.append statusIcon
-    return terminalPlusView
+    @terminalViews.push TerminalView
+    return TerminalView
 
   activeNextTerminalView: ->
     index = @indexOf(@activeTerminal)
@@ -446,3 +445,6 @@ class StatusBar extends View
     @moveTerminalView fromIndex, toIndex
     icon.addClass 'inserted'
     icon.one 'webkitAnimationEnd', -> icon.removeClass('inserted')
+
+  addStatusIcon: (icon) ->
+    @statusContainer.append icon

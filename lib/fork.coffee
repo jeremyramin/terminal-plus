@@ -17,18 +17,16 @@ filteredEnvironment = do ->
   env.TERM_PROGRAM = 'Terminal-Plus'
   return env
 
-module.exports = (pwd, shell, args, options={}) ->
+module.exports = (pwd, shellPath, args) ->
   callback = @async()
 
-  if /zsh|bash/.test(shell) and args.indexOf('--login') == -1
-    args.unshift '--login'
 
-  ptyProcess = pty.fork shell, args,
+  ptyProcess = pty.fork shellPath, args,
     cwd: pwd,
     env: filteredEnvironment,
     name: 'xterm-256color'
 
-  title = shell = path.basename shell
+  title = shell = path.basename shellPath
 
   emitTitle = _.throttle ->
     emit('terminal-plus:title', ptyProcess.process)
