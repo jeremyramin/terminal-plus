@@ -2,78 +2,75 @@
 {$, View} = require 'atom-space-pen-views'
 
 Terminal = require './terminal'
-InputDialog = null
-RenameDialog = null
 
-lastOpenedView = null
-lastActiveElement = null
+lastActiveItem = null
 
 module.exports =
 class TerminalView extends View
   subscriptions: null
+  core: null
   emitter: null
-  name: null
+  animating: false
 
-  @content: ({terminal, shellPath, pwd}) ->
-    @div class: 'terminal-plus terminal-view', =>
-      @div class: 'panel-divider', outlet: 'panelDivider'
-      @div class: 'btn-toolbar', outlet:'toolbar'
-      terminal = terminal or new Terminal({shellPath, pwd})
-      @subview 'terminal', terminal.setParentView(this)
+  @content: ({terminal, shellPath, pwd, id}) ->
+    @div class: 'terminal-plus', =>
+      @div class: 'terminal-view', =>
+        @div class: 'panel-divider', outlet: 'panelDivider'
+        @div class: 'btn-toolbar', outlet:'toolbar'
+        terminal = terminal or new Terminal({shellPath, pwd, id})
+        @subview 'terminal', terminal.setParentView(this)
 
   @getFocusedTerminal: ->
     return Terminal.getFocusedTerminal()
 
-  initialize: ({@id, @statusBar}) ->
-    @subscriptions = new CompositeDisposable
+  initialize: ->
+    @subscriptions = new CompositeDisposable()
     @attachWindowEvents()
 
-  getId: ->
-    return @id
-
-  destroy: ->
+  destroy: (keepTerminal) ->
     @subscriptions.dispose()
-    @statusBar.removeTerminalView this
-    @terminal.destroy() if @terminal
+    @terminal.destroy() if @terminal and not keepTerminal
 
-  copy: ->
-    if @terminal.display._selected
-      textarea = @terminal.display.getCopyTextarea()
-      text = @terminal.display.grabText(
-        @terminal.display._selected.x1, @terminal.display._selected.x2,
-        @terminal.display._selected.y1, @terminal.display._selected.y2)
-    else
-      rawText = @terminal.display.context.getSelection().toString()
-      rawLines = rawText.split(/\r?\n/g)
-      lines = rawLines.map (line) ->
-        line.replace(/\s/g, " ").trimRight()
-      text = lines.join("\n")
-    atom.clipboard.write text
 
-  paste: ->
-    @terminal.input atom.clipboard.read()
+  ###
+  Section: Window Events
+  ###
 
-  insertSelection: ->
-    return unless editor = atom.workspace.getActiveTextEditor()
-    runCommand = atom.config.get('terminal-plus.toggles.runInsertedText')
+  attachWindowEvents: ->
+    $(window).on 'resize', @onWindowResize
 
-    if selection = editor.getSelectedText()
-      @terminal.stopScrolling()
-      @terminal.input "#{selection}#{if runCommand then os.EOL else ''}"
-    else if cursor = editor.getCursorBufferPosition()
-      line = editor.lineTextForBufferRow(cursor.row)
-      @terminal.stopScrolling()
-      @input "#{line}#{if runCommand then os.EOL else ''}"
-      editor.moveDown(1);
+  detachWindowEvents: ->
+    $(window).off 'resize', @onWindowResize
+
+  onWindowResize: =>
+    @terminal.recalibrateSize()
+
+
+  ###
+  Section: External Methods
+  ###
 
   focus: =>
+    if activeEditor = atom.workspace.getActiveTextEditor()
+      if lastActiveItem != activeEditor
+        lastActiveItem = activeEditor
+
     @terminal?.focus()
-    @statusBar.setActiveTerminalView(this)
     super()
 
   blur: =>
     @terminal?.blur()
     super()
+
+  open: =>
+    lastActiveItem ?= atom.workspace.getActiveTextEditor()
+
+  hide: (refocus) =>
+    if lastActiveItem and refocus
+      if pane = atom.workspace.paneForItem(lastActiveItem)
+        pane.activateItem lastActiveItem
+        atom.views.getView(lastActiveItem).focus()
+        lastActiveItem = null
 
   addButton: (side, onClick, icon) ->
     if icon.indexOf('icon-') < 0
@@ -86,56 +83,14 @@ class TerminalView extends View
     @toolbar.append button
     button
 
+  isAnimating: ->
+    return @animating
+
   isFocused: ->
-    return TerminalView.getFocusedTerminal() == @terminal
-
-  open: ->
-    lastActiveElement ?= $(document.activeElement)
-
-    if lastOpenedView and lastOpenedView != this
-      lastOpenedView.hide()
-
-    lastOpenedView = this
-    @statusBar.setActiveTerminalView this
-    @statusIcon.activate()
-
-  hide: ->
-    lastOpenedView = null
-    lastActiveElement.focus()
-    @statusIcon.deactivate()
-
-  attachWindowEvents: ->
-    $(window).on 'resize', @onWindowResize
-
-  detachWindowEvents: ->
-    $(window).off 'resize', @onWindowResize
-
-  onWindowResize: =>
-    @terminal.recalibrateSize()
-
-  promptForRename: =>
-    RenameDialog ?= require './rename-dialog'
-    dialog = new RenameDialog this
-    dialog.attach()
-
-  promptForInput: =>
-    InputDialog ?= require('./input-dialog')
-    dialog = new InputDialog this
-    @blurTerminal()
-    dialog.attach()
-
-  setName: (name) ->
-    if @name != name
-      @name = name
-
-  getName: ->
-    return @name
+    return @terminal.isFocused()
 
   getTerminal: ->
     return @terminal
 
   getDisplay: ->
     return @terminal.getDisplay()
-
-  getProcessTitle: ->
-    return @terminal.getTitle()

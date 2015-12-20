@@ -20,7 +20,6 @@ filteredEnvironment = do ->
 module.exports = (pwd, shellPath, args) ->
   callback = @async()
 
-
   ptyProcess = pty.fork shellPath, args,
     cwd: pwd,
     env: filteredEnvironment,

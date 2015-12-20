@@ -22,5 +22,12 @@
     "pty.js": "git+https://github.com/jeremyramin/pty.js.git#28f2667",
     "term.js": "git+https://github.com/jeremyramin/term.js.git",
     "underscore": "^1.8.3"
+  },
+  "consumedServices": {
+    "status-bar": {
+      "versions": {
+        "^1.0.0": "consumeStatusBar"
+      }
+    }
   }
 }

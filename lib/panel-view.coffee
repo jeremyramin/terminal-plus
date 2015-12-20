@@ -4,18 +4,54 @@
 TerminalView = require './terminal-view'
 StatusIcon = require './status-icon'
 
+lastOpenedView = null
+
+defaultHeight = do ->
+  height = atom.config.get('terminal-plus.style.defaultPanelHeight')
+  if height.indexOf('%') > 0
+    percent = Math.abs(Math.min(parseFloat(height) / 100.0, 1))
+    bottomHeight = $('atom-panel.bottom').children(".terminal-view").height() or 0
+    height = percent * ($('.item-views').height() + bottomHeight)
+  return height
+
 module.exports =
 class PanelView extends TerminalView
   animating: false
-  opened: false
   windowHeight: atom.getSize().height
 
   @getFocusedTerminal: ->
     return TerminalView.getFocusedTerminal()
 
-  initialize: ({id, statusBar, path, pwd, terminal}) ->
-    super {id, statusBar, path, pwd, terminal}
+  initialize: ({id, path, pwd, terminal}) ->
+    super {id, path, pwd, terminal}
 
+    @addDefaultButtons()
+
+    @statusIcon = new StatusIcon()
+    @statusIcon.initialize(@terminal)
+    @updateName(@terminal.getName())
+
+    @attachResizeEvents()
+    @attach()
+
+  destroy: ({keepTerminal}={}) =>
+    @detachResizeEvents()
+    @statusIcon.destroy()
+
+    if @panel.isVisible() and not keepTerminal
+      @onTransitionEnd =>
+        @panel.destroy()
+      @hide()
+    else
+      @panel.destroy()
+
+    super(keepTerminal)
+
+  ###
+  Section: Setup
+  ###
+
+  addDefaultButtons: ->
     @closeBtn = @addButton 'right', @destroy, 'x'
     @hideBtn = @addButton 'right', @hide, 'chevron-down'
     @fullscreenBtn = @addButton 'right', @toggleFullscreen, 'screen-full'
@@ -30,72 +66,43 @@ class PanelView extends TerminalView
     @subscriptions.add atom.tooltips.add @inputBtn,
       title: 'Insert Text'
 
-    @prevHeight = atom.config.get('terminal-plus.style.defaultPanelHeight')
-    if @prevHeight.indexOf('%') > 0
-      percent = Math.abs(Math.min(parseFloat(@prevHeight) / 100.0, 1))
-      bottomHeight = $('atom-panel.bottom').children(".terminal-view").height() or 0
-      @prevHeight = percent * ($('.item-views').height() + bottomHeight)
-    @terminal.height 0
-
-    @setAnimationSpeed()
-    @subscriptions.add atom.config.onDidChange 'terminal-plus.style.animationSpeed', @setAnimationSpeed
-
-    @statusIcon = new StatusIcon()
-    @statusIcon.initialize(this)
-    @statusIcon.attach(statusBar)
-
-    @attachResizeEvents()
-
   attach: ->
     return if @panel?
     @panel = atom.workspace.addBottomPanel(item: this, visible: false)
 
-  setAnimationSpeed: =>
-    @animationSpeed = atom.config.get('terminal-plus.style.animationSpeed')
-    @animationSpeed = 100 if @animationSpeed is 0
 
-    @terminal.css 'transition', "height #{0.25 / @animationSpeed}s linear"
-
-  destroy: ({saveTerminal} = {}) =>
-    @detachResizeEvents()
-    @statusIcon.destroy()
-
-    if saveTerminal
-      @terminal = null
-      @panel.destroy()
-    else if @panel.isVisible()
-      @hide()
-      @onTransitionEnd => @panel.destroy()
-    else
-      @panel.destroy()
-
-    super()
+  ###
+  Section: Visuals
+  ###
 
   open: =>
     super()
+    @statusIcon.activate()
+
+    if lastOpenedView and lastOpenedView != this
+      lastOpenedView.hide({refocus: false})
+    lastOpenedView = this
 
     @onTransitionEnd =>
-      if not @opened
-        @opened = true
-        @terminal.displayView()
-        @prevHeight = @nearestRow(@terminal.height())
-        @terminal.height(@prevHeight)
-      else
-        @focus()
+      if @terminal.displayView()
+        height = @nearestRow(@terminal.height())
+        @terminal.height(height)
+      @focus()
 
     @panel.show()
     @terminal.height 0
     @animating = true
-    @terminal.height @prevHeight
+    @terminal.height @terminal.getPrevHeight() or defaultHeight
 
-  hide: =>
-    super()
+  hide: ({refocus}={})=>
+    refocus ?= true
+    @statusIcon.deactivate()
 
     @onTransitionEnd =>
       @panel.hide()
+      super(refocus)
 
-    @prevHeight = @terminal.height()
-    @terminal.height @prevHeight
+    @terminal.height @terminal.getPrevHeight()
     @animating = true
     @terminal.height 0
 
@@ -107,6 +114,11 @@ class PanelView extends TerminalView
     else
       @open()
 
+
+  ###
+  Section: Resizing
+  ###
+
   attachResizeEvents: ->
     @panelDivider.on 'mousedown', @resizeStarted
 
@@ -114,40 +126,34 @@ class PanelView extends TerminalView
     @panelDivider.off 'mousedown'
 
   onWindowResize: (event) =>
-    @terminal.css 'transition', ''
+    @terminal.disableAnimation()
     delta = atom.getSize().height - @windowHeight
 
-    if Math.abs(delta) > @terminal.getRowHeight()
-      newHeight = @nearestRow(@terminal.height() + delta)
-      console.log newHeight, @prevHeight
-      clamped = Math.min(newHeight, @prevHeight)
-      console.log clamped
-      clamped = Math.max(clamped, @terminal.getRowHeight())
-      console.log clamped
+    if lines = (delta / @terminal.getRowHeight()|0)
+      offset = lines * @terminal.getRowHeight()
+      newHeight = @terminal.height() + offset
 
-      @terminal.height clamped
-      @maxHeight += delta
-      @windowHeight = atom.getSize().height
+      if newHeight >= @terminal.getRowHeight()
+        @terminal.height newHeight
+        @maxHeight += offset
+        @windowHeight += offset
+      else
+        @terminal.height @terminal.getRowHeight()
 
-      @terminal.recalibrateSize()
-
-    @terminal.css 'transition', "height #{0.25 / @animationSpeed}s linear"
+    @terminal.enableAnimation()
+    super()
 
   resizeStarted: =>
     return if @maximized
-    @maxHeight = @prevHeight + $('.item-views').height()
+    @maxHeight = @terminal.getPrevHeight() + $('.item-views').height()
     $(document).on('mousemove', @resizePanel)
     $(document).on('mouseup', @resizeStopped)
-    @terminal.css 'transition', ''
+    @terminal.disableAnimation()
 
   resizeStopped: =>
     $(document).off('mousemove', @resizePanel)
     $(document).off('mouseup', @resizeStopped)
-    @terminal.css 'transition', "height #{0.25 / @animationSpeed}s linear"
-
-  nearestRow: (value) ->
-    rows = value // @terminal.getRowHeight()
-    return rows * @terminal.getRowHeight()
+    @terminal.enableAnimation()
 
   resizePanel: (event) =>
     return @resizeStopped() unless event.which is 1
@@ -160,25 +166,33 @@ class PanelView extends TerminalView
     clamped = Math.max(nearestRow, @terminal.getRowHeight())
     return if clamped > @maxHeight
 
-    @adjustHeight clamped
+    @terminal.height clamped
     @terminal.recalibrateSize()
+
+
+  ###
+  Section: External Methods
+  ###
+
+  updateName: (name) ->
+    @statusIcon.setName(name)
+
+  toggleFullscreen: =>
+    @destroy keepTerminal: true
+    @terminal.clearHeight().disableAnimation()
+    tabView = new (require './tab-view') {@terminal}
+    @remove()
+
+
+  ###
+  Section: Helper Methods
+  ###
+
+  nearestRow: (value) ->
+    rowHeight = @terminal.getRowHeight()
+    return rowHeight * Math.round(value / rowHeight)
 
   onTransitionEnd: (callback) ->
     @terminal.one 'webkitTransitionEnd', =>
       callback()
       @animating = false
-
-  adjustHeight: (height) ->
-    @terminal.height height
-    @prevHeight = height
-
-  setName: (name) ->
-    super(name)
-    @statusIcon.updateName(@name)
-
-  toggleFullscreen: =>
-    terminal = @terminal
-    @destroy({saveTerminal: true})
-    tab = new (require './tab-view') {@id, @statusBar, terminal}
-    tab.attach()
-    terminal.focus()

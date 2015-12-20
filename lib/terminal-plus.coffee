@@ -1,11 +1,32 @@
 module.exports =
+  core: null
   statusBar: null
 
   activate: ->
-    @statusBar = new (require './status-bar')()
+    @core = require './core'
+    @statusBar = require './status-bar'
 
   deactivate: ->
+    @core.destroy()
     @statusBar.destroy()
+    @core = null
+    @statusBar = null
+
+  consumeStatusBar: (atomStatusBar) ->
+    atom.config.observe 'terminal-plus.core.statusBar', (value) =>
+      @statusBar.destroyContainer()
+
+      switch value
+        when "Full"
+          @statusBar.setContainer atom.workspace.addBottomPanel {
+            item: @statusBar
+            priority: 100
+          }
+        when "Collapsed"
+          @statusBar.setContainer atomStatusBar.addLeftTile {
+            item: @statusBar
+            priority: 100
+          }
 
   config:
     toggles:
@@ -67,6 +88,12 @@ module.exports =
           description: 'Specify some arguments to use when launching the shell.'
           type: 'string'
           default: ''
+        statusBar:
+          title: 'Status Bar'
+          description: 'Choose how you want the status bar displayed.'
+          type: 'string'
+          default: 'Full'
+          enum: ['Full', 'Collapsed', 'None']
         workingDirectory:
           title: 'Working Directory'
           description: 'Which directory should be the present working directory when a new terminal is made?'

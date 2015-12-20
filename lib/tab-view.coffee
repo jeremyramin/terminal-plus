@@ -6,6 +6,7 @@ TerminalView = require './terminal-view'
 module.exports =
 class TabView extends TerminalView
   opened: false
+  lastActiveItem: null
   windowHeight: $(window).height()
 
   @getFocusedTerminal: ->
@@ -23,7 +24,7 @@ class TabView extends TerminalView
     @subscriptions.add atom.tooltips.add @inputBtn,
       title: 'Insert Text'
 
-    @attachWindowEvents()
+    @attach()
 
   attach: (pane, index) ->
     pane ?= atom.workspace.getActivePane()
@@ -33,20 +34,17 @@ class TabView extends TerminalView
     pane.activateItem this
 
   detach: ->
-    pane = atom.workspace.paneForItem(this)
-    pane.removeItem(this)
+    atom.workspace.paneForItem(this)?.removeItem(this, true)
 
-  destroy: ({saveTerminal} = {}) =>
+  destroy: ({keepTerminal}={}) =>
     @emitter.dispose()
-    @detach()
-
-    if saveTerminal
-      @terminal = null
-    super()
+    super(keepTerminal)
 
   open: =>
-    @focus()
     super()
+    if pane = atom.workspace.paneForItem(this)
+      pane.activateItem this
+    @focus()
 
   hide: =>
     @blur()
@@ -65,18 +63,17 @@ class TabView extends TerminalView
     "terminal"
 
   getTitle: ->
-    @name or "Terminal-Plus"
+    @terminal.getName() or "Terminal-Plus"
 
   getPath: ->
-    return @getProcessTitle()
+    return @terminal.getTitle()
 
-  setName: (name) ->
-    super()
+  updateName: (name) ->
     @emitter.emit 'did-change-title', name
 
   toggleFullscreen: =>
-    terminal = @terminal
-    @destroy({saveTerminal: true})
-    panel = new (require './panel-view') {@id, @statusBar, terminal}
-    panel.attach()
-    panel.open()
+    @detach()
+    @destroy keepTerminal: true
+    @terminal.enableAnimation()
+    panel = new (require './panel-view') {@terminal}
+    panel.toggle()

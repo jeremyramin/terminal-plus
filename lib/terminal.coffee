@@ -3,6 +3,8 @@
 
 TerminalDisplay = null
 Shell = null
+InputDialog = null
+RenameDialog = null
 
 os = require 'os'
 
@@ -10,8 +12,11 @@ module.exports =
 class Terminal extends View
   process: ''
   title: ''
+  name: ''
   rowHeight: 20
   colWidth: 9
+  prevHeight: null
+  parentView: null
   shell: null
   display: null
   opened: false
@@ -23,10 +28,13 @@ class Terminal extends View
     return null unless TerminalDisplay
     return TerminalDisplay.Terminal.focus
 
-  initialize: ({@shellPath, @pwd}) ->
+  initialize: ({@shellPath, @pwd, @id}) ->
     TerminalDisplay ?= require 'term.js'
     Shell ?= require './shell'
-    @subscriptions = new CompositeDisposable
+
+    @subscriptions = new CompositeDisposable()
+    @core = require './core'
+    @registerAnimationSpeed()
 
     override = (event) ->
       return if event.originalEvent.dataTransfer.getData('terminal-plus') is 'true'
@@ -37,70 +45,23 @@ class Terminal extends View
       if event.which != 3
         text = window.getSelection().toString()
         unless text
-          @focus()
+          @parentView.focus()
     @on 'dragenter', override
     @on 'dragover', override
     @on 'drop', @recieveItemOrFile
     @on 'focus', @focus
 
-  recieveItemOrFile: (event) =>
-    event.preventDefault()
-    event.stopPropagation()
-    {dataTransfer} = event.originalEvent
-
-    if dataTransfer.getData('atom-event') is 'true'
-      filePath = dataTransfer.getData('text/plain')
-      @input "#{filePath} " if filePath
-    else if filePath = dataTransfer.getData('initialPath')
-      @input "#{filePath} "
-    else if dataTransfer.files.length > 0
-      for file in dataTransfer.files
-        @input "#{file.path} "
-
-  displayView: ->
-    return @focus() if @opened
-    @opened = true
-
-    {cols, rows} = @getDimensions()
-    @shell = new Shell {@pwd, @shellPath}
-
-    @display = new TerminalDisplay {
-      cursorBlink : false
-      scrollback : atom.config.get 'terminal-plus.core.scrollback'
-      cols, rows
-    }
-
-    @attachListeners()
-    @display.open @element
-
-  attachListeners: ->
-    @shell.on "terminal-plus:data", (data) =>
-      @display.write data
-
-    @shell.on "terminal-plus:exit", =>
-      @destroy() if atom.config.get('terminal-plus.toggles.autoClose')
-
-    @display.end = => @destroy()
-
-    @display.on "data", (data) =>
-      @shell.input data
-
-    @shell.on "terminal-plus:title", (title) =>
-      @process = title
-    @display.on "title", (title) =>
-      @title = title
-
-    @display.once "open", =>
-      @applyStyle()
-      @recalibrateSize()
-
-      autoRunCommand = atom.config.get('terminal-plus.core.autoRunCommand')
-      @input "#{autoRunCommand}#{os.EOL}" if autoRunCommand
-
   destroy: ->
     @subscriptions.dispose()
     @shell.destroy() if @shell
     @display.destroy() if @display
+
+    @core.removeTerminal(this)
+
+
+  ###
+  Section: Setup
+  ###
 
   applyStyle: ->
     config = atom.config.get 'terminal-plus'
@@ -156,29 +117,106 @@ class Terminal extends View
       config.ansiColors.zBright.brightWhite.toHexString()
     ]
 
-  focus: =>
-    @recalibrateSize()
-    @focusTerminal()
-    super()
+  attachListeners: ->
+    @shell.on "terminal-plus:data", (data) =>
+      @display.write data
+
+    @shell.on "terminal-plus:exit", =>
+      @destroy() if atom.config.get('terminal-plus.toggles.autoClose')
+
+    @display.end = => @destroy()
+
+    @display.on "data", (data) =>
+      @shell.input data
+
+    @shell.on "terminal-plus:title", (title) =>
+      @process = title
+    @display.on "title", (title) =>
+      @title = title
+
+    @display.once "open", =>
+      @applyStyle()
+      @recalibrateSize()
+
+      autoRunCommand = atom.config.get('terminal-plus.core.autoRunCommand')
+      @input "#{autoRunCommand}#{os.EOL}" if autoRunCommand
+
+  displayView: ->
+    return false if @opened
+    @opened = true
+
+    {cols, rows} = @getDimensions()
+    @shell = new Shell {@pwd, @shellPath}
+
+    @display = new TerminalDisplay {
+      cursorBlink : false
+      scrollback : atom.config.get 'terminal-plus.core.scrollback'
+      cols, rows
+    }
+
+    @attachListeners()
+    @display.open @element
+    return true
+
+  registerAnimationSpeed: ->
+    @subscriptions.add atom.config.observe 'terminal-plus.style.animationSpeed',
+      (value) =>
+        if value == 0
+          @animationSpeed = 100
+        else
+          @animationSpeed = parseFloat(value)
+        @css 'transition', "height #{0.25 / @animationSpeed}s linear"
+
+
+  ###
+  Section: Parent View
+  ###
+
+  getParentView: ->
+    return @parentView
+
+  setParentView: (view) ->
+    @parentView = view
+    return this
+
+  isAnimating: ->
+    return @parentView.isAnimating()
+
+  open: ->
+    @parentView.open()
+
+  toggle: ->
+    @parentView.toggle()
+
+
+  ###
+  Section: External Methods
+  ###
 
   blur: =>
     @blurTerminal()
     super()
 
-  focusTerminal: =>
-    return unless @display
+  focus: =>
+    @recalibrateSize()
+    @focusTerminal()
+    @core.setActiveTerminal(this)
+    super()
 
-    @display.focus()
-    if @display._textarea
-      @display._textarea.focus()
-    else
-      @display.element.focus()
+  getDisplay: ->
+    return @display
 
-  blurTerminal: =>
-    return unless @display
+  getTitle: ->
+    return @title or @process
 
-    @display.blur()
-    @display.element.blur()
+  getRowHeight: ->
+    return @rowHeight
+
+  getColWidth: ->
+    return @colWidth
+
+  getId: ->
+    return @id
 
   recalibrateSize: ->
     return unless @display
@@ -189,6 +227,118 @@ class Terminal extends View
 
     @resize cols, rows
     @display.resize cols, rows
+
+  height: (height) ->
+    return super() if not height?
+
+    currentHeight = super()
+    if height != currentHeight
+      @prevHeight = currentHeight
+    return super(height)
+
+  clearHeight: ->
+    @prevHeight = @height()
+    return @css "height", "0"
+
+  getPrevHeight: ->
+    return @prevHeight
+
+  input: (data) ->
+    @shell.input data
+
+  resize: (cols, rows) ->
+    @shell.resize cols, rows
+
+  getCols: ->
+    return @display.cols
+
+  getRows: ->
+    return @display.rows
+
+  isFocused: ->
+    return Terminal.getFocusedTerminal() == @display
+
+  isTabView: ->
+    return false unless @parentView
+    return @parentView.constructor?.name is "TabView"
+
+  isPanelView: ->
+    return false unless @parentView
+    return @parentView.constructor?.name is "PanelView"
+
+  setName: (name) ->
+    if @name isnt name
+      @name = name
+      @parentView.updateName(name)
+
+  getName: ->
+    return @name
+
+  promptForRename: =>
+    RenameDialog ?= require './rename-dialog'
+    dialog = new RenameDialog this
+    dialog.attach()
+
+  promptForInput: =>
+    InputDialog ?= require('./input-dialog')
+    dialog = new InputDialog this
+    dialog.attach()
+
+  copy: ->
+    if @display._selected
+      textarea = @display.getCopyTextarea()
+      text = @display.grabText(
+        @display._selected.x1, @display._selected.x2,
+        @display._selected.y1, @display._selected.y2)
+    else
+      rawText = @display.context.getSelection().toString()
+      rawLines = rawText.split(/\r?\n/g)
+      lines = rawLines.map (line) ->
+        line.replace(/\s/g, " ").trimRight()
+      text = lines.join("\n")
+    atom.clipboard.write text
+
+  paste: ->
+    @input atom.clipboard.read()
+
+  insertSelection: ->
+    return unless editor = atom.workspace.getActiveTextEditor()
+    runCommand = atom.config.get('terminal-plus.toggles.runInsertedText')
+
+    if selection = editor.getSelectedText()
+      @display.stopScrolling()
+      @input "#{selection}#{if runCommand then os.EOL else ''}"
+    else if cursor = editor.getCursorBufferPosition()
+      line = editor.lineTextForBufferRow(cursor.row)
+      @display.stopScrolling()
+      @input "#{line}#{if runCommand then os.EOL else ''}"
+      editor.moveDown(1)
+
+  disableAnimation: ->
+    @css 'transition', ""
+
+  enableAnimation: ->
+    @css 'transition', "height #{0.25 / @animationSpeed}s linear"
+
+
+  ###
+  Section: Helper Methods
+  ###
+
+  blurTerminal: =>
+    return unless @display
+
+    @display.blur()
+    @display.element.blur()
+
+  focusTerminal: =>
+    return unless @display
+
+    @display.focus()
+    if @display._textarea
+      @display._textarea.focus()
+    else
+      @display.element.focus()
 
   getDimensions: ->
     fakeRow = $("<div><span>&nbsp;</span></div>")
@@ -207,31 +357,16 @@ class Terminal extends View
 
     {cols, rows}
 
-  input: (data) ->
-    @display.stopScrolling()
-    @shell.input data
+  recieveItemOrFile: (event) =>
+    event.preventDefault()
+    event.stopPropagation()
+    {dataTransfer} = event.originalEvent
 
-  resize: (cols, rows) ->
-    @shell.resize cols, rows
-
-  stopScrolling: ->
-    @display.stopScrolling()
-
-  getDisplay: ->
-    return @display
-
-  getTitle: ->
-    return @title or @process
-
-  getRowHeight: ->
-    return @rowHeight
-
-  getColWidth: ->
-    return @colWidth
-
-  getParentView: ->
-    return @parentView
-
-  setParentView: (view) ->
-    @parentView = view
-    return this
+    if dataTransfer.getData('atom-event') is 'true'
+      filePath = dataTransfer.getData('text/plain')
+      @input "#{filePath} " if filePath
+    else if filePath = dataTransfer.getData('initialPath')
+      @input "#{filePath} "
+    else if dataTransfer.files.length > 0
+      for file in dataTransfer.files
+        @input "#{file.path} "

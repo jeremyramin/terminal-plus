@@ -20,7 +20,6 @@ class Shell
       args.unshift '--login'
 
     @fork = Task.once fork, Path.resolve(pwd), shellPath, args, disableInput
-    @fork.childProcess.unref()
 
   input: (data) ->
     return unless @isStillAlive()
