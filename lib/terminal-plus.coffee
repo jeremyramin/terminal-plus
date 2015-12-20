@@ -57,6 +57,12 @@ module.exports =
           description: 'Command to run on terminal initialization.'
           type: 'string'
           default: ''
+        defaultView:
+          title: 'Default View Type'
+          description: 'Set the default view to open when creating a new terminal.'
+          type: 'string'
+          default: 'Match Active Terminal'
+          enum: ['Panel', 'Tab', 'Match Active Terminal']
         mapTerminalsTo:
           title: 'Map Terminals To'
           description: 'Map terminals to each file or folder. Default is no action or mapping at all. **Restart required.**'

@@ -268,7 +268,17 @@ class Core
 
     shellPath = atom.config.get 'terminal-plus.core.shell'
 
-    return new PanelView {
+    ViewType = null
+    switch atom.config.get 'terminal-plus.core.defaultView'
+      when "Panel" then ViewType = PanelView
+      when "Tab" then ViewType = TabView
+      when "Match Active Terminal"
+        if @activeTerminal?.isTabView()
+          ViewType = TabView
+        else
+          ViewType = PanelView
+
+    return new ViewType {
       id, pwd, shellPath
     }
 
