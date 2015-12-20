@@ -108,6 +108,7 @@ class Core
     @subscriptions.add dispose: ->
       window.removeEventListener 'focus', handleFocus
 
+
   ###
   Section: Command Handling
   ###
@@ -140,7 +141,12 @@ class Core
 
     index = @terminals.indexOf(@activeTerminal)
     @removeTerminalAt(index)
-    @activeTerminal.getParentView().destroy()
+    if @activeTerminal.isTabView()
+      parent = @activeTerminal.getParentView()
+      if pane = atom.workspace.paneForItem(parent)
+        pane.destroyItem(parent)
+    else
+      @activeTerminal.getParentView().destroy()
     @activeTerminal = null
 
     @activateAdjacentTerminal index
