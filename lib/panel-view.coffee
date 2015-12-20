@@ -183,6 +183,9 @@ class PanelView extends TerminalView
     tabView = new (require './tab-view') {@terminal}
     @remove()
 
+  isVisible: ->
+    @panel.isVisible()
+
 
   ###
   Section: Helper Methods

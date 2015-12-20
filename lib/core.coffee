@@ -47,6 +47,10 @@ class Core
         @runInActiveTerminal (i) -> i.insertSelection()
       'terminal-plus:insert-text': =>
         @runInActiveTerminal (i) -> i.promptForInput()
+      'terminal-plus:toggle-focus': =>
+        @runInActiveTerminal (i) -> i.toggleFocus()
+      'terminal-plus:toggle-full-screen': =>
+        @runInActiveTerminal (i) -> i.toggleFullscreen()
 
     @subscriptions.add atom.commands.add '.xterm',
       'terminal-plus:paste': =>

@@ -16,6 +16,7 @@ class Terminal extends View
   rowHeight: 20
   colWidth: 9
   prevHeight: null
+  currentHeight: null
   parentView: null
   shell: null
   display: null
@@ -231,9 +232,9 @@ class Terminal extends View
   height: (height) ->
     return super() if not height?
 
-    currentHeight = super()
-    if height != currentHeight
-      @prevHeight = currentHeight
+    if height != @currentHeight
+      @prevHeight = @currentHeight
+      @currentHeight = height
     return super(height)
 
   clearHeight: ->
@@ -319,6 +320,12 @@ class Terminal extends View
 
   enableAnimation: ->
     @css 'transition', "height #{0.25 / @animationSpeed}s linear"
+
+  toggleFullscreen: ->
+    @parentView.toggleFullscreen()
+
+  toggleFocus: ->
+    @parentView.toggleFocus()
 
 
   ###

@@ -48,7 +48,7 @@ class TabView extends TerminalView
 
   hide: =>
     @blur()
-    super()
+    super(true)
 
   toggle: ->
     if @isFocused()
@@ -68,12 +68,22 @@ class TabView extends TerminalView
   getPath: ->
     return @terminal.getTitle()
 
+  onDidChangeTitle: (callback) ->
+    @emitter.on 'did-change-title', callback
+
   updateName: (name) ->
     @emitter.emit 'did-change-title', name
 
   toggleFullscreen: =>
-    @detach()
     @destroy keepTerminal: true
     @terminal.enableAnimation()
     panel = new (require './panel-view') {@terminal}
-    panel.toggle()
+    panel.toggle() if @isVisible()
+    @detach()
+
+  isVisible: ->
+    pane = atom.workspace.paneForItem(this)
+    return false unless pane
+
+    console.log pane.getActiveItem(), this
+    return this == pane.getActiveItem()

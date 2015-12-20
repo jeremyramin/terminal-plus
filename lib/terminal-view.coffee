@@ -51,10 +51,6 @@ class TerminalView extends View
   ###
 
   focus: =>
-    if activeEditor = atom.workspace.getActiveTextEditor()
-      if lastActiveItem != activeEditor
-        lastActiveItem = activeEditor
-
     @terminal?.focus()
     super()
 
@@ -68,9 +64,26 @@ class TerminalView extends View
   hide: (refocus) =>
     if lastActiveItem and refocus
       if pane = atom.workspace.paneForItem(lastActiveItem)
+        if activeEditor = atom.workspace.getActiveTextEditor()
+          if lastActiveItem != activeEditor
+            lastActiveItem = activeEditor
         pane.activateItem lastActiveItem
         atom.views.getView(lastActiveItem).focus()
         lastActiveItem = null
+
+  toggleFocus: ->
+    return unless @isVisible()
+
+    if @terminal.isFocused()
+      @blur()
+      if lastActiveItem
+        if pane = atom.workspace.paneForItem(lastActiveItem)
+          pane.activateItem lastActiveItem
+          atom.views.getView(lastActiveItem).focus()
+          lastActiveItem = null
+    else
+      lastActiveItem ?= atom.workspace.getActiveTextEditor()
+      @focus()
 
   addButton: (side, onClick, icon) ->
     if icon.indexOf('icon-') < 0
