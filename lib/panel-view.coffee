@@ -22,8 +22,8 @@ class PanelView extends TerminalView
   @getFocusedTerminal: ->
     return TerminalView.getFocusedTerminal()
 
-  initialize: ({id, path, pwd, terminal}) ->
-    super {id, path, pwd, terminal}
+  initialize: (options) ->
+    super(options)
 
     @addDefaultButtons()
 
@@ -161,14 +161,6 @@ class PanelView extends TerminalView
     @animating = true
     @terminal.height 0
 
-  toggle: ->
-    return if @animating
-
-    if @panel.isVisible()
-      @hide()
-    else
-      @open()
-
   updateName: (name) ->
     @statusIcon.setName(name)
 
@@ -176,6 +168,7 @@ class PanelView extends TerminalView
     @destroy keepTerminal: true
     @terminal.clearHeight().disableAnimation()
     tabView = new (require './tab-view') {@terminal}
+    tabView.toggle()
     @remove()
 
   isVisible: ->

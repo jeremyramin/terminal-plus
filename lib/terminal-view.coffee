@@ -71,6 +71,14 @@ class TerminalView extends View
         atom.views.getView(lastActiveItem).focus()
         lastActiveItem = null
 
+  toggle: ->
+    return if @isAnimating()
+
+    if @isVisible()
+      @hide()
+    else
+      @open()
+
   toggleFocus: ->
     return unless @isVisible()
 

@@ -12,8 +12,8 @@ class TabView extends TerminalView
   @getFocusedTerminal: ->
     return TerminalView.getFocusedTerminal()
 
-  initialize: ({id, statusBar, path, pwd, terminal}) ->
-    super {id, statusBar, path, pwd, terminal}
+  initialize: (options) ->
+    super(options)
     @emitter = new Emitter
 
     @fullscreenBtn = @addButton 'right', @toggleFullscreen, 'screen-normal'
@@ -25,6 +25,7 @@ class TabView extends TerminalView
       title: 'Insert Text'
 
     @attach()
+    @terminal.displayView()
 
   destroy: ({keepTerminal}={}) =>
     @emitter.dispose()
@@ -40,7 +41,6 @@ class TabView extends TerminalView
     index ?= pane.getItems().length
 
     pane.addItem this, index
-    pane.activateItem this
 
   detach: ->
     atom.workspace.paneForItem(this)?.removeItem(this, true)
@@ -56,15 +56,11 @@ class TabView extends TerminalView
       pane.activateItem this
     @focus()
 
-  hide: =>
-    @blur()
-    super(true)
+  hide: ({refocus}={}) =>
+    refocus ?= true
 
-  toggle: ->
-    if @isFocused()
-      @hide()
-    else
-      @open()
+    @blur()
+    super(refocus)
 
   getIconName: ->
     "terminal"
@@ -91,6 +87,4 @@ class TabView extends TerminalView
   isVisible: ->
     pane = atom.workspace.paneForItem(this)
     return false unless pane
-
-    console.log pane.getActiveItem(), this
     return this == pane.getActiveItem()
