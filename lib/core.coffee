@@ -89,12 +89,12 @@ class Core
 
   registerWindowEvents: ->
     handleBlur = =>
-      if @activeTerminal?.isFocused()
+      if @activeTerminal and @activeTerminal.isFocused()
         @returnFocus = true
         @activeTerminal.getParentView().blur()
 
     handleFocus = =>
-      if @returnFocus
+      if @returnFocus and @activeTerminal
         setTimeout =>
           @activeTerminal.focus()
           @returnFocus = false
