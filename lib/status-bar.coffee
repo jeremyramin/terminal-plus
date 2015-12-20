@@ -40,8 +40,9 @@ class StatusBar extends View
   destroy: ->
     @destroyContainer()
 
+
   ###
-  Section: Registry
+  Section: Setup
   ###
 
   registerContextMenu: ->
@@ -156,11 +157,6 @@ class StatusBar extends View
     else
       fromIndex = parseInt(dataTransfer.getData('from-index'))
     @updateOrder(fromIndex, toIndex)
-
-
-  ###
-  Section: Tab Bar
-  ###
 
   onDropTabBar: (event, pane) =>
     {dataTransfer} = event.originalEvent

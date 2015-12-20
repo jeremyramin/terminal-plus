@@ -170,27 +170,6 @@ class Terminal extends View
 
 
   ###
-  Section: Parent View
-  ###
-
-  getParentView: ->
-    return @parentView
-
-  setParentView: (view) ->
-    @parentView = view
-    return this
-
-  isAnimating: ->
-    return @parentView.isAnimating()
-
-  open: ->
-    @parentView.open()
-
-  toggle: ->
-    @parentView.toggle()
-
-
-  ###
   Section: External Methods
   ###
 
@@ -320,6 +299,22 @@ class Terminal extends View
 
   enableAnimation: ->
     @css 'transition', "height #{0.25 / @animationSpeed}s linear"
+
+  getParentView: ->
+    return @parentView
+
+  setParentView: (view) ->
+    @parentView = view
+    return this
+
+  isAnimating: ->
+    return @parentView.isAnimating()
+
+  open: ->
+    @parentView.open()
+
+  toggle: ->
+    @parentView.toggle()
 
   toggleFullscreen: ->
     @parentView.toggleFullscreen()

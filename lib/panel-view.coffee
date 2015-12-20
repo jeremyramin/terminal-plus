@@ -72,50 +72,6 @@ class PanelView extends TerminalView
 
 
   ###
-  Section: Visuals
-  ###
-
-  open: =>
-    super()
-    @statusIcon.activate()
-
-    if lastOpenedView and lastOpenedView != this
-      lastOpenedView.hide({refocus: false})
-    lastOpenedView = this
-
-    @onTransitionEnd =>
-      if @terminal.displayView()
-        height = @nearestRow(@terminal.height())
-        @terminal.height(height)
-      @focus()
-
-    @panel.show()
-    @terminal.height 0
-    @animating = true
-    @terminal.height @terminal.getPrevHeight() or defaultHeight
-
-  hide: ({refocus}={})=>
-    refocus ?= true
-    @statusIcon.deactivate()
-
-    @onTransitionEnd =>
-      @panel.hide()
-      super(refocus)
-
-    @terminal.height @terminal.getPrevHeight()
-    @animating = true
-    @terminal.height 0
-
-  toggle: ->
-    return if @animating
-
-    if @panel.isVisible()
-      @hide()
-    else
-      @open()
-
-
-  ###
   Section: Resizing
   ###
 
@@ -173,6 +129,45 @@ class PanelView extends TerminalView
   ###
   Section: External Methods
   ###
+
+  open: =>
+    super()
+    @statusIcon.activate()
+
+    if lastOpenedView and lastOpenedView != this
+      lastOpenedView.hide({refocus: false})
+    lastOpenedView = this
+
+    @onTransitionEnd =>
+      if @terminal.displayView()
+        height = @nearestRow(@terminal.height())
+        @terminal.height(height)
+      @focus()
+
+    @panel.show()
+    @terminal.height 0
+    @animating = true
+    @terminal.height @terminal.getPrevHeight() or defaultHeight
+
+  hide: ({refocus}={})=>
+    refocus ?= true
+    @statusIcon.deactivate()
+
+    @onTransitionEnd =>
+      @panel.hide()
+      super(refocus)
+
+    @terminal.height @terminal.getPrevHeight()
+    @animating = true
+    @terminal.height 0
+
+  toggle: ->
+    return if @animating
+
+    if @panel.isVisible()
+      @hide()
+    else
+      @open()
 
   updateName: (name) ->
     @statusIcon.setName(name)

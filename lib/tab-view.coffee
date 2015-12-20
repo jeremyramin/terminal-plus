@@ -26,6 +26,15 @@ class TabView extends TerminalView
 
     @attach()
 
+  destroy: ({keepTerminal}={}) =>
+    @emitter.dispose()
+    super(keepTerminal)
+
+
+  ###
+  Section: Setup
+  ###
+
   attach: (pane, index) ->
     pane ?= atom.workspace.getActivePane()
     index ?= pane.getItems().length
@@ -36,9 +45,10 @@ class TabView extends TerminalView
   detach: ->
     atom.workspace.paneForItem(this)?.removeItem(this, true)
 
-  destroy: ({keepTerminal}={}) =>
-    @emitter.dispose()
-    super(keepTerminal)
+
+  ###
+  Section: External Methods
+  ###
 
   open: =>
     super()
@@ -55,9 +65,6 @@ class TabView extends TerminalView
       @hide()
     else
       @open()
-
-  onDidChangeTitle: (callback) ->
-    @emitter.on 'did-change-title', callback
 
   getIconName: ->
     "terminal"

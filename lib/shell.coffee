@@ -21,6 +21,14 @@ class Shell
 
     @fork = Task.once fork, Path.resolve(pwd), shellPath, args, disableInput
 
+  destroy: ->
+    @terminate()
+
+
+  ###
+  Section: External Methods
+  ###
+
   input: (data) ->
     return unless @isStillAlive()
 
@@ -46,6 +54,3 @@ class Shell
       @fork.off event, handler
     else
       @fork.off event
-
-  destroy: ->
-    @terminate()
