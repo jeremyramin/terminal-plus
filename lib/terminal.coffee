@@ -95,6 +95,15 @@ class Terminal extends View
       @display.element.style.fontSize = "#{overrideFontSize or editorFontSize}px"
       @recalibrateSize()
 
+    @subscriptions.add atom.config.observe 'terminal-plus.style.fontAntialiasing', (value) =>
+      switch value
+        when "Antialiased"
+          @display.element.style["-webkit-font-smoothing"] = "antialiased"
+        when "Default"
+          @display.element.style["-webkit-font-smoothing"] = "subpixel-antialiased"
+        when "None"
+          @display.element.style["-webkit-font-smoothing"] = "none"
+
     # first 8 colors i.e. 'dark' colors
     @display.colors[0..7] = [
       config.ansiColors.normal.black.toHexString()

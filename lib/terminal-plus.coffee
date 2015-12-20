@@ -111,6 +111,12 @@ module.exports =
           default: '1'
           minimum: '0'
           maximum: '100'
+        fontAntialiasing:
+          title: 'Font Antialiasing'
+          description: 'Set the type of font antialiasing for the terminal.'
+          type: 'string'
+          default: 'Antialiased'
+          enum: ['Antialiased', 'Default', 'None']
         fontFamily:
           title: 'Font Family'
           description: 'Override the terminal\'s default font family. **You must use a [monospaced font](https://en.wikipedia.org/wiki/List_of_typefaces#Monospace)!**'
