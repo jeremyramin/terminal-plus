@@ -40,7 +40,7 @@ class Shell
     @fork.send {event: 'resize', rows, cols}
 
   isStillAlive: ->
-    return false if not @fork
+    return false unless @fork and @fork.childProcess
     return @fork.childProcess.connected and !@fork.childProcess.killed
 
   terminate: ->
