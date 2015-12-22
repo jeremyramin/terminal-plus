@@ -5,6 +5,7 @@
   'cmd-shift-x': 'terminal-plus:close'
   'ctrl-enter': 'terminal-plus:insert-selected-text'
   'ctrl-`': 'terminal-plus:toggle'
+  'ctrl-alt-t': 'terminal-plus:focus'
 
 '.platform-linux atom-workspace, .platform-win32 atom-workspace':
   'alt-shift-t': 'terminal-plus:new'
@@ -13,11 +14,14 @@
   'alt-shift-x': 'terminal-plus:close'
   'ctrl-enter': 'terminal-plus:insert-selected-text'
   'ctrl-`': 'terminal-plus:toggle'
+  'ctrl-alt-t': 'terminal-plus:focus'
 
 '.platform-darwin .terminal-plus .terminal':
   'cmd-c': 'terminal-plus:copy'
   'cmd-v': 'terminal-plus:paste'
+  'ctrl-alt-t': 'terminal-plus:focus'
 
 '.platform-linux .terminal-plus .terminal, .platform-win32 .terminal-plus .terminal':
   'alt-v': 'terminal-plus:paste'
   'alt-c': 'terminal-plus:copy'
+  'ctrl-alt-t': 'terminal-plus:focus'
