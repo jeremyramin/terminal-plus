@@ -114,4 +114,11 @@ class StatusIcon extends HTMLElement
   getTerminalView: ->
     return @terminal.getParentView()
 
+  hide: ->
+    @style.display = 'none'
+    @deactivate()
+
+  show: ->
+    @style.display = ''
+
 module.exports = document.registerElement('status-icon', prototype: StatusIcon.prototype, extends: 'li')

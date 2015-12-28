@@ -25,6 +25,7 @@ class TabView extends TerminalView
       title: 'Insert Text'
 
     @attach()
+    @terminal.hideIcon()
     @terminal.displayView()
 
   destroy: ({keepTerminal}={}) =>

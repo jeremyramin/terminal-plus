@@ -5,6 +5,7 @@ TerminalDisplay = null
 Shell = null
 InputDialog = null
 RenameDialog = null
+StatusIcon = null
 
 os = require 'os'
 
@@ -32,9 +33,13 @@ class Terminal extends View
   initialize: ({@shellPath, @pwd, @id}) ->
     TerminalDisplay ?= require 'term.js'
     Shell ?= require './shell'
+    StatusIcon ?= require './status-icon'
 
     @subscriptions = new CompositeDisposable()
     @core = require './core'
+
+    @statusIcon = new StatusIcon()
+    @statusIcon.initialize(this)
     @registerAnimationSpeed()
 
     override = (event) ->
@@ -56,6 +61,7 @@ class Terminal extends View
     @subscriptions.dispose()
     @shell.destroy() if @shell
     @display.destroy() if @display
+    @statusIcon.destroy()
 
     @core.removeTerminal(this)
 
@@ -330,6 +336,15 @@ class Terminal extends View
 
   toggleFocus: ->
     @parentView.toggleFocus()
+
+  getStatusIcon: ->
+    return @statusIcon
+
+  hideIcon: ->
+    @statusIcon.hide()
+
+  showIcon: ->
+    @statusIcon.show()
 
 
   ###

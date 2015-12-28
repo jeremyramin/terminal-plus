@@ -2,9 +2,8 @@
 {$} = require 'atom-space-pen-views'
 
 TerminalView = require './terminal-view'
-StatusIcon = require './status-icon'
 
-lastOpenedView = null
+lastOpenedTerminal = null
 
 defaultHeight = do ->
   height = atom.config.get('terminal-plus.style.defaultPanelHeight')
@@ -27,8 +26,7 @@ class PanelView extends TerminalView
 
     @addDefaultButtons()
 
-    @statusIcon = new StatusIcon()
-    @statusIcon.initialize(@terminal)
+    @terminal.showIcon()
     @updateName(@terminal.getName())
 
     @attachResizeEvents()
@@ -36,7 +34,6 @@ class PanelView extends TerminalView
 
   destroy: ({keepTerminal}={}) =>
     @detachResizeEvents()
-    @statusIcon.destroy()
 
     if @panel.isVisible() and not keepTerminal
       @onTransitionEnd =>
@@ -132,11 +129,11 @@ class PanelView extends TerminalView
 
   open: =>
     super()
-    @statusIcon.activate()
+    @terminal.getStatusIcon().activate()
 
-    if lastOpenedView and lastOpenedView != this
-      lastOpenedView.hide({refocus: false})
-    lastOpenedView = this
+    if lastOpenedTerminal and lastOpenedTerminal != @terminal
+      lastOpenedTerminal.getParentView().hide({refocus: false})
+    lastOpenedTerminal = @terminal
 
     @onTransitionEnd =>
       if @terminal.displayView()
@@ -151,7 +148,8 @@ class PanelView extends TerminalView
 
   hide: ({refocus}={})=>
     refocus ?= true
-    @statusIcon.deactivate()
+    lastOpenedTerminal = null
+    @terminal.getStatusIcon().deactivate()
 
     @onTransitionEnd =>
       @panel.hide()
@@ -162,7 +160,7 @@ class PanelView extends TerminalView
     @terminal.height 0
 
   updateName: (name) ->
-    @statusIcon.setName(name)
+    @terminal.getStatusIcon().setName(name)
 
   toggleFullscreen: =>
     @destroy keepTerminal: true

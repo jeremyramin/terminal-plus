@@ -173,7 +173,7 @@ class StatusBar extends View
 
 
   ###
-  Section: External
+  Section: External Methods
   ###
 
   addStatusIcon: (icon) ->
