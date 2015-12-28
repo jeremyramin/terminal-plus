@@ -35,7 +35,6 @@ class StatusBar extends View
 
     @registerContextMenu()
     @registerDragDropInterface()
-    @registerPaneSubscription()
 
   destroy: ->
     @destroyContainer()
@@ -76,6 +75,8 @@ class StatusBar extends View
     @statusContainer.on 'drop', @onDrop
 
   registerPaneSubscription: ->
+    return if @paneSubscription
+
     @subscriptions.add @paneSubscription = atom.workspace.observePanes (pane) =>
       paneElement = $(atom.views.getView(pane))
       tabBar = paneElement.find('ul')
@@ -153,7 +154,7 @@ class StatusBar extends View
 
       pane.removeItem(view, false)
       view.toggleFullscreen()
-      fromIndex = @terminalViews.length - 1
+      fromIndex = @core.length() - 1
     else
       fromIndex = parseInt(dataTransfer.getData('from-index'))
     @updateOrder(fromIndex, toIndex)
@@ -167,8 +168,7 @@ class StatusBar extends View
     @clearDropTarget()
 
     fromIndex = parseInt(dataTransfer.getData('from-index'))
-    terminal = @terminalViews[fromIndex]
-    terminal.css "height", ""
+    terminal = @core.terminalAt(fromIndex)
     terminal.getParentView().toggleFullscreen()
 
 

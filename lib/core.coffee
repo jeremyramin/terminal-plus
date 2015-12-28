@@ -2,6 +2,7 @@
 
 PanelView = null
 TabView = null
+StatusBar = null
 
 Path = require 'path'
 
@@ -154,6 +155,8 @@ class Core
   newTerminalView: =>
     PanelView ?= require './panel-view'
     TabView ?= require './tab-view'
+    StatusBar ?= require './status-bar'
+    StatusBar.registerPaneSubscription()
 
     return null if @activeTerminal and @activeTerminal.isAnimating()
 
@@ -189,6 +192,9 @@ class Core
 
   getTerminals: ->
     return @terminals
+
+  length: ->
+    return @terminals.length
 
   removeTerminal: (terminal) ->
     index = @terminals.indexOf terminal
