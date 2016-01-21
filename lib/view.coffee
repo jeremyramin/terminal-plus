@@ -40,7 +40,7 @@ class TerminalPlusView extends View
   @getFocusedTerminal: ->
     return Terminal.Terminal.focus
 
-  initialize: (@id, @pwd, @statusIcon, @statusBar, @shell, @args=[]) ->
+  initialize: (@id, @pwd, @statusIcon, @statusBar, @shell, @args=[], @autoRun=[]) ->
     @subscriptions = new CompositeDisposable
     @emitter = new Emitter
 
@@ -152,6 +152,7 @@ class TerminalPlusView extends View
       return unless @ptyProcess.childProcess?
       autoRunCommand = atom.config.get('terminal-plus.core.autoRunCommand')
       @input "#{autoRunCommand}#{os.EOL}" if autoRunCommand
+      @input "#{command}#{os.EOL}" for command in @autoRun
 
   destroy: ->
     @subscriptions.dispose()
