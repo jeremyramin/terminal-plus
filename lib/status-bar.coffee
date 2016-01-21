@@ -4,6 +4,7 @@
 TerminalPlusView = require './view'
 StatusIcon = require './status-icon'
 
+os = require 'os'
 path = require 'path'
 
 module.exports =
@@ -134,7 +135,7 @@ class StatusBar extends View
         event.originalEvent.dataTransfer.setData 'terminal-plus-tab', 'true'
       pane.onDidDestroy -> tabBar.off 'drop', @onDropTabBar
 
-  createTerminalView: ->
+  createTerminalView: (autoRun) ->
     @registerPaneSubscription() unless @paneSubscription?
 
     projectFolder = atom.project.getPaths()[0]
@@ -163,7 +164,7 @@ class StatusBar extends View
     args = shellArguments.split(/\s+/g).filter (arg) -> arg
 
     statusIcon = new StatusIcon()
-    terminalPlusView = new TerminalPlusView(id, pwd, statusIcon, this, shell, args)
+    terminalPlusView = new TerminalPlusView(id, pwd, statusIcon, this, shell, args, autoRun)
     statusIcon.initialize(terminalPlusView)
 
     terminalPlusView.attach()
@@ -222,6 +223,10 @@ class StatusBar extends View
     if view?
       return callback(view)
     return null
+
+  runCommandInNewTerminal: (commands) ->
+    @activeTerminal = @createTerminalView(commands)
+    @activeTerminal.toggle()
 
   runInOpenView: (callback) ->
     view = @getActiveTerminalView()

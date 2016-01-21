@@ -7,6 +7,10 @@ module.exports =
   deactivate: ->
     @statusBar.destroy()
 
+  provideRunInTerminal: ->
+    run: (command) =>
+      @statusBar.runCommandInNewTerminal command
+
   config:
     toggles:
       type: 'object'
