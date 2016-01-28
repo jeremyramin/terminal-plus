@@ -17,7 +17,9 @@
 '.platform-darwin .terminal-plus .terminal':
   'cmd-c': 'terminal-plus:copy'
   'cmd-v': 'terminal-plus:paste'
+  'alt-cmd-c': 'terminal-plus:copy-all-to-new-file'
 
 '.platform-linux .terminal-plus .terminal, .platform-win32 .terminal-plus .terminal':
   'alt-v': 'terminal-plus:paste'
   'alt-c': 'terminal-plus:copy'
+  'alt-ctrl-c': 'terminal-plus:copy-all-to-new-file'
