@@ -41,6 +41,7 @@ class StatusBar extends View
     @subscriptions.add atom.commands.add '.xterm',
       'terminal-plus:paste': => @runInActiveView (i) -> i.paste()
       'terminal-plus:copy': => @runInActiveView (i) -> i.copy()
+      'terminal-plus:copy-all-to-new-file': => @runInActiveView (i) -> i.copyAllToNewFile()
 
     @subscriptions.add atom.workspace.onDidChangeActivePaneItem (item) =>
       return unless item?

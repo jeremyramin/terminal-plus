@@ -410,6 +410,16 @@ class TerminalPlusView extends View
   paste: ->
     @input atom.clipboard.read()
 
+  copyAllToNewFile: ->
+    text = @terminal.lines.map (line) ->
+      line.map (cols) ->
+        cols[1]
+      .join('').trimRight() + '\n'
+    .join('').replace(/\n*?$/g, '') + '\n';
+
+    atom.workspace.open().then (editor) ->
+      editor.insertText(text)
+
   insertSelection: ->
     return unless editor = atom.workspace.getActiveTextEditor()
     runCommand = atom.config.get('terminal-plus.toggles.runInsertedText')
