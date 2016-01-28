@@ -18,6 +18,7 @@
   '.terminal-plus .terminal': [
     {label: 'Copy', command: 'terminal-plus:copy'},
     {label: 'Paste', command: 'terminal-plus:paste'},
+    {label: 'Copy All to New File', command: 'terminal-plus:copy-all-to-new-file'},
     {type: 'separator'},
     {label: 'Hide', command: 'terminal-plus:hide'},
     {label: 'Close', command: 'terminal-plus:close'}
