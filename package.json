@@ -1,6 +1,6 @@
 {
-  "name": "terminal-plus",
-  "main": "./lib/terminal-plus",
+  "name": "platformio-ide-terminal",
+  "main": "./lib/platformio-ide-terminal",
   "version": "0.14.5",
   "description": "A terminal package for Atom, complete with themes and more.",
   "author": "Jeremy Ebneyamin",
@@ -11,8 +11,8 @@
     "panel",
     "tty"
   ],
-  "homepage": "https://atom.io/packages/terminal-plus",
-  "repository": "https://github.com/jeremyramin/terminal-plus",
+  "homepage": "https://atom.io/packages/platformio-ide-terminal2",
+  "repository": "https://github.com/platformio/platformio-atom-ide-terminal2",
   "license": "MIT",
   "engines": {
     "atom": ">=1.2.0"

@@ -15,7 +15,7 @@ systemLanguage = do ->
 filteredEnvironment = do ->
   env = _.omit process.env, 'ATOM_HOME', 'ATOM_SHELL_INTERNAL_RUN_AS_NODE', 'GOOGLE_API_KEY', 'NODE_ENV', 'NODE_PATH', 'userAgent', 'taskPath'
   env.LANG ?= systemLanguage
-  env.TERM_PROGRAM = 'Terminal-Plus'
+  env.TERM_PROGRAM = 'platformio-ide-terminal'
   return env
 
 module.exports = (pwd, shell, args, options={}) ->
@@ -32,15 +32,15 @@ module.exports = (pwd, shell, args, options={}) ->
   title = shell = path.basename shell
 
   emitTitle = _.throttle ->
-    emit('terminal-plus:title', ptyProcess.process)
+    emit('platformio-ide-terminal:title', ptyProcess.process)
   , 500, true
 
   ptyProcess.on 'data', (data) ->
-    emit('terminal-plus:data', data)
+    emit('platformio-ide-terminal:data', data)
     emitTitle()
 
   ptyProcess.on 'exit', ->
-    emit('terminal-plus:exit')
+    emit('platformio-ide-terminal:exit')
     callback()
 
   process.on 'message', ({event, cols, rows, text}={}) ->

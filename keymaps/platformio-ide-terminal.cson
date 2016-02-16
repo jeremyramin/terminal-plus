@@ -1,0 +1,23 @@
+'.platform-darwin atom-workspace':
+  'cmd-shift-t': 'platformio-ide-terminal:new'
+  'cmd-shift-j': 'platformio-ide-terminal:prev'
+  'cmd-shift-k': 'platformio-ide-terminal:next'
+  'cmd-shift-x': 'platformio-ide-terminal:close'
+  'ctrl-enter': 'platformio-ide-terminal:insert-selected-text'
+  'ctrl-`': 'platformio-ide-terminal:toggle'
+
+'.platform-linux atom-workspace, .platform-win32 atom-workspace':
+  'alt-shift-t': 'platformio-ide-terminal:new'
+  'alt-shift-j': 'platformio-ide-terminal:prev'
+  'alt-shift-k': 'platformio-ide-terminal:next'
+  'alt-shift-x': 'platformio-ide-terminal:close'
+  'ctrl-enter': 'platformio-ide-terminal:insert-selected-text'
+  'ctrl-`': 'platformio-ide-terminal:toggle'
+
+'.platform-darwin .platformio-ide-terminal .terminal':
+  'cmd-c': 'platformio-ide-terminal:copy'
+  'cmd-v': 'platformio-ide-terminal:paste'
+
+'.platform-linux .platformio-ide-terminal .terminal, .platform-win32 .platformio-ide-terminal .terminal':
+  'alt-v': 'platformio-ide-terminal:paste'
+  'alt-c': 'platformio-ide-terminal:copy'

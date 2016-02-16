@@ -1,0 +1,58 @@
+'context-menu':
+  '.platformio-ide-terminal .status-icon': [
+    {label: 'Red', command: 'platformio-ide-terminal:status-red'},
+    {label: 'Orange', command: 'platformio-ide-terminal:status-orange'},
+    {label: 'Yellow', command: 'platformio-ide-terminal:status-yellow'},
+    {label: 'Green', command: 'platformio-ide-terminal:status-green'},
+    {label: 'Blue', command: 'platformio-ide-terminal:status-blue'},
+    {label: 'Purple', command: 'platformio-ide-terminal:status-purple'},
+    {label: 'Pink', command: 'platformio-ide-terminal:status-pink'},
+    {label: 'Cyan', command: 'platformio-ide-terminal:status-cyan'},
+    {label: 'Magenta', command: 'platformio-ide-terminal:status-magenta'},
+    {label: 'Default', command: 'platformio-ide-terminal:status-default'},
+    {type: 'separator'},
+    {label: 'Hide', command: 'platformio-ide-terminal:context-hide'},
+    {label: 'Rename', command: 'platformio-ide-terminal:context-rename'},
+    {label: 'Close', command: 'platformio-ide-terminal:context-close'}
+  ]
+  '.platformio-ide-terminal .terminal': [
+    {label: 'Copy', command: 'platformio-ide-terminal:copy'},
+    {label: 'Paste', command: 'platformio-ide-terminal:paste'},
+    {type: 'separator'},
+    {label: 'Hide', command: 'platformio-ide-terminal:hide'},
+    {label: 'Close', command: 'platformio-ide-terminal:close'}
+  ]
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'platformio-ide-terminal'
+      'submenu': [
+        {
+          'label': 'Toggle'
+          'command': 'platformio-ide-terminal:toggle'
+        },
+        {
+          'label': 'New Terminal'
+          'command': 'platformio-ide-terminal:new'
+        },
+        {
+          'label': 'Previous Terminal'
+          'command': 'platformio-ide-terminal:prev'
+        },
+        {
+          'label': 'Next Terminal'
+          'command': 'platformio-ide-terminal:next'
+        },
+        {
+          'label': 'Close Terminal'
+          'command': 'platformio-ide-terminal:close'
+        },
+        {
+          'label': 'Close All Terminals'
+          'command': 'platformio-ide-terminal:close-all'
+        }
+      ]
+    ]
+  }
+]

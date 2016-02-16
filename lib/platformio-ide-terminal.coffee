@@ -28,7 +28,7 @@ module.exports =
           default: true
         runInsertedText:
           title: 'Run Inserted Text'
-          description: 'Run text inserted via `terminal-plus:insert-text` as a command? **This will append an end-of-line character to input.**'
+          description: 'Run text inserted via `platformio-ide-terminal:insert-text` as a command? **This will append an end-of-line character to input.**'
           type: 'boolean'
           default: true
     core:

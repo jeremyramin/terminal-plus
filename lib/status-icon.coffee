@@ -32,7 +32,7 @@ class StatusIcon extends HTMLElement
   setupTooltip: ->
 
     onMouseEnter = (event) =>
-      return if event.detail is 'terminal-plus'
+      return if event.detail is 'platformio-ide-terminal'
       @updateTooltip()
 
     @mouseEnterSubscription = dispose: =>
@@ -52,7 +52,7 @@ class StatusIcon extends HTMLElement
           show: 1000
           hide: 100
 
-    @dispatchEvent(new CustomEvent('mouseenter', bubbles: true, detail: 'terminal-plus'))
+    @dispatchEvent(new CustomEvent('mouseenter', bubbles: true, detail: 'platformio-ide-terminal'))
 
   removeTooltip: ->
     @tooltip.dispose() if @tooltip

@@ -5,15 +5,15 @@
 * You must use a monospaced font in order for the spacing to be right.
 * Having issues on Windows 10? [Try this](https://github.com/jeremyramin/terminal-plus/issues/15#issuecomment-144618245).
 
-# Terminal-Plus
-Terminal-Plus is a terminal package for Atom, complete with themes and more.  
+# PlatformIO IDE Terminal
+platformio-ide-terminal is a terminal package for Atom, complete with themes and more.  
 
 ![demo](https://github.com/jeremyramin/terminal-plus/raw/master/resources/demo.gif)
 
 *[Nucleus Dark UI](https://atom.io/themes/nucleus-dark-ui) with [Atom Material Syntax](https://atom.io/themes/atom-material-syntax) and our Homebrew theme.*
 
 ## Usage
-Terminal-Plus stays in the bottom of your editor while you work.
+platformio-ide-terminal stays in the bottom of your editor while you work.
 
 ### Status Bar
 ![status-bar](https://github.com/jeremyramin/terminal-plus/raw/master/resources/status-bar.png)  
@@ -22,7 +22,7 @@ You can keep track of terminal instances via the status bar. Each terminal has a
 Click on a status icon to toggle that terminal. Right click the status icon for a list of available commands. From the right-click menu you can color code the status icon as well as hide or close the terminal instance.
 
 ### Terminal
-You can open the last active terminal with the `terminal-plus:toggle` command (Default:`` ctrl-` ``).  If no terminal instances are available, then a new one will be created. The same toggle command is used to hide the currently active terminal.
+You can open the last active terminal with the `platformio-ide-terminal:toggle` command (Default:`` ctrl-` ``).  If no terminal instances are available, then a new one will be created. The same toggle command is used to hide the currently active terminal.
 
 From there you can begin typing into the terminal. By default the terminal will change directory into the project folder if possible. The default working directory can be changed in the settings to the home directory or to the active file directory.
 
@@ -37,7 +37,7 @@ Every terminal is loaded with your system’s default initialization files. This
 The terminal is preloaded with several themes that you can choose from. Not satisfied?  
 Use the following template in your stylesheet:
 ```css
-.terminal-plus .xterm {
+.platformio-ide-terminal .xterm {
   background-color: ;
   color: ;
 
@@ -87,7 +87,7 @@ You can set the default working directory for new terminals. By default this wil
 Dropping a file on the terminal will insert the file path into the input. This works with external files, tabs from the Atom tab-view, and entries from the Atom tree-view.
 
 ### Insert Selected Text
-Insert and run selected text from your text editor by running the `terminal-plus:insert-selected-text` command (`ctrl-enter`).
+Insert and run selected text from your text editor by running the `platformio-ide-terminal:insert-selected-text` command (`ctrl-enter`).
 
 ![](https://github.com/jeremyramin/terminal-plus/raw/master/resources/insert_selected_text.gif)
 
@@ -95,14 +95,14 @@ If you have text selected, it will insert your selected text into the active ter
 If you don't have text selected it, will run the text on the line where your cursor is then proceed to the next line.
 
 ### Quick Command Insert
-Quickly insert a command to your active terminal by executing the `terminal-plus:insert-text` command.
+Quickly insert a command to your active terminal by executing the `platformio-ide-terminal:insert-text` command.
 
 ![](https://github.com/jeremyramin/terminal-plus/raw/master/resources/insert_text.png)
 
-A dialog will pop up asking for the input to insert. If you have the `Run Inserted Text` option enabled in the settings (default is false), Terminal-Plus will automatically run the command for you.
+A dialog will pop up asking for the input to insert. If you have the `Run Inserted Text` option enabled in the settings (default is false), platformio-ide-terminal will automatically run the command for you.
 
 #### Support for Special Keys
-Support for IME, dead keys and other key combinations via the `Insert Text` dialog box. Just click the keyboard button in the top left of the terminal or set up a keymap to the `terminal-plus:insert-text` command.
+Support for IME, dead keys and other key combinations via the `Insert Text` dialog box. Just click the keyboard button in the top left of the terminal or set up a keymap to the `platformio-ide-terminal:insert-text` command.
 
 ![](https://github.com/jeremyramin/terminal-plus/raw/master/resources/special_keys.gif)
 
@@ -124,25 +124,25 @@ Toggling the `Auto Open a New Terminal (For Terminal Mapping)` option will have 
 ## Install
 Ready to install?
 
-You can install via apm: `apm install terminal-plus`
+You can install via apm: `apm install platformio-ide-terminal`
 
-Or navigate to the install tab in Atom’s settings view, and search for `terminal-plus`.
+Or navigate to the install tab in Atom’s settings view, and search for `platformio-ide-terminal`.
 
 ## Commands
 | Command | Action | Default Keybind |
 |---------|--------|:-----------------:|
-| terminal-plus:new | Create a new terminal instance. | `ctrl-shift-t`<br>or<br>`cmd-shift-t` |
-| terminal-plus:toggle | Toggle the last active terminal instance.<br>**Note:** This will create a new terminal if it needs to. | `` ctrl-` ``<br>(Control + Backtick) |
-| terminal-plus:prev | Switch to the terminal left of the last active terminal. | `ctrl-shift-j`<br>or<br>`cmd-shift-j` |
-| terminal-plus:next | Switch to the terminal right of the last active terminal. | `ctrl-shift-k`<br>or<br>`cmd-shift-k` |
-| terminal-plus:insert-selected-text | Run the selected text as a command in the active terminal. | `ctrl-enter` |
-| terminal-plus:insert-text | Bring up an input box for using IME and special keys. | –––––––––––– |
-| terminal-plus:close | Close the active terminal. | `ctrl-shift-x`<br>or<br>`cmd-shift-x` |
-| terminal-plus:close-all | Close all terminals. | –––––––––––– |
-| terminal-plus:rename | Rename the active terminal. | –––––––––––– |
+| platformio-ide-terminal:new | Create a new terminal instance. | `ctrl-shift-t`<br>or<br>`cmd-shift-t` |
+| platformio-ide-terminal:toggle | Toggle the last active terminal instance.<br>**Note:** This will create a new terminal if it needs to. | `` ctrl-` ``<br>(Control + Backtick) |
+| platformio-ide-terminal:prev | Switch to the terminal left of the last active terminal. | `ctrl-shift-j`<br>or<br>`cmd-shift-j` |
+| platformio-ide-terminal:next | Switch to the terminal right of the last active terminal. | `ctrl-shift-k`<br>or<br>`cmd-shift-k` |
+| platformio-ide-terminal:insert-selected-text | Run the selected text as a command in the active terminal. | `ctrl-enter` |
+| platformio-ide-terminal:insert-text | Bring up an input box for using IME and special keys. | –––––––––––– |
+| platformio-ide-terminal:close | Close the active terminal. | `ctrl-shift-x`<br>or<br>`cmd-shift-x` |
+| platformio-ide-terminal:close-all | Close all terminals. | –––––––––––– |
+| platformio-ide-terminal:rename | Rename the active terminal. | –––––––––––– |
 
 ## To-Do List
-- [ ] Possibly merge dependencies into Terminal-Plus?
+- [ ] Possibly merge dependencies into platformio-ide-terminal?
 - [ ] Add support for dead keys and IME input
 - [x] Add support for terminal tabs
 - [x] Add support for automatic directory switching
