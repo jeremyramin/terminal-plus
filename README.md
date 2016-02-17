@@ -1,25 +1,15 @@
-## Author's Note
-* Please make sure you are on the [latest version of Atom](https://atom.io/releases) before reporting bugs!
-* This package requires that you have the dependencies for node-gyp.  
-[See node-gyp install instructions](https://github.com/nodejs/node-gyp#installation).  
-* You must use a monospaced font in order for the spacing to be right.
-* Having issues on Windows 10? [Try this](https://github.com/jeremyramin/terminal-plus/issues/15#issuecomment-144618245).
-
 # PlatformIO IDE Terminal
-platformio-ide-terminal is a terminal package for Atom, complete with themes and more.  
+A terminal package for Atom, complete with themes, API and more for [PlatformIO IDE](http://platformio.org/#!/platformio-ide).
 
 ![demo](https://github.com/jeremyramin/terminal-plus/raw/master/resources/demo.gif)
 
 *[Nucleus Dark UI](https://atom.io/themes/nucleus-dark-ui) with [Atom Material Syntax](https://atom.io/themes/atom-material-syntax) and our Homebrew theme.*
 
 ## Usage
-platformio-ide-terminal stays in the bottom of your editor while you work.
 
-### Status Bar
-![status-bar](https://github.com/jeremyramin/terminal-plus/raw/master/resources/status-bar.png)  
-You can keep track of terminal instances via the status bar. Each terminal has a status icon ( ![status icon](https://github.com/jeremyramin/terminal-plus/raw/master/resources/status-icon.png) ) in the status bar. The ( ![plus-icon](https://github.com/jeremyramin/terminal-plus/raw/master/resources/plus-icon.png) ) button creates a new terminal, while the ( ![red-x](https://github.com/jeremyramin/terminal-plus/raw/master/resources/red-x.png) ) button closes all terminals.
+`platformio-ide-terminal` stays in the bottom of your editor while you work.
 
-Click on a status icon to toggle that terminal. Right click the status icon for a list of available commands. From the right-click menu you can color code the status icon as well as hide or close the terminal instance.
+Click on a status icon to toggle that terminal (or ``ctrl-` ``). Right click the status icon for a list of available commands. From the right-click menu you can color code the status icon as well as hide or close the terminal instance.
 
 ### Terminal
 You can open the last active terminal with the `platformio-ide-terminal:toggle` command (Default:`` ctrl-` ``).  If no terminal instances are available, then a new one will be created. The same toggle command is used to hide the currently active terminal.
@@ -141,13 +131,5 @@ Or navigate to the install tab in Atom’s settings view, and search for `platfo
 | platformio-ide-terminal:close-all | Close all terminals. | –––––––––––– |
 | platformio-ide-terminal:rename | Rename the active terminal. | –––––––––––– |
 
-## To-Do List
-- [ ] Possibly merge dependencies into platformio-ide-terminal?
-- [ ] Add support for dead keys and IME input
-- [x] Add support for terminal tabs
-- [x] Add support for automatic directory switching
-- [x] Fix Atom requesting a rebuild after every update
-- [x] Update winpty in pty.js dependency
-- [x] Add support for custom ANSI colors in terminal
-- [x] Fix `ctrl+c` for bash prompts on OS X and Linux
-- [x] Add support for status icon names
+---
+A fork of [jeremyramin/terminal-plus](https://github.com/jeremyramin/terminal-plus).

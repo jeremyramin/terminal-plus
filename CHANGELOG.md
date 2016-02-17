@@ -1,3 +1,8 @@
+## v2.0.0 - PlatformIO
+* Add API that allows any package to make a terminal, pass it a command and see the output
+* Use Atom's native status bar instead own (save space)
+* Use direct HTTP links to dependent packages instead `git+https`
+
 ## v0.14.5 - Patch
 * Fix key-presses deselecting lines from the terminal
 * Add alt-(arrow) and alt-(click) for moving cursor in terminal
