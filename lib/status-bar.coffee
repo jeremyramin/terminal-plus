@@ -19,7 +19,7 @@ class StatusBar extends View
       @ul class: "list-inline status-container", tabindex: '-1', outlet: 'statusContainer', is: 'space-pen-ul'
       @i class: "icon icon-x", click: 'closeAll', outlet: 'closeBtn'
 
-  initialize: () ->
+  initialize: (@statusBarProvider) ->
     @subscriptions = new CompositeDisposable()
 
     @subscriptions.add atom.commands.add 'atom-workspace',
@@ -259,7 +259,7 @@ class StatusBar extends View
     @activeTerminal.toggle()
 
   attach: ->
-    atom.workspace.addBottomPanel(item: this, priority: 100)
+    @statusBarProvider.addLeftTile(item: this, priority: 100)
 
   destroyActiveTerm: ->
     return unless @activeTerminal?

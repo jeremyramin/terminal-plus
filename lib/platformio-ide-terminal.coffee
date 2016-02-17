@@ -2,14 +2,17 @@ module.exports =
   statusBar: null
 
   activate: ->
-    @statusBar = new (require './status-bar')()
 
   deactivate: ->
-    @statusBar.destroy()
+    @statusBarTile?.destroy()
+    @statusBarTile = null
 
   provideRunInTerminal: ->
     run: (command) =>
-      @statusBar.runCommandInNewTerminal command
+      @statusBarTile.runCommandInNewTerminal command
+
+  consumeStatusBar: (statusBarProvider) ->
+    @statusBarTile = new (require './status-bar')(statusBarProvider)
 
   config:
     toggles:
