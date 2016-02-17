@@ -12,8 +12,8 @@
     "panel",
     "tty"
   ],
-  "homepage": "https://atom.io/packages/platformio-ide-terminal2",
-  "repository": "https://github.com/platformio/platformio-atom-ide-terminal2",
+  "homepage": "https://atom.io/packages/platformio-ide-terminal",
+  "repository": "https://github.com/platformio/platformio-atom-ide-terminal",
   "license": "MIT",
   "engines": {
     "atom": ">=1.2.0"
