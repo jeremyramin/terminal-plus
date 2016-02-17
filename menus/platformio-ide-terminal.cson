@@ -1,5 +1,5 @@
 'context-menu':
-  '.platformio-ide-terminal .status-icon': [
+  '.platformio-ide-terminal .pio-terminal-status-icon': [
     {label: 'Red', command: 'platformio-ide-terminal:status-red'},
     {label: 'Orange', command: 'platformio-ide-terminal:status-orange'},
     {label: 'Yellow', command: 'platformio-ide-terminal:status-yellow'},
