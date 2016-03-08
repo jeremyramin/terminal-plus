@@ -10,6 +10,8 @@ module.exports =
   provideRunInTerminal: ->
     run: (command) =>
       @statusBarTile.runCommandInNewTerminal command
+    getTerminalViews: () =>
+      @statusBarTile.terminalViews
 
   consumeStatusBar: (statusBarProvider) ->
     @statusBarTile = new (require './status-bar')(statusBarProvider)
