@@ -1,4 +1,7 @@
-## v2.0.0 - PlatformIO
+## 2.0.1 - PlatformIO
+* Extend API with getTerminalViews
+
+## 2.0.0 - PlatformIO
 * Add API that allows any package to make a terminal, pass it a command and see the output
 * Use Atom's native status bar instead own (save space)
 * Use direct HTTP links to dependent packages instead `git+https`
