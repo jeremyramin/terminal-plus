@@ -21,6 +21,8 @@ class StatusBar extends View
   initialize: () ->
     @subscriptions = new CompositeDisposable()
 
+    @loadUserCommands()
+
     @subscriptions.add atom.commands.add 'atom-workspace',
       'terminal-plus:new': => @newTerminalView()
       'terminal-plus:toggle': => @toggle()
@@ -446,3 +448,25 @@ class StatusBar extends View
     @moveTerminalView fromIndex, toIndex
     icon.addClass 'inserted'
     icon.one 'webkitAnimationEnd', -> icon.removeClass('inserted')
+
+  loadUserCommands: ->
+    userCommandsFile = path.resolve(
+      atom.getConfigDirPath(), 'terminal-plus-commands.cson')
+    try
+        @userCommands = CSON.readFileSync userCommandsFile
+    catch error
+        console.log "TerminalPlus: couldn't load commands in #{userCommandsFile}"
+        if error.code != "ENOENT"
+          console.error error if window.debug == true
+        @userCommands = {}
+        return
+
+    Object.keys(@userCommands).map (k) =>
+      @userCommands[k]['funq'] = =>
+        @runInActiveView (i) => i.insertCommand(@userCommands[k]['command'])
+
+    for commandName, description of @userCommands
+      scope = description.scope ? 'atom-workspace'
+
+      @subscriptions.add atom.commands.add scope,
+        "terminal-plus:command-#{commandName}", description.funq

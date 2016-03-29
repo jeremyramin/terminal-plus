@@ -423,6 +423,15 @@ class TerminalPlusView extends View
       @input "#{line}#{if runCommand then os.EOL else ''}"
       editor.moveDown(1);
 
+  insertCommand: (command) ->
+    return unless editor = atom.workspace.getActiveTextEditor()
+    runCommand = atom.config.get('terminal-plus.toggles.runInsertedText')
+    command = command.replace /\$FILE/g, editor.getPath()
+    command = command.replace /\$LINE/g, editor.getCursorBufferPosition().row
+    @terminal.stopScrolling()
+
+    @input "#{command}#{if runCommand then os.EOL else ''}"
+
   focus: =>
     @resizeTerminalToView()
     @focusTerminal()
