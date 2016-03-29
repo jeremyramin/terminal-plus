@@ -19,8 +19,8 @@
   },
   "dependencies": {
     "atom-space-pen-views": "^2.1.0",
-    "cson": "^3.0.2",
     "pty.js": "git+https://github.com/jeremyramin/pty.js.git#28f2667",
+    "season": "^5.3.0",
     "term.js": "git+https://github.com/jeremyramin/term.js.git",
     "underscore": "^1.8.3"
   }

@@ -5,6 +5,7 @@ TerminalPlusView = require './view'
 StatusIcon = require './status-icon'
 
 path = require 'path'
+CSON = require 'season'
 
 module.exports =
 class StatusBar extends View
@@ -465,6 +466,7 @@ class StatusBar extends View
       @userCommands[k]['funq'] = =>
         @runInActiveView (i) => i.insertCommand(@userCommands[k]['command'])
 
+    console.log(@userCommands)
     for commandName, description of @userCommands
       scope = description.scope ? 'atom-workspace'
 
