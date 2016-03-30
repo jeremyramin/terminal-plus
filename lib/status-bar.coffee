@@ -451,16 +451,7 @@ class StatusBar extends View
     icon.one 'webkitAnimationEnd', -> icon.removeClass('inserted')
 
   loadUserCommands: ->
-    userCommandsFile = path.resolve(
-      atom.getConfigDirPath(), 'terminal-plus-commands.cson')
-    try
-        @userCommands = CSON.readFileSync userCommandsFile
-    catch error
-        console.log "TerminalPlus: couldn't load commands in #{userCommandsFile}"
-        if error.code != "ENOENT"
-          console.error error if window.debug == true
-        @userCommands = {}
-        return
+    @userCommands = atom.config.get('terminal-plus.userCommands') || {}
 
     Object.keys(@userCommands).map (k) =>
       @userCommands[k]['funq'] = =>
