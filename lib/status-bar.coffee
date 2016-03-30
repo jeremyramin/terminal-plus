@@ -5,7 +5,6 @@ TerminalPlusView = require './view'
 StatusIcon = require './status-icon'
 
 path = require 'path'
-CSON = require 'season'
 
 module.exports =
 class StatusBar extends View
