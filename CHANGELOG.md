@@ -1,3 +1,6 @@
+## 2.0.5 - PlatformIO
+* Add hook for node-gyp with pre-built binaries
+
 ## 2.0.4 - PlatformIO
 * Switch to PlatformIO PTY.js fork
 
