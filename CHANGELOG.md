@@ -1,3 +1,7 @@
+## 2.0.7 - PlatformIO
+
+* Update PTY.js dependency
+
 ## 2.0.6 - PlatformIO
 * Improve foreground installation of PTY.js
 
