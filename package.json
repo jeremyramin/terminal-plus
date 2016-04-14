@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "atom-space-pen-views": "^2.1.0",
-    "pty.js": "https://github.com/platformio/pty.js/tarball/5386072dacac9200e2d57331c67a53b238c614f0",
+    "pty.js": "https://github.com/platformio/pty.js/tarball/0bdbb5a76d3d96f34961fdf0d70b00cb8663ddab",
     "term.js": "https://github.com/jeremyramin/term.js/tarball/master",
     "underscore": "^1.8.3"
   },

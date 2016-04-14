@@ -1,3 +1,6 @@
+## 2.0.6 - PlatformIO
+* Improve foreground installation of PTY.js
+
 ## 2.0.5 - PlatformIO
 * Add hook for node-gyp with pre-built binaries
 
