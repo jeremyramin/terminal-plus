@@ -1,3 +1,7 @@
+## 2.0.8 - PlatformIO
+
+* Rewrite PTY.js installer for NodeJS 0.10.x
+
 ## 2.0.7 - PlatformIO
 
 * Update PTY.js dependency
