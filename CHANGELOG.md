@@ -1,3 +1,6 @@
+## 2.0.4 - PlatformIO
+* Switch to PlatformIO PTY.js fork
+
 ## 2.0.3 - PlatformIO
 * Extend API with getTerminalViews
 
