@@ -1,3 +1,7 @@
+## 2.0.9 - PlatformIO
+
+* Fix PTY.js binary finder for Windows
+
 ## 2.0.8 - PlatformIO
 
 * Rewrite PTY.js installer for NodeJS 0.10.x
