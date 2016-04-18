@@ -37,6 +37,7 @@ class StatusBar extends View
       'terminal-plus:rename': => @runInActiveView (i) -> i.rename()
       'terminal-plus:insert-selected-text': => @runInActiveView (i) -> i.insertSelection()
       'terminal-plus:insert-text': => @runInActiveView (i) -> i.inputDialog()
+      'terminal-plus:fullscreen': => @activeTerminal.maximize()
 
     @subscriptions.add atom.commands.add '.xterm',
       'terminal-plus:paste': => @runInActiveView (i) -> i.paste()
