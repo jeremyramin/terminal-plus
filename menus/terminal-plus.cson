@@ -45,6 +45,10 @@
           'command': 'terminal-plus:next'
         },
         {
+          'label': 'Toggle Fullscreen'
+          'command': 'terminal-plus:fullscreen'
+        },
+        {
           'label': 'Close Terminal'
           'command': 'terminal-plus:close'
         },
