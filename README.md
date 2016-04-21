@@ -1,3 +1,7 @@
+# NOTICE: This package is no longer maintained
+
+Terminal-Plus is no longer maintained and **does not work** on the latest version of Atom. Please use an up-to-date fork (such as [platformio-atom-ide-terminal](https://github.com/platformio/platformio-atom-ide-terminal)) instead.
+
 ## Author's Note
 * Please make sure you are on the [latest version of Atom](https://atom.io/releases) before reporting bugs!
 * This package requires that you have the dependencies for node-gyp.  
