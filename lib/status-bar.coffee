@@ -38,6 +38,7 @@ class StatusBar extends View
       'platformio-ide-terminal:rename': => @runInActiveView (i) -> i.rename()
       'platformio-ide-terminal:insert-selected-text': => @runInActiveView (i) -> i.insertSelection()
       'platformio-ide-terminal:insert-text': => @runInActiveView (i) -> i.inputDialog()
+      'platformio-ide-terminal:fullscreen': => @activeTerminal.maximize()
 
     @subscriptions.add atom.commands.add '.xterm',
       'platformio-ide-terminal:paste': => @runInActiveView (i) -> i.paste()

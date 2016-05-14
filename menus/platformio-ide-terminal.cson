@@ -45,6 +45,10 @@
           'command': 'platformio-ide-terminal:next'
         },
         {
+          'label': 'Toggle Fullscreen'
+          'command': 'terminal-plus:fullscreen'
+        },
+        {
           'label': 'Close Terminal'
           'command': 'platformio-ide-terminal:close'
         },
