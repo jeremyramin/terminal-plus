@@ -127,6 +127,7 @@ Or navigate to the install tab in Atom’s settings view, and search for `platfo
 | platformio-ide-terminal:next | Switch to the terminal right of the last active terminal. | `ctrl-shift-k`<br>or<br>`cmd-shift-k` |
 | platformio-ide-terminal:insert-selected-text | Run the selected text as a command in the active terminal. | `ctrl-enter` |
 | platformio-ide-terminal:insert-text | Bring up an input box for using IME and special keys. | –––––––––––– |
+| platformio-ide-terminal:fullscreen | Toggle fullscreen for active terminal. | –––––––––––– |
 | platformio-ide-terminal:close | Close the active terminal. | `ctrl-shift-x`<br>or<br>`cmd-shift-x` |
 | platformio-ide-terminal:close-all | Close all terminals. | –––––––––––– |
 | platformio-ide-terminal:rename | Rename the active terminal. | –––––––––––– |
