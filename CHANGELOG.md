@@ -1,3 +1,7 @@
+## 2.0.10 - PlatformIO
+
+* Add fullscreen command
+
 ## 2.0.9 - PlatformIO
 
 * Fix PTY.js binary finder for Windows
