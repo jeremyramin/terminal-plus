@@ -1,4 +1,4 @@
-pty = require 'pty.js'
+pty = require 'ptyw.js'
 path = require 'path'
 fs = require 'fs'
 _ = require 'underscore'
