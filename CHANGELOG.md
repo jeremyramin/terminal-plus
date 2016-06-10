@@ -1,3 +1,7 @@
+## 2.??.?? - PlatformIO
+
+* Add Linux theme
+
 ## 2.0.10 - PlatformIO
 
 * Add fullscreen command
