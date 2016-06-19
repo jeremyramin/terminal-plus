@@ -1,6 +1,7 @@
-## 2.??.?? - PlatformIO
+## 2.1.? - PlatformIO
 
 * Add Linux theme
+* Presets with the custom commands that can be inserted to terminal later
 
 ## 2.0.10 - PlatformIO
 
