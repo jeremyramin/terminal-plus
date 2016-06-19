@@ -13,6 +13,18 @@
     "panel",
     "tty"
   ],
+  "contributors": [
+    {
+      "name": "Ivan Kravets",
+      "email": "me@ikravets.com",
+      "url": "http://platformio.org"
+    },
+    {
+      "name": "Dmytro Kyrychuk",
+      "email": "dmytro.kyrychuck@gmail.com",
+      "url": "http://platformio.org"
+    }
+  ],
   "homepage": "https://atom.io/packages/platformio-ide-terminal",
   "repository": "https://github.com/platformio/platformio-atom-ide-terminal",
   "license": "MIT",
