@@ -270,3 +270,47 @@ module.exports =
           description: 'Magenta color used for status icon.'
           type: 'color'
           default: 'magenta'
+    customTexts:
+      type: 'object'
+      order: 6
+      properties:
+        customText1:
+          title: 'Custom text 1'
+          description: 'Text to paste when calling platformio-ide-terminal:insert-custom-text-1'
+          type: 'string'
+          default: ''
+        customText2:
+          title: 'Custom text 2'
+          description: 'Text to paste when calling platformio-ide-terminal:insert-custom-text-2'
+          type: 'string'
+          default: ''
+        customText3:
+          title: 'Custom text 3'
+          description: 'Text to paste when calling platformio-ide-terminal:insert-custom-text-3'
+          type: 'string'
+          default: ''
+        customText4:
+          title: 'Custom text 4'
+          description: 'Text to paste when calling platformio-ide-terminal:insert-custom-text-4'
+          type: 'string'
+          default: ''
+        customText5:
+          title: 'Custom text 5'
+          description: 'Text to paste when calling platformio-ide-terminal:insert-custom-text-5'
+          type: 'string'
+          default: ''
+        customText6:
+          title: 'Custom text 6'
+          description: 'Text to paste when calling platformio-ide-terminal:insert-custom-text-6'
+          type: 'string'
+          default: ''
+        customText7:
+          title: 'Custom text 7'
+          description: 'Text to paste when calling platformio-ide-terminal:insert-custom-text-7'
+          type: 'string'
+          default: ''
+        customText8:
+          title: 'Custom text 8'
+          description: 'Text to paste when calling platformio-ide-terminal:insert-custom-text-8'
+          type: 'string'
+          default: ''

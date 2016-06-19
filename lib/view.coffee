@@ -424,6 +424,10 @@ class PlatformIOTerminalView extends View
       @input "#{line}#{if runCommand then os.EOL else ''}"
       editor.moveDown(1);
 
+  insertCustom: (customText) ->
+    runCommand = atom.config.get('platformio-ide-terminal.toggles.runInsertedText')
+    @input "#{customText}#{if runCommand then os.EOL else ''}"
+
   focus: =>
     @resizeTerminalToView()
     @focusTerminal()
