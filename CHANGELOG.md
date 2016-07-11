@@ -1,3 +1,8 @@
+## 2.1.1 - PlatformIO
+
+* Change "red-x" to default Atom theme
+* Move the status bar icons to the left of the file path
+
 ## 2.1.0 - PlatformIO
 
 * Add Linux theme
