@@ -268,7 +268,7 @@ class StatusBar extends View
     @activeTerminal.toggle()
 
   attach: ->
-    @statusBarProvider.addLeftTile(item: this, priority: 100)
+    @statusBarProvider.addLeftTile(item: this, priority: -93)
 
   destroyActiveTerm: ->
     return unless @activeTerminal?
