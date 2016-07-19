@@ -276,7 +276,7 @@ module.exports =
       properties:
         customText1:
           title: 'Custom text 1'
-          description: 'Text to paste when calling platformio-ide-terminal:insert-custom-text-1, $S is replaced by selection, $$ is replaced by $'
+          description: 'Text to paste when calling platformio-ide-terminal:insert-custom-text-1, $S is replaced by selection, $F is replaced by file name, $D is replaced by file directory, $L is replaced by line number of cursor, $$ is replaced by $'
           type: 'string'
           default: ''
         customText2:

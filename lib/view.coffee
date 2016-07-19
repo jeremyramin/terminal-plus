@@ -424,6 +424,9 @@ class PlatformIOTerminalView extends View
       selectionText = line
       editor.moveDown(1);
     @input "#{customText.
+      replace(/\$L/, "#{editor.getCursorBufferPosition().row + 1}").
+      replace(/\$F/, path.basename(editor?.buffer?.file?.path)).
+      replace(/\$D/, path.dirname(editor?.buffer?.file?.path)).
       replace(/\$S/, selectionText).
       replace(/\$\$/, '$')}#{if runCommand then os.EOL else ''}"
 
