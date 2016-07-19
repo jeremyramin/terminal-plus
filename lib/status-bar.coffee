@@ -36,7 +36,7 @@ class StatusBar extends View
       'platformio-ide-terminal:close': => @destroyActiveTerm()
       'platformio-ide-terminal:close-all': => @closeAll()
       'platformio-ide-terminal:rename': => @runInActiveView (i) -> i.rename()
-      'platformio-ide-terminal:insert-selected-text': => @runInActiveView (i) -> i.insertSelection()
+      'platformio-ide-terminal:insert-selected-text': => @runInActiveView (i) -> i.insertSelection('$S')
       'platformio-ide-terminal:insert-text': => @runInActiveView (i) -> i.inputDialog()
       'platformio-ide-terminal:insert-custom-text-1': => @runInActiveView (i) -> i.insertCustom(atom.config.get('platformio-ide-terminal.customTexts.customText1'))
       'platformio-ide-terminal:insert-custom-text-2': => @runInActiveView (i) -> i.insertCustom(atom.config.get('platformio-ide-terminal.customTexts.customText2'))

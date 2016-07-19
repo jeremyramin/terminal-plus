@@ -411,18 +411,21 @@ class PlatformIOTerminalView extends View
   paste: ->
     @input atom.clipboard.read()
 
-  insertSelection: ->
+  insertSelection: (customText) ->
     return unless editor = atom.workspace.getActiveTextEditor()
     runCommand = atom.config.get('platformio-ide-terminal.toggles.runInsertedText')
-
+    selectionText = ''
     if selection = editor.getSelectedText()
       @terminal.stopScrolling()
-      @input "#{selection}#{if runCommand then os.EOL else ''}"
+      selectionText = selection
     else if cursor = editor.getCursorBufferPosition()
       line = editor.lineTextForBufferRow(cursor.row)
       @terminal.stopScrolling()
-      @input "#{line}#{if runCommand then os.EOL else ''}"
+      selectionText = line
       editor.moveDown(1);
+    @input "#{customText.
+      replace(/\$S/, selectionText).
+      replace(/\$\$/, '$')}#{if runCommand then os.EOL else ''}"
 
   insertCustom: (customText) ->
     runCommand = atom.config.get('platformio-ide-terminal.toggles.runInsertedText')
