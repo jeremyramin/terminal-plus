@@ -430,10 +430,6 @@ class PlatformIOTerminalView extends View
       replace(/\$S/, selectionText).
       replace(/\$\$/, '$')}#{if runCommand then os.EOL else ''}"
 
-  insertCustom: (customText) ->
-    runCommand = atom.config.get('platformio-ide-terminal.toggles.runInsertedText')
-    @input "#{customText}#{if runCommand then os.EOL else ''}"
-
   focus: =>
     @resizeTerminalToView()
     @focusTerminal()
