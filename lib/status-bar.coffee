@@ -16,7 +16,7 @@ class StatusBar extends View
     @div class: 'terminal-plus status-bar', tabindex: -1, =>
       @i class: "icon icon-plus", click: 'newTerminalView', outlet: 'plusBtn'
       @ul class: "list-inline status-container", tabindex: '-1', outlet: 'statusContainer', is: 'space-pen-ul'
-      @i class: "icon icon-x", click: 'closeAll', outlet: 'closeBtn'
+      @i class: "icon icon-x", click: 'closeAll', outlet: 'closeBtn', style: 'display:none'
 
   initialize: () ->
     @subscriptions = new CompositeDisposable()
@@ -237,6 +237,8 @@ class StatusBar extends View
     return if index < 0
     @terminalViews.splice index, 1
 
+    @closeBtn.hide() unless @terminalViews.length
+
     @activateAdjacentTerminal index
 
   activateAdjacentTerminal: (index=0) ->
@@ -249,6 +251,8 @@ class StatusBar extends View
 
   newTerminalView: ->
     return if @activeTerminal?.animating
+
+    @closeBtn.show() unless @terminalViews.length
 
     @activeTerminal = @createTerminalView()
     @activeTerminal.toggle()
