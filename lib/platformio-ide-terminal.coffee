@@ -126,6 +126,7 @@ module.exports =
             'red',
             'red-sands',
             'silver-aerogel',
+            'solarized-dark',
             'solid-colors',
             'dracula'
           ]
