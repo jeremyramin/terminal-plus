@@ -1,3 +1,8 @@
+## 2.2.0 - PlatformIO
+
+* Add Solarized-Dark theme
+* Make `insert-custom-text` context aware
+
 ## 2.1.1 - PlatformIO
 
 * Change "red-x" to default Atom theme
