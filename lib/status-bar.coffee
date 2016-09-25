@@ -60,7 +60,7 @@ class StatusBar extends View
       'terminal-plus:status-magenta': @setStatusColor
       'terminal-plus:status-default': @clearStatusColor
       'terminal-plus:context-close': (event) ->
-        findStatusIcon(event).getTerminal().destroy()
+        findStatusIcon(event).getTerminalView().destroy()
       'terminal-plus:context-hide': (event) ->
         statusIcon = findStatusIcon(event)
         statusIcon.getTerminalView().hide() if statusIcon.isActive()
