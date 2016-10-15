@@ -1,8 +1,8 @@
 '.platform-darwin atom-workspace':
-  'cmd-shift-t': 'terminal-plus:new'
-  'cmd-shift-j': 'terminal-plus:prev'
-  'cmd-shift-k': 'terminal-plus:next'
-  'cmd-shift-x': 'terminal-plus:close'
+  'alt-shift-t': 'terminal-plus:new'
+  'alt-shift-j': 'terminal-plus:prev'
+  'alt-shift-k': 'terminal-plus:next'
+  'alt-shift-x': 'terminal-plus:close'
   'ctrl-enter': 'terminal-plus:insert-selected-text'
   'ctrl-`': 'terminal-plus:toggle'
 
