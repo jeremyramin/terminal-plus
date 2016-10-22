@@ -13,8 +13,6 @@ class Dialog extends View
     @promptText.addClass(iconClass) if iconClass
     atom.commands.add @element,
       'core:confirm': => @onConfirm(@miniEditor.getText())
-
-    atom.commands.add 'atom-workspace',
       'core:cancel': => @cancel()
 
     unless stayOpen
