@@ -1,12 +1,12 @@
 {CompositeDisposable} = require 'atom'
 
-StatusBar = require './status-bar'
+RenameDialog = null
 
 module.exports =
 class StatusIcon extends HTMLElement
   active: false
 
-  initialize: (@terminal) ->
+  initialize: (@terminalView) ->
     @classList.add 'status-icon'
 
     @icon = document.createElement('i')
@@ -17,31 +17,20 @@ class StatusIcon extends HTMLElement
     @name.classList.add 'name'
     @appendChild(@name)
 
+    @dataset.type = @terminalView.constructor?.name
+
     @addEventListener 'click', ({which, ctrlKey}) =>
       if which is 1
-        @terminal.getParentView().toggle()
-        return true
+        @terminalView.toggle()
+        true
       else if which is 2
-        @terminal.getParentView().destroy()
-        return false
+        @terminalView.destroy()
+        false
 
     @setupTooltip()
-    @attach()
-
-  attach: ->
-    StatusBar.addStatusIcon(this)
-
-  destroy: ->
-    @removeTooltip()
-    @mouseEnterSubscription.dispose() if @mouseEnterSubscription
-    @remove()
-
-
-  ###
-  Section: Tooltip
-  ###
 
   setupTooltip: ->
+
     onMouseEnter = (event) =>
       return if event.detail is 'terminal-plus'
       @updateTooltip()
@@ -55,7 +44,7 @@ class StatusIcon extends HTMLElement
   updateTooltip: ->
     @removeTooltip()
 
-    if process = @terminal.getTitle()
+    if process = @terminalView.getTerminalTitle()
       @tooltip = atom.tooltips.add this,
         title: process
         html: false
@@ -69,25 +58,17 @@ class StatusIcon extends HTMLElement
     @tooltip.dispose() if @tooltip
     @tooltip = null
 
-
-  ###
-  Section: Name
-  ###
-
-  getName: -> @name.textContent.substring(1)
-
-  setName: (name) ->
-    name = "&nbsp;" + name if name
-    @name.innerHTML = name
-
-
-  ###
-  Section: Active Status
-  ###
+  destroy: ->
+    @removeTooltip()
+    @mouseEnterSubscription.dispose() if @mouseEnterSubscription
+    @remove()
 
   activate: ->
     @classList.add 'active'
     @active = true
+
+  isActive: ->
+    @classList.contains 'active'
 
   deactivate: ->
     @classList.remove 'active'
@@ -103,22 +84,17 @@ class StatusIcon extends HTMLElement
   isActive: ->
     return @active
 
+  rename: ->
+    RenameDialog ?= require './rename-dialog'
+    dialog = new RenameDialog this
+    dialog.attach()
 
-  ###
-  Section: External Methods
-  ###
+  getName: -> @name.textContent.substring(1)
 
-  getTerminal: ->
-    return @terminal
-
-  getTerminalView: ->
-    return @terminal.getParentView()
-
-  hide: ->
-    @style.display = 'none'
-    @deactivate()
-
-  show: ->
-    @style.display = ''
+  updateName: (name) ->
+    if name isnt @getName()
+      name = "&nbsp;" + name if name
+      @name.innerHTML = name
+      @terminalView.emit 'did-change-title'
 
 module.exports = document.registerElement('status-icon', prototype: StatusIcon.prototype, extends: 'li')

@@ -2,6 +2,7 @@ pty = require 'pty.js'
 path = require 'path'
 fs = require 'fs'
 _ = require 'underscore'
+child = require 'child_process'
 
 systemLanguage = do ->
   language = "en_US.UTF-8"
@@ -17,15 +18,18 @@ filteredEnvironment = do ->
   env.TERM_PROGRAM = 'Terminal-Plus'
   return env
 
-module.exports = (pwd, shellPath, args) ->
+module.exports = (pwd, shell, args, options={}) ->
   callback = @async()
 
-  ptyProcess = pty.fork shellPath, args,
+  if /zsh|bash/.test(shell) and args.indexOf('--login') == -1
+    args.unshift '--login'
+
+  ptyProcess = pty.fork shell, args,
     cwd: pwd,
     env: filteredEnvironment,
     name: 'xterm-256color'
 
-  title = shell = path.basename shellPath
+  title = shell = path.basename shell
 
   emitTitle = _.throttle ->
     emit('terminal-plus:title', ptyProcess.process)
