@@ -1,3 +1,7 @@
+## 2.2.1 - PlatformIO
+
+* Add compatibility for Atom 1.12, Windows and macOS
+
 ## 2.2.0 - PlatformIO
 
 * Add Solarized-Dark theme
