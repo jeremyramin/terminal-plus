@@ -99,7 +99,7 @@ class StatusBar extends View
     handleFocus = =>
       if @returnFocus
         setTimeout =>
-          @returnFocus.focus()
+          @returnFocus?.focus()
           @returnFocus = null
         , 100
 

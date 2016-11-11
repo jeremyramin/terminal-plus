@@ -1,3 +1,7 @@
+## 2.2.2 - PlatformIO
+
+* Fix "Uncaught TypeError: Cannot read property 'focus' of null" ([issue #29](https://github.com/platformio/platformio-atom-ide-terminal/issues/29))
+
 ## 2.2.1 - PlatformIO
 
 * Add compatibility for Atom 1.12, Windows and macOS
