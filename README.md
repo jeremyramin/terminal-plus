@@ -5,6 +5,13 @@ A terminal package for Atom, complete with themes, API and more for [PlatformIO 
 
 *[Nucleus Dark UI](https://atom.io/themes/nucleus-dark-ui) with [Atom Material Syntax](https://atom.io/themes/atom-material-syntax) and our Homebrew theme.*
 
+## Install
+Ready to install?
+
+You can install via apm: `apm install platformio-ide-terminal`
+
+Or navigate to the install tab in Atom’s settings view, and search for `platformio-ide-terminal`.
+
 ## Usage
 
 `platformio-ide-terminal` stays in the bottom of your editor while you work.
@@ -110,13 +117,6 @@ Map your terminals to each file or folder you are working on for automatic termi
 Toggling the `Auto Open a New Terminal (For Terminal Mapping)` option will have the mapping create a new terminal automatically for files and folders that don't have a terminal. The toggle is located right under the `Map Terminals To` option.
 
 ![](https://github.com/jeremyramin/terminal-plus/raw/master/resources/map_terminals_to_auto_open.gif)
-
-## Install
-Ready to install?
-
-You can install via apm: `apm install platformio-ide-terminal`
-
-Or navigate to the install tab in Atom’s settings view, and search for `platformio-ide-terminal`.
 
 ## Commands
 | Command | Action | Default Keybind |
