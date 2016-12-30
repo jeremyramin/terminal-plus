@@ -128,7 +128,8 @@ module.exports =
             'silver-aerogel',
             'solarized-dark',
             'solid-colors',
-            'dracula'
+            'dracula',
+            'one-dark'
           ]
     ansiColors:
       type: 'object'
