@@ -129,7 +129,8 @@ module.exports =
             'solarized-dark',
             'solid-colors',
             'dracula',
-            'one-dark'
+            'one-dark',
+            'christmas'
           ]
     ansiColors:
       type: 'object'
