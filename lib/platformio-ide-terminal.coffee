@@ -8,8 +8,8 @@ module.exports =
     @statusBarTile = null
 
   provideRunInTerminal: ->
-    run: (command) =>
-      @statusBarTile.runCommandInNewTerminal command
+    run: (commands) =>
+      @statusBarTile.runCommandInNewTerminal commands
     getTerminalViews: () =>
       @statusBarTile.terminalViews
 
