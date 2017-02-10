@@ -8,9 +8,15 @@
     "PlatformIO",
     "terminal-plus",
     "terminal",
-    "plus",
+    "iterm",
     "panel",
-    "tty"
+    "pty",
+    "tty",
+    "xterm",
+    "iterm",
+    "iterm2",
+    "console",
+    "powershell"
   ],
   "contributors": [
     {

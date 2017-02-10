@@ -1,3 +1,8 @@
+## 2.2.3 - PlatformIO
+
+* Add Christmas and One-Dark themes
+* Add compatibility for Atom 1.14 and Windows x64
+
 ## 2.2.2 - PlatformIO
 
 * Fix "Uncaught TypeError: Cannot read property 'focus' of null" ([issue #29](https://github.com/platformio/platformio-atom-ide-terminal/issues/29))
