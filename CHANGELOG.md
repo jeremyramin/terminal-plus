@@ -1,3 +1,7 @@
+## 2.3.0 - PlatformIO
+
+* New option: Copy text to clipboard on selection (enabled by default)
+
 ## 2.2.3 - PlatformIO
 
 * Add Christmas and One-Dark themes
