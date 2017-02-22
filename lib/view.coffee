@@ -71,6 +71,7 @@ class PlatformIOTerminalView extends View
     @xterm.on 'mouseup', (event) =>
       if event.which != 3
         text = window.getSelection().toString()
+        atom.clipboard.write(text) if atom.config.get('platformio-ide-terminal.toggles.selectToCopy') and text
         unless text
           @focus()
     @xterm.on 'dragenter', override
