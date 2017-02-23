@@ -1,3 +1,7 @@
+## 2.3.1 - PlatformIO
+
+* Use /bin/bash shell by default if process.env.SHELL is not defined
+
 ## 2.3.0 - PlatformIO
 
 * New option: Copy text to clipboard on selection (enabled by default)
