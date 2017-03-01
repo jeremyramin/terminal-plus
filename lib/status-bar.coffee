@@ -23,6 +23,7 @@ class StatusBar extends View
     @subscriptions = new CompositeDisposable()
 
     @subscriptions.add atom.commands.add 'atom-workspace',
+      'platformio-ide-terminal:focus': => @activeTerminal.focusTerminal()
       'platformio-ide-terminal:new': => @newTerminalView()
       'platformio-ide-terminal:toggle': => @toggle()
       'platformio-ide-terminal:next': =>
