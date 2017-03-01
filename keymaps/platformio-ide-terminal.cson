@@ -3,6 +3,7 @@
   'cmd-shift-j': 'platformio-ide-terminal:prev'
   'cmd-shift-k': 'platformio-ide-terminal:next'
   'cmd-shift-x': 'platformio-ide-terminal:close'
+  'cmd-alt-f': 'platformio-ide-terminal:focus'
   'ctrl-enter': 'platformio-ide-terminal:insert-selected-text'
   'ctrl-`': 'platformio-ide-terminal:toggle'
 
@@ -13,6 +14,7 @@
   'alt-shift-x': 'platformio-ide-terminal:close'
   'ctrl-enter': 'platformio-ide-terminal:insert-selected-text'
   'ctrl-`': 'platformio-ide-terminal:toggle'
+  'ctrl-alt-f': 'platformio-ide-terminal:focus'
 
 '.platform-darwin .platformio-ide-terminal .terminal':
   'cmd-c': 'platformio-ide-terminal:copy'
