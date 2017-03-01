@@ -1,6 +1,7 @@
 ## 2.x.x - PlatformIO
 
 * Add terminal focus and keybinding
+* Fix issue when running `electron` command
 
 ## 2.3.1 - PlatformIO
 
