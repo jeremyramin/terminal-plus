@@ -1,3 +1,7 @@
+## 2.x.x - PlatformIO
+
+* Add terminal focus and keybinding
+
 ## 2.3.1 - PlatformIO
 
 * Use /bin/bash shell by default if process.env.SHELL is not defined
