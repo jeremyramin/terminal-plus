@@ -33,6 +33,10 @@
           'command': 'platformio-ide-terminal:toggle'
         },
         {
+          'label': 'Focus'
+          'command': 'platformio-ide-terminal:focus'
+        },
+        {
           'label': 'New Terminal'
           'command': 'platformio-ide-terminal:new'
         },
