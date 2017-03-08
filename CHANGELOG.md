@@ -1,3 +1,7 @@
+## 2.4.x - PlatformIO
+
+* Fix status bar alignment problem on native-ui theme
+
 ## 2.4.0 - PlatformIO
 
 * Add terminal focus command and keybinding
