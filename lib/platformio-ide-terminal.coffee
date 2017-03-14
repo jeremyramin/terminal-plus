@@ -7,6 +7,15 @@ module.exports =
     @statusBarTile?.destroy()
     @statusBarTile = null
 
+  providePlatformIOIDETerminal: ->
+    updateProcessEnv: (variables) ->
+      for name, value of variables
+        process.env[name] = value
+    run: (commands) =>
+      @statusBarTile.runCommandInNewTerminal commands
+    getTerminalViews: () =>
+      @statusBarTile.terminalViews
+
   provideRunInTerminal: ->
     run: (commands) =>
       @statusBarTile.runCommandInNewTerminal commands
