@@ -146,6 +146,12 @@ class StatusBar extends View
       pane.onDidDestroy -> tabBar.off 'drop', @onDropTabBar
 
   createTerminalView: (autoRun) ->
+    shell = atom.config.get 'platformio-ide-terminal.core.shell'
+    shellArguments = atom.config.get 'platformio-ide-terminal.core.shellArguments'
+    args = shellArguments.split(/\s+/g).filter (arg) -> arg
+    @createEmptyTerminalView autoRun, shell, args
+
+  createEmptyTerminalView: (autoRun=[], shell = null, args = []) ->
     @registerPaneSubscription() unless @paneSubscription?
 
     projectFolder = atom.project.getPaths()[0]
@@ -168,10 +174,6 @@ class StatusBar extends View
 
     id = editorPath or projectFolder or home
     id = filePath: id, folderPath: path.dirname(id)
-
-    shell = atom.config.get 'platformio-ide-terminal.core.shell'
-    shellArguments = atom.config.get 'platformio-ide-terminal.core.shellArguments'
-    args = shellArguments.split(/\s+/g).filter (arg) -> arg
 
     statusIcon = new StatusIcon()
     platformIOTerminalView = new PlatformIOTerminalView(id, pwd, statusIcon, this, shell, args, autoRun)
@@ -233,6 +235,11 @@ class StatusBar extends View
     if view?
       return callback(view)
     return null
+
+  runNewTerminal: () ->
+    @activeTerminal = @createEmptyTerminalView()
+    @activeTerminal.toggle()
+    return @activeTerminal
 
   runCommandInNewTerminal: (commands) ->
     @activeTerminal = @createTerminalView(commands)

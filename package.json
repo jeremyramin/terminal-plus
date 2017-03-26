@@ -56,7 +56,7 @@
     "platformioIDETerminal": {
       "description": "PlatformIO IDE Terminal API",
       "versions": {
-        "1.0.0": "providePlatformIOIDETerminal"
+        "1.1.0": "providePlatformIOIDETerminal"
       }
     },
     "runInTerminal": {

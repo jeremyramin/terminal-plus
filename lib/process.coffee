@@ -24,12 +24,15 @@ module.exports = (pwd, shell, args, options={}) ->
   if /zsh|bash/.test(shell) and args.indexOf('--login') == -1 and process.platform isnt 'win32'
     args.unshift '--login'
 
-  ptyProcess = pty.fork shell, args,
-    cwd: pwd,
-    env: filteredEnvironment,
-    name: 'xterm-256color'
+  if shell
+    ptyProcess = pty.fork shell, args,
+      cwd: pwd,
+      env: filteredEnvironment,
+      name: 'xterm-256color'
 
-  title = shell = path.basename shell
+    title = shell = path.basename shell
+  else
+    ptyProcess = pty.open()
 
   emitTitle = _.throttle ->
     emit('platformio-ide-terminal:title', ptyProcess.process)
@@ -47,3 +50,4 @@ module.exports = (pwd, shell, args, options={}) ->
     switch event
       when 'resize' then ptyProcess.resize(cols, rows)
       when 'input' then ptyProcess.write(text)
+      when 'pty' then emit('platformio-ide-terminal:pty', ptyProcess.pty)

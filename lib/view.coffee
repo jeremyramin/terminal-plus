@@ -224,6 +224,7 @@ class PlatformIOTerminalView extends View
         @displayTerminal()
         @prevHeight = @nearestRow(@xterm.height())
         @xterm.height(@prevHeight)
+        @emit "platformio-ide-terminal:terminal-open"
       else
         @focus()
 
@@ -266,6 +267,28 @@ class PlatformIOTerminalView extends View
     return unless @ptyProcess.childProcess?
 
     @ptyProcess.send {event: 'resize', rows, cols}
+
+  pty: () ->
+    if not @opened
+      wait = new Promise (resolve, reject) =>
+        @emitter.on "platformio-ide-terminal:terminal-open", () =>
+          resolve()
+        setTimeout reject, 1000
+
+      wait.then () =>
+        @ptyPromise()
+    else
+      @ptyPromise()
+
+  ptyPromise: () ->
+    new Promise (resolve, reject) =>
+      if @ptyProcess?
+        @ptyProcess.on "platformio-ide-terminal:pty", (pty) =>
+          resolve(pty)
+        @ptyProcess.send {event: 'pty'}
+        setTimeout reject, 1000
+      else
+        reject()
 
   applyStyle: ->
     config = atom.config.get 'platformio-ide-terminal'
