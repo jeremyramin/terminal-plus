@@ -402,7 +402,7 @@ class PlatformIOTerminalView extends View
     return @resizeStopped() unless event.which is 1
 
     mouseY = $(window).height() - event.pageY
-    delta = mouseY - $('atom-panel-container.bottom').height()
+    delta = mouseY - $('atom-panel-container.bottom').height() - $('atom-panel-container.footer').height()
     return unless Math.abs(delta) > (@rowHeight * 5 / 6)
 
     clamped = Math.max(@nearestRow(@prevHeight + delta), @rowHeight)
