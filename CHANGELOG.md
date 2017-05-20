@@ -1,3 +1,8 @@
+## 2.5.1 - PlatformIO
+
+* Fix for delta calculation in resizePanel
+* Fix focus (ctrl+alt+F) shortcut behavior
+
 ## 2.5.0 - PlatformIO
 
 * New PlatformIO IDE Terminal API Provider
