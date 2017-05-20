@@ -467,6 +467,8 @@ class PlatformIOTerminalView extends View
   focusTerminal: =>
     return unless @terminal
 
+    lastActiveElement = $(document.activeElement)
+
     @terminal.focus()
     if @terminal._textarea
       @terminal._textarea.focus()
@@ -478,6 +480,9 @@ class PlatformIOTerminalView extends View
 
     @terminal.blur()
     @terminal.element.blur()
+
+    if lastActiveElement?
+      lastActiveElement.focus()
 
   resizeTerminalToView: ->
     return unless @panel.isVisible() or @tabView

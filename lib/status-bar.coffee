@@ -23,7 +23,7 @@ class StatusBar extends View
     @subscriptions = new CompositeDisposable()
 
     @subscriptions.add atom.commands.add 'atom-workspace',
-      'platformio-ide-terminal:focus': => @activeTerminal.focusTerminal()
+      'platformio-ide-terminal:focus': => @focusTerminal()
       'platformio-ide-terminal:new': => @newTerminalView()
       'platformio-ide-terminal:toggle': => @toggle()
       'platformio-ide-terminal:next': =>
@@ -211,6 +211,14 @@ class StatusBar extends View
 
   getActiveTerminalView: ->
     return @activeTerminal
+
+  focusTerminal: ->
+    return unless @activeTerminal?
+
+    if terminal = PlatformIOTerminalView.getFocusedTerminal()
+        @activeTerminal.blur()
+    else
+        @activeTerminal.focusTerminal()
 
   getTerminalById: (target, selector) ->
     selector ?= (terminal) -> terminal.id
