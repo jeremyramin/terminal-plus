@@ -1,5 +1,9 @@
 ## 2.5.2 - PlatformIO
 
+* Fix broken "Terminal: Focus" command
+
+## 2.5.2 - PlatformIO
+
 * Fix issue when opened terminal steals focus after focusing Atom
 
 ## 2.5.1 - PlatformIO
