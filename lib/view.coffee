@@ -454,9 +454,9 @@ class PlatformIOTerminalView extends View
       replace(/\$S/, selectionText).
       replace(/\$\$/, '$')}#{if runCommand then os.EOL else ''}"
 
-  focus: =>
+  focus: (fromWindowEvent) =>
     @resizeTerminalToView()
-    @focusTerminal()
+    @focusTerminal(fromWindowEvent)
     @statusBar.setActiveTerminalView(this)
     super()
 
@@ -464,12 +464,11 @@ class PlatformIOTerminalView extends View
     @blurTerminal()
     super()
 
-  focusTerminal: =>
+  focusTerminal: (fromWindowEvent) =>
     return unless @terminal
 
     lastActiveElement = $(document.activeElement)
-    if !(lastActiveElement.is('div.terminal'))
-      return
+    return if fromWindowEvent and not lastActiveElement.is('div.terminal')
 
     @terminal.focus()
     if @terminal._textarea
