@@ -1,4 +1,4 @@
-## 2.5.2 - PlatformIO
+## 2.5.3 - PlatformIO
 
 * Fix broken "Terminal: Focus" command
 
