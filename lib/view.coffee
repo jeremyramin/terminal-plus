@@ -468,7 +468,7 @@ class PlatformIOTerminalView extends View
     return unless @terminal
 
     lastActiveElement = $(document.activeElement)
-    return if fromWindowEvent and not lastActiveElement.is('div.terminal')
+    return if fromWindowEvent and not (lastActiveElement.is('div.terminal') or lastActiveElement.parents('div.terminal').length)
 
     @terminal.focus()
     if @terminal._textarea
