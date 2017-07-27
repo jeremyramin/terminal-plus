@@ -1,3 +1,8 @@
+## 2.5.4 - PlatformIO
+
+* Updated One Dark theme foreground color to match Atom
+* Fixed deprecation warning thrown in Atom Beta >=1.13
+
 ## 2.5.3 - PlatformIO
 
 * Fix broken "Terminal: Focus" command
