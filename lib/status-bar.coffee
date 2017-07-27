@@ -61,6 +61,7 @@ class StatusBar extends View
       else if item.constructor.name is "TextEditor"
         mapping = atom.config.get('platformio-ide-terminal.core.mapTerminalsTo')
         return if mapping is 'None'
+        return unless item.getPath()
 
         switch mapping
           when 'File'
@@ -71,9 +72,8 @@ class StatusBar extends View
         prevTerminal = @getActiveTerminalView()
         if prevTerminal != nextTerminal
           if not nextTerminal?
-            if item.getTitle() isnt 'untitled'
-              if atom.config.get('platformio-ide-terminal.core.mapTerminalsToAutoOpen')
-                nextTerminal = @createTerminalView()
+            if atom.config.get('platformio-ide-terminal.core.mapTerminalsToAutoOpen')
+              nextTerminal = @createTerminalView()
           else
             @setActiveTerminalView(nextTerminal)
             nextTerminal.toggle() if prevTerminal?.panel.isVisible()
