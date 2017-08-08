@@ -1,7 +1,7 @@
 {
   "name": "platformio-ide-terminal",
   "main": "./lib/platformio-ide-terminal",
-  "version": "2.5.4",
+  "version": "2.5.5",
   "description": "A terminal package for Atom, complete with themes, API and more for PlatformIO IDE. Fork of terminal-plus.",
   "author": "Jeremy Ebneyamin",
   "keywords": [
