@@ -1,3 +1,7 @@
+## 2.5.5 - PlatformIO
+
+* Add compatibility for Atom 1.19
+
 ## 2.5.4 - PlatformIO
 
 * Updated One Dark theme foreground color to match Atom
