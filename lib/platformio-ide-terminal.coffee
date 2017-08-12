@@ -151,7 +151,8 @@ module.exports =
             'solid-colors',
             'dracula',
             'one-dark',
-            'christmas'
+            'christmas',
+            'predawn'
           ]
     ansiColors:
       type: 'object'
