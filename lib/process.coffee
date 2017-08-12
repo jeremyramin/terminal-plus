@@ -21,9 +21,6 @@ filteredEnvironment = do ->
 module.exports = (pwd, shell, args, options={}) ->
   callback = @async()
 
-  if /zsh|bash/.test(shell) and args.indexOf('--login') == -1 and process.platform isnt 'win32'
-    args.unshift '--login'
-
   if shell
     ptyProcess = pty.fork shell, args,
       cwd: pwd,

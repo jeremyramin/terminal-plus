@@ -82,6 +82,9 @@ class PlatformIOTerminalView extends View
     @subscriptions.add dispose: =>
       @off 'focus', @focus
 
+    if /zsh|bash/.test(@shell) and @args.indexOf('--login') == -1 and Pty.platform isnt 'win32' and atom.config.get('platformio-ide-terminal.toggles.loginShell')
+      @args.unshift '--login'
+
   attach: ->
     return if @panel?
     @panel = atom.workspace.addBottomPanel(item: this, visible: false)

@@ -52,6 +52,11 @@ module.exports =
           description: 'Copies text to clipboard when selection happens.'
           type: 'boolean'
           default: true
+        loginShell:
+          title: 'Login Shell'
+          description: 'Use --login on zsh and bash.'
+          type: 'boolean'
+          default: true
     core:
       type: 'object'
       order: 2
