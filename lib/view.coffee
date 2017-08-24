@@ -26,15 +26,14 @@ class PlatformIOTerminalView extends View
   @content: ->
     @div class: 'platformio-ide-terminal terminal-view', outlet: 'platformIOTerminalView', =>
       @div class: 'panel-divider', outlet: 'panelDivider'
-      @div class: 'btn-toolbar', outlet:'toolbar', =>
-        @button outlet: 'closeBtn', class: 'btn inline-block-tight right', click: 'destroy', =>
-          @span class: 'icon icon-x'
-        @button outlet: 'hideBtn', class: 'btn inline-block-tight right', click: 'hide', =>
-          @span class: 'icon icon-chevron-down'
-        @button outlet: 'maximizeBtn', class: 'btn inline-block-tight right', click: 'maximize', =>
-          @span class: 'icon icon-screen-full'
-        @button outlet: 'inputBtn', class: 'btn inline-block-tight left', click: 'inputDialog', =>
-          @span class: 'icon icon-keyboard'
+      @section class: 'input-block', =>
+        @div class: 'btn-toolbar', =>
+          @div class: 'btn-group', =>
+            @button outlet: 'inputBtn', class: 'btn icon icon-keyboard', click: 'inputDialog'
+          @div class: 'btn-group right', =>
+            @button outlet: 'hideBtn', class: 'btn icon icon-chevron-down', click: 'hide'
+            @button outlet: 'maximizeBtn', class: 'btn icon icon-screen-full', click: 'maximize'
+            @button outlet: 'closeBtn', class: 'btn icon icon-x', click: 'destroy'
       @div class: 'xterm', outlet: 'xterm'
 
   @getFocusedTerminal: ->

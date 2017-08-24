@@ -25,10 +25,6 @@
   }
 
   &.terminal-view {
-    display: -webkit-flex;
-    flex-direction: column;
-    align-items: center;
-    flex-wrap: nowrap;
 
     .panel-divider {
       order: 1;
@@ -45,25 +41,18 @@
       width: 100%;
     }
 
-    .btn-toolbar {
-      order: 2;
-      flex: 0 0 auto;
-      width: 100%;
-      padding: 4px 2px 4px 2px;
+    .input-block{
+      padding: 0.375em;
 
-      .left {
-        float: left;
-      }
-      .right {
-        float: right;
-      }
+      .btn-toolbar {
+        padding: 0.375em;
 
-      .btn {
-        top: 0;
-        height: auto;
-        line-height: normal;
-        padding: 0;
-        margin: 0 5px;
+        .left {
+          float: left;
+        }
+        .right {
+          float: right;
+        }
       }
     }
 
