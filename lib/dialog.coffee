@@ -6,8 +6,8 @@ class Dialog extends View
     @div class: 'platformio-ide-terminal-dialog', =>
       @label prompt, class: 'icon', outlet: 'promptText'
       @subview 'miniEditor', new TextEditorView(mini: true)
-      @label 'Escape (Esc) to exit', style: 'float: left;'
-      @label 'Enter (\u21B5) to confirm', style: 'float: right;'
+      @label 'Escape (Esc) to exit', style: 'width: 50%;'
+      @label 'Enter (\u21B5) to confirm', style: 'width: 50%; text-align: right;'
 
   initialize: ({iconClass, placeholderText, stayOpen} = {}) ->
     @promptText.addClass(iconClass) if iconClass
