@@ -18,13 +18,13 @@ filteredEnvironment = do ->
   env.TERM_PROGRAM = 'platformio-ide-terminal'
   return env
 
-module.exports = (pwd, shell, args, options={}) ->
+module.exports = (pwd, shell, args, env, options={}) ->
   callback = @async()
 
   if shell
     ptyProcess = pty.fork shell, args,
       cwd: pwd,
-      env: filteredEnvironment,
+      env: _.extend(filteredEnvironment, env),
       name: 'xterm-256color'
 
     title = shell = path.basename shell

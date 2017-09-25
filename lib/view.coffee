@@ -39,7 +39,7 @@ class PlatformIOTerminalView extends View
   @getFocusedTerminal: ->
     return Terminal.Terminal.focus
 
-  initialize: (@id, @pwd, @statusIcon, @statusBar, @shell, @args=[], @autoRun=[]) ->
+  initialize: (@id, @pwd, @statusIcon, @statusBar, @shell, @args=[], @env={}, @autoRun=[]) ->
     @subscriptions = new CompositeDisposable
     @emitter = new Emitter
 
@@ -114,7 +114,7 @@ class PlatformIOTerminalView extends View
         @input "#{file.path} "
 
   forkPtyProcess: ->
-    Task.once Pty, path.resolve(@pwd), @shell, @args, =>
+    Task.once Pty, path.resolve(@pwd), @shell, @args, @env, =>
       @input = ->
       @resize = ->
 

@@ -97,6 +97,11 @@ module.exports =
           description: 'Specify some arguments to use when launching the shell.'
           type: 'string'
           default: ''
+        shellEnv:
+          title: 'Shell Environment Variables'
+          description: 'Specify some additional environment variables, space separated with the form `VAR=VALUE`'
+          type: 'string'
+          default: ''
         workingDirectory:
           title: 'Working Directory'
           description: 'Which directory should be the present working directory when a new terminal is made?'
