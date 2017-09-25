@@ -1,3 +1,9 @@
+## 2.7.0 - PlatformIO
+
+* Add extra environment variable to shell execution with `Shell Environment Variables` setting
+* Fix selectToCopy turns space into non-breaking-space (#211)
+* Fix fullscreen toggle (#227)
+
 ## 2.6.0 - PlatformIO
 
 * Add predawn theme (#296)
