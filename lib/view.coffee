@@ -70,7 +70,12 @@ class PlatformIOTerminalView extends View
     @xterm.on 'mouseup', (event) =>
       if event.which != 3
         text = window.getSelection().toString()
-        atom.clipboard.write(text) if atom.config.get('platformio-ide-terminal.toggles.selectToCopy') and text
+        if atom.config.get('platformio-ide-terminal.toggles.selectToCopy') and text
+          rawLines = text.split(/\r?\n/g)
+          lines = rawLines.map (line) ->
+            line.replace(/\s/g, " ").trimRight()
+          text = lines.join("\n")
+          atom.clipboard.write(text) 
         unless text
           @focus()
     @xterm.on 'dragenter', override
