@@ -75,7 +75,7 @@ class PlatformIOTerminalView extends View
           lines = rawLines.map (line) ->
             line.replace(/\s/g, " ").trimRight()
           text = lines.join("\n")
-          atom.clipboard.write(text) 
+          atom.clipboard.write(text)
         unless text
           @focus()
     @xterm.on 'dragenter', override
@@ -456,8 +456,8 @@ class PlatformIOTerminalView extends View
       editor.moveDown(1);
     @input "#{customText.
       replace(/\$L/, "#{editor.getCursorBufferPosition().row + 1}").
-      replace(/\$F/, path.basename(editor?.buffer?.file?.path)).
-      replace(/\$D/, path.dirname(editor?.buffer?.file?.path)).
+      replace(/\$F/, path.basename(if editor.buffer.getPath() then editor.buffer.getPath() else '.')).
+      replace(/\$D/, path.dirname(if editor.buffer.getPath() then editor.buffer.getPath() else '.')).
       replace(/\$S/, selectionText).
       replace(/\$\$/, '$')}#{if runCommand then os.EOL else ''}"
 
