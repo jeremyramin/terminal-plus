@@ -21,6 +21,8 @@
     {type: 'separator'},
     {label: 'Hide', command: 'platformio-ide-terminal:hide'},
     {label: 'Close', command: 'platformio-ide-terminal:close'}
+    {type: 'separator'}
+    {label: "Clear", command: 'platformio-ide-terminal:clear'}
   ]
 'menu': [
   {
