@@ -35,6 +35,7 @@ class StatusBar extends View
         return unless @activeTerminal
         return if @activeTerminal.isAnimating()
         @activeTerminal.open() if @activePrevTerminalView()
+      'platformio-ide-terminal:clear': => @clear()
       'platformio-ide-terminal:close': => @destroyActiveTerm()
       'platformio-ide-terminal:close-all': => @closeAll()
       'platformio-ide-terminal:rename': => @runInActiveView (i) -> i.rename()
@@ -324,6 +325,10 @@ class StatusBar extends View
     else if @activeTerminal == null
       @activeTerminal = @terminalViews[0]
     @activeTerminal.toggle()
+
+  clear: ->
+    @destroyActiveTerm()
+    @newTerminalView()
 
   setStatusColor: (event) ->
     color = event.type.match(/\w+$/)[0]
