@@ -1,3 +1,7 @@
+## 2.8.1 - PlatformIO
+
+* Add compatibility with Atom 1.25
+
 ## 2.8.0 - PlatformIO
 
 * Add "clear" item to context menu (re-start terminal)
