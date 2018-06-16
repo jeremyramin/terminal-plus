@@ -6,6 +6,7 @@
   'cmd-alt-f': 'platformio-ide-terminal:focus'
   'ctrl-enter': 'platformio-ide-terminal:insert-selected-text'
   'ctrl-`': 'platformio-ide-terminal:toggle'
+  'ctrl-alt-enter': 'platformio-ide-terminal:insert-selected-text'
 
 '.platform-linux atom-workspace, .platform-win32 atom-workspace':
   'alt-shift-t': 'platformio-ide-terminal:new'
