@@ -1,3 +1,9 @@
+## 2.8.2 - PlatformIO
+
+* Remove the 3D shadow (#535)
+* Fix "Copy and Paste" (#523)
+* Fix to enable insert-selected-text on Mac (#534)
+
 ## 2.8.1 - PlatformIO
 
 * Add compatibility with Atom 1.25
