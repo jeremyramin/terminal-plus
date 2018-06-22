@@ -1,3 +1,7 @@
+## 2.8.3 - PlatformIO
+
+* Add compatibility for Atom 1.28
+
 ## 2.8.2 - PlatformIO
 
 * Remove the 3D shadow (#535)
