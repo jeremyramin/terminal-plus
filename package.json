@@ -37,7 +37,7 @@
     "atom": ">=1.12.2 <2.0.0"
   },
   "dependencies": {
-    "atom-space-pen-views": "^2.1.0",
+    "atom-space-pen-views": "^2.2.0",
     "pty.js": "https://github.com/platformio/pty.js/tarball/prebuilt",
     "term.js": "https://github.com/jeremyramin/term.js/tarball/master",
     "underscore": "^1.8.3"
