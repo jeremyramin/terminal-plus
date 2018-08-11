@@ -1,3 +1,8 @@
+## 2.8.4 - PlatformIO
+
+* Add city-lights theme
+* atom-space-pen-views: bump to v2.2.0
+
 ## 2.8.3 - PlatformIO
 
 * Add compatibility for Atom 1.28
