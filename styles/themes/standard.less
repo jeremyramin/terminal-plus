@@ -1,8 +1,10 @@
+@import "syntax-variables";
+
 .standard {
-  background-color: black;
-  color: white;
+  background-color: @syntax-background-color;
+  color: @syntax-text-color;
 
   .terminal-cursor {
-    background-color: white;
+    background-color: @syntax-cursor-color;
   }
 }
