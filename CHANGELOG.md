@@ -1,3 +1,8 @@
+## 2.9.0 - PlatformIO
+
+* Use current Atom styles for standard theme (issue #607)
+* Switch to "node-pty-prebuilt" (issues #551, #585, #632)
+
 ## 2.8.4 - PlatformIO
 
 * Add city-lights theme
