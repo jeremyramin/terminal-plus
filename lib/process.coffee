@@ -1,4 +1,4 @@
-pty = require 'pty.js'
+pty = require 'node-pty-prebuilt'
 path = require 'path'
 fs = require 'fs'
 _ = require 'underscore'
