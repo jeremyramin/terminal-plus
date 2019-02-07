@@ -158,7 +158,8 @@ module.exports =
             'one-dark',
             'christmas',
             'predawn',
-            'city-lights'
+            'city-lights',
+            'solarized-light'
           ]
     ansiColors:
       type: 'object'
