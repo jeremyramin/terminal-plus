@@ -1,3 +1,8 @@
+## 2.9.1 - PlatformIO
+
+* Add "solarized-light" theme
+* Fix an issue with a shortcut when reopening last item and new terminal for macOS
+
 ## 2.9.0 - PlatformIO
 
 * Use current Atom styles for standard theme (issue #607)
