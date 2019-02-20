@@ -1,5 +1,5 @@
 '.platform-darwin atom-workspace':
-  'cmd-shift-t': 'platformio-ide-terminal:new'
+  'cmd-alt-t': 'platformio-ide-terminal:new'
   'cmd-shift-j': 'platformio-ide-terminal:prev'
   'cmd-shift-k': 'platformio-ide-terminal:next'
   'cmd-shift-x': 'platformio-ide-terminal:close'
