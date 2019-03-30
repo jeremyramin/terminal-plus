@@ -12,6 +12,11 @@ You can install via apm: `apm install platformio-ide-terminal`
 
 Or navigate to the install tab in Atom’s settings view, and search for `platformio-ide-terminal`.
 
+## Caveats
+flatpak
+
+Some Atom installations via flatpak may have incompatibilites, including an inability to find host system binaries from select directories, such as /usr/*. If you encounter issues using platformio-ide-terminal with flatpak, such as missing binaries, that are normally accessible from the path you have set in your shell of choice, or if you are not able to change directory into some directories, you may be affected. You can confirm this by looking for the nfsnobody permissions from the root of your disk. You can workaround this by installing another version of atom that is not inside a sandbox container. See [here for full details.](https://github.com/platformio/platformio-atom-ide-terminal/issues/664)
+
 ## Usage
 
 `platformio-ide-terminal` stays in the bottom of your editor while you work.
