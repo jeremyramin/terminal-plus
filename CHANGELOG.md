@@ -1,3 +1,7 @@
+## 2.9.2 - PlatformIO
+
+* Add compatibility for Atom 1.39
+
 ## 2.9.1 - PlatformIO
 
 * Add "solarized-light" theme
