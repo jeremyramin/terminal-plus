@@ -1,4 +1,4 @@
-pty = require 'node-pty-prebuilt'
+pty = require 'node-pty-prebuilt-multiarch'
 path = require 'path'
 fs = require 'fs'
 _ = require 'underscore'
