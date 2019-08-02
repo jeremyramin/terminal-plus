@@ -1,3 +1,7 @@
+## 2.9.3 - PlatformIO
+
+* Fix broken terminal
+
 ## 2.9.2 - PlatformIO
 
 * Add compatibility for Atom 1.39
