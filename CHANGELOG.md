@@ -1,3 +1,7 @@
+## 2.9.4 - PlatformIO
+
+* add compatibility for Atom Electron 3.x builds
+
 ## 2.9.3 - PlatformIO
 
 * Fix broken terminal
