@@ -27,7 +27,7 @@ class PlatformIOTerminalView extends View
     @div class: 'platformio-ide-terminal terminal-view', outlet: 'platformIOTerminalView', =>
       @div class: 'panel-divider', outlet: 'panelDivider'
       @section class: 'input-block', =>
-        @div class: 'btn-toolbar', =>
+        @div outlet: 'toolbar', class: 'btn-toolbar', =>
           @div class: 'btn-group', =>
             @button outlet: 'inputBtn', class: 'btn icon icon-keyboard', click: 'inputDialog'
           @div class: 'btn-group right', =>
@@ -61,6 +61,9 @@ class PlatformIOTerminalView extends View
 
     @setAnimationSpeed()
     @subscriptions.add atom.config.onDidChange 'platformio-ide-terminal.style.animationSpeed', @setAnimationSpeed
+
+    @updateToolbarVisibility()
+    @subscriptions.add atom.config.onDidChange 'platformio-ide-terminal.toggles.showToolbar', @updateToolbarVisibility
 
     override = (event) ->
       return if event.originalEvent.dataTransfer.getData('platformio-ide-terminal') is 'true'
@@ -98,6 +101,13 @@ class PlatformIOTerminalView extends View
     @animationSpeed = 100 if @animationSpeed is 0
 
     @xterm.css 'transition', "height #{0.25 / @animationSpeed}s linear"
+
+  updateToolbarVisibility: =>
+    @showToolbar = atom.config.get('platformio-ide-terminal.toggles.showToolbar')
+    if @showToolbar
+      @toolbar.css 'display', 'block'
+    else
+      @toolbar.css 'display', 'none'
 
   recieveItemOrFile: (event) =>
     event.preventDefault()
