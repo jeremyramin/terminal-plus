@@ -311,6 +311,11 @@ class PlatformIOTerminalView extends View
     config = atom.config.get 'platformio-ide-terminal'
 
     @xterm.addClass config.style.theme
+    
+    @subscriptions.add atom.config.onDidChange 'platformio-ide-terminal.style.theme', (event) =>
+      @xterm.removeClass event.oldValue
+      @xterm.addClass event.newValue
+
     @xterm.addClass 'cursor-blink' if config.toggles.cursorBlink
 
     editorFont = atom.config.get('editor.fontFamily')
