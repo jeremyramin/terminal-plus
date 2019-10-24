@@ -1,6 +1,12 @@
+
+## 2.10.0 - PlatformIO
+
+* Add setting to disable toolbar buttons (issue #794)
+* Update themes on config changes (issue #793)
+
 ## 2.9.4 - PlatformIO
 
-* add compatibility for Atom Electron 3.x builds
+* Add compatibility for Atom Electron 3.x builds
 
 ## 2.9.3 - PlatformIO
 
