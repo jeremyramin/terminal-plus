@@ -1,3 +1,6 @@
+## 2.10.1 - PlatformIO
+
+* Fix an issue with missed pre-built node-pty modules
 
 ## 2.10.0 - PlatformIO
 
